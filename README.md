@@ -1,16 +1,16 @@
-# Template Add-on for Vaadin Flow
+# Schedule-X Add-on for Vaadin Flow
 
-This project is a template for building new Vaadin Flow add-ons.
+This is a flow add-on based on the Schedule-X javascript library.
 
 This component is part of Vaadin Component Factory.
 
 ## Features
 
-* List the features of the component here
+* Support for Calendar and Resources views
 
 ## Running the component demo
 Run from the command line:
-- `mvn  -pl vcf-template-demo -Pwar install jetty:run`
+- `mvn  -pl vcf-schedule-x-demo -Pwar install jetty:run`
 
 Then navigate to `http://localhost:8080/`
 
@@ -31,7 +31,7 @@ add the following dependency to your `pom.xml`:
 ```
 <dependency>
     <groupId>org.vaadin.addons.componentfactory</groupId>
-    <artifactId>vcf-template</artifactId>
+    <artifactId>vcf-schedule-x</artifactId>
     <version>${component.version}</version>
 </dependency>
 ```

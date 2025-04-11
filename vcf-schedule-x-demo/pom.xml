@@ -10,7 +10,7 @@
     <name>Schedule-X Addon Demo</name>
 
     <version>1.0.0-SNAPSHOT</version>
-    <inceptionYear>2021</inceptionYear>
+    <inceptionYear>2025</inceptionYear>
     <organization>
         <name>Vaadin Ltd</name>
         <url>http://vaadin.com/</url>
@@ -61,8 +61,8 @@
         <!-- demo specific -->
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>flow-component-demo-helpers</artifactId>
-            <version>9.2.3</version>
+            <artifactId>vaadin-component-demo-helpers</artifactId>
+            <version>23.0.16</version>
         </dependency>
 
         <!-- externals -->
@@ -106,7 +106,10 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>11.0.25</version>
                 <configuration>
-                    <scanIntervalSeconds>1</scanIntervalSeconds>
+                    <scan>1</scan>
+                    <systemProperties>
+                        <vaadin.frontend.hotdeploy>true</vaadin.frontend.hotdeploy>
+                    </systemProperties>	
                 </configuration>
             </plugin>
             <!--

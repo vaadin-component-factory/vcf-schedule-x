@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.template;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
 import com.vaadin.flow.component.UI;
 
 import net.jcip.annotations.NotThreadSafe;

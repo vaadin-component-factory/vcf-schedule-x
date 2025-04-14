@@ -1,11 +1,8 @@
-package org.vaadin.addons.componentfactory.template.util;
+package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
 import elemental.json.Json;
-import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;

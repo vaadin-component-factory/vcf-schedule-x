@@ -19,10 +19,10 @@ import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import org.vaadin.addons.componentfactory.template.ScheduleXCalendar;
-import org.vaadin.addons.componentfactory.template.util.Configuration;
-import org.vaadin.addons.componentfactory.template.util.Event;
-import org.vaadin.addons.componentfactory.template.util.View;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 /**
  * View for {@link ScheduleXCalendar} demo.

@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.template;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
@@ -24,9 +24,9 @@ import elemental.json.JsonArray;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.vaadin.addons.componentfactory.template.util.Configuration;
-import org.vaadin.addons.componentfactory.template.util.Event;
-import org.vaadin.addons.componentfactory.template.util.View;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 /**
  * Template Addon showing the basics of how to build a Vaadin Wrapper Addon

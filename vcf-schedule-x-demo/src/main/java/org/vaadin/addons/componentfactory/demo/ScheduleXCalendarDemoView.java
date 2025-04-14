@@ -17,9 +17,11 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorTheme;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
@@ -47,19 +49,31 @@ public class ScheduleXCalendarDemoView extends DemoView {
     // begin-source-example
     // source-example-heading: Basic Use Demo
 
+    Calendar work = new Calendar("work");
+    work.setLightColors(new ColorTheme("#f91c45", "#ffd2dc", "#59000d"));
+    work.setDarkColors(new ColorTheme("#ffc0cc", "#a24258", "#ffdee6"));
+    Calendar leisure = new Calendar("leisure");
+    leisure.setLightColors(new ColorTheme("#1cf9b0", "#dafff0", "#004d3d"));
+    leisure.setDarkColors(new ColorTheme("#c0fff5", "#42a297", "#e6fff5"));
+    Map<String, Calendar> calendars = Map.of("work", work, "leisure", leisure);
+
     Event event1 = new Event("1", "2025-04-15 10:05", "2025-04-15 10:35");
     event1.setTitle("Coffee with John");
+    event1.setCalendarId("leisure");
     Event event2 = new Event("2", "2025-04-16 16:00", "2025-04-16 16:45");
     event2.setTitle("Meeting with Jackie");
+    event2.setCalendarId("work");
+    
     Configuration configuration = new Configuration();
     configuration.setSelectedDate("2025-04-17");
-    configuration.setDefaultView(View.WEEK);
+    configuration.setDefaultView(View.MONTH_GRID);
+
     ScheduleXCalendar calendar = new ScheduleXCalendar(
-        Arrays.asList(View.DAY, View.WEEK,View.MONTH_GRID, View.MONTH_AGENDA),
-        Arrays.asList(event1, event2), configuration);
+        Arrays.asList(View.DAY, View.WEEK, View.MONTH_GRID, View.MONTH_AGENDA),
+        Arrays.asList(event1, event2), configuration, calendars);
 
     // calendar.addValueChangeListener(ev->{
-    // updateMessage(message, paperInput);
+    // updateMessage(message, calendar);
     // });
     // end-source-example
 
@@ -74,8 +88,8 @@ public class ScheduleXCalendarDemoView extends DemoView {
   /**
    * Additional code used in the demo
    */
-  private void updateMessage(Div message, ScheduleXCalendar paperInput) {
-    // message.setText("Entered text: " + paperInput.getValue());
+  private void updateMessage(Div message, ScheduleXCalendar calendar) {
+    // message.setText("Entered text: " + calendar.getValue());
   }
 
   private Div createMessageDiv(String id) {

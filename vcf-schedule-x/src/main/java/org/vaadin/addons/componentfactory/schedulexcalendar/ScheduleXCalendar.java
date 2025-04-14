@@ -21,15 +21,19 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 import elemental.json.Json;
 import elemental.json.JsonArray;
+import elemental.json.JsonObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 /**
- * Template Addon showing the basics of how to build a Vaadin Wrapper Addon
+ * Vaadin Wrapper Add-on for <a href="https://schedule-x.dev/">Schedule-X Calendar</a>.
  *
  */
 @SuppressWarnings("serial")
@@ -40,10 +44,22 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 public class ScheduleXCalendar extends Div {
 
+  /**
+   * Views available to the user.
+   */
   private List<View> views = new ArrayList<>();
+
+  /**
+   * Map of calendar IDs to their configuration. The key will be used as the JS object key on the
+   * client.
+   */
+  private Map<String, Calendar> calendars = new HashMap<String, Calendar>();
 
   private List<Event> events = new ArrayList<>();
 
+  /**
+   * Optional global calendar configuration settings.
+   */
   private Configuration configuration;
 
   public ScheduleXCalendar() {
@@ -62,6 +78,12 @@ public class ScheduleXCalendar extends Div {
     this.configuration = configuration;
   }
 
+  public ScheduleXCalendar(List<View> views, List<Event> events, Configuration configuration,
+      Map<String, Calendar> calendars) {
+    this(views, events, configuration);
+    this.calendars = calendars;
+  }
+
   @Override
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
@@ -69,8 +91,10 @@ public class ScheduleXCalendar extends Div {
   }
 
   private void initCalendar() {
-    this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3)", this, viewsToJson(),
-        "[" + eventsToJson() + "]", configuration != null ? configuration.getJson() : "{}");
+    this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3, $4)", this,
+        viewsToJson(), "[" + eventsToJson() + "]",
+        configuration != null ? configuration.getJson() : "{}",
+        !calendars.isEmpty() ? calendarsToJson() : "{}");
   }
 
   private String viewsToJson() {
@@ -85,6 +109,71 @@ public class ScheduleXCalendar extends Div {
     return this.events != null
         ? this.events.stream().map(event -> event.getJson()).collect(Collectors.joining(","))
         : "";
+  }
+
+  /**
+   * Serialize all calendars as a JSON object. Example: { "personal": { ... }, "work": { ... } }
+   */
+  private String calendarsToJson() {
+    JsonObject calendarJson = Json.createObject();
+    calendars.forEach((id, calendar) -> calendarJson.put(id, calendar.toJsonObject()));
+    return calendarJson.toJson();
+  }
+
+  /**
+   * @return the views
+   */
+  public List<View> getViews() {
+    return views;
+  }
+
+  /**
+   * @param views the views to set
+   */
+  public void setViews(List<View> views) {
+    this.views = views;
+  }
+
+  /**
+   * @return the events
+   */
+  public List<Event> getEvents() {
+    return events;
+  }
+
+  /**
+   * @param events the events to set
+   */
+  public void setEvents(List<Event> events) {
+    this.events = events;
+  }
+
+  /**
+   * @return the calendars
+   */
+  public Map<String, Calendar> getCalendars() {
+    return calendars;
+  }
+
+  /**
+   * @param calendars the calendars to set
+   */
+  public void setCalendars(Map<String, Calendar> calendars) {
+    this.calendars = calendars;
+  }
+
+  /**
+   * @return the configuration
+   */
+  public Configuration getConfiguration() {
+    return configuration;
+  }
+
+  /**
+   * @param configuration the configuration to set
+   */
+  public void setConfiguration(Configuration configuration) {
+    this.configuration = configuration;
   }
 
   @Override

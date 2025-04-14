@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.template.util;
+package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
 /**
  * The events of a single calendar can be sorted into different categories, called calendars.

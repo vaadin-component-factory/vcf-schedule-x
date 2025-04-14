@@ -1,4 +1,4 @@
-package org.vaadin.addons.componentfactory.template;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.testutil.ClassesSerializableTest;

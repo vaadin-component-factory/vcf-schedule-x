@@ -55,12 +55,13 @@ public class Event implements Serializable {
   private List<String> people;
 
   /**
-   * Id of the calendar. See {@link Calendar}
+   * Id of the calendar. This is the calendarId which links to a specific calendar (e.g., "work",
+   * "leisure"). See {@link Calendar}
    */
   private String calendarId;
 
   // TODO complete
-  
+
   @Override
   public int hashCode() {
     return Objects.hash(id);
@@ -68,9 +69,12 @@ public class Event implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
     Event other = (Event) obj;
     return Objects.equals(id, other.id);
   }

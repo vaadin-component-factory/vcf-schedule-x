@@ -35,15 +35,16 @@ const viewNameMap = {
 
 window.vcfschedulexcalendar = {
 
-	create: function(container, viewsJson, eventsJson, configJson) {
-		setTimeout(() => this._createCalendar(container, viewsJson, eventsJson, configJson));
+	create: function(container, viewsJson, eventsJson, configJson, calendarsJson) {
+		setTimeout(() => this._createCalendar(container, viewsJson, eventsJson, configJson, calendarsJson));
 	},
 
-	_createCalendar: function(container, viewsJson, eventsJson, configJson) {
+	_createCalendar: function(container, viewsJson, eventsJson, configJson, calendarsJson) {
 
 		const viewFnNames = JSON.parse(viewsJson || "[]");
 		const parsedEvents = JSON.parse(eventsJson || "[]");
 		const config = this._processConfiguration(configJson);
+		const parsedCalendars = JSON.parse(calendarsJson || "[]");
 
 		const views = viewFnNames
 			.map(fnName => viewFactoryMap[fnName])
@@ -54,6 +55,7 @@ window.vcfschedulexcalendar = {
 		const calendar = createCalendar({
 			views: views,
 			events: parsedEvents,
+			calendars: parsedCalendars,
 			...config
 		})
 

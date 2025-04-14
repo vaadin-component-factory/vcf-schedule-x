@@ -13,9 +13,76 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-/**
- * The events of a single calendar can be sorted into different categories, called calendars.
- */
-public class Calendar {
+import elemental.json.Json;
+import elemental.json.JsonObject;
+import java.io.Serializable;
+import java.util.Optional;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+/**
+ * Represents a single calendar definition.
+ * <p>The events of a single calendar can be sorted into different categories, called calendars.
+ * @see <a href="https://schedule-x.dev/docs/calendar/calendars">Calendars documentation</a>.
+ */
+@SuppressWarnings("serial")
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class Calendar implements Serializable {
+
+  /**
+   * Used internally as a CSS part (lowercase, no spaces).
+   */
+  @NonNull
+  private String colorName;
+
+  /**
+   * Optional colors for light theme.
+   */
+  private ColorTheme lightColors;
+
+  /**
+   * Optional colors for dark theme.
+   */
+  private ColorTheme darkColors;
+
+  /**
+   * Serialize this calendar to a JsonObject (excluding its ID).
+   */
+  public JsonObject toJsonObject() {
+    JsonObject js = Json.createObject();
+    js.put("colorName", colorName);
+    Optional.ofNullable(lightColors).ifPresent(colors -> js.put("lightColors", colors.toJsonObject()));
+    Optional.ofNullable(darkColors).ifPresent(colors -> js.put("darkColors", colors.toJsonObject()));
+    return js;
+  }
+
+  /**
+   * Represents a theme color block (light or dark).
+   */
+  @Getter
+  @Setter
+  @RequiredArgsConstructor
+  public static class ColorTheme implements Serializable {
+
+    @NonNull
+    private String main;
+
+    @NonNull
+    private String container;
+
+    @NonNull
+    private String onContainer;
+
+    public JsonObject toJsonObject() {
+      JsonObject js = Json.createObject();
+      js.put("main", main);
+      js.put("container", container);
+      js.put("onContainer", onContainer);
+      return js;
+    }
+  }
 }

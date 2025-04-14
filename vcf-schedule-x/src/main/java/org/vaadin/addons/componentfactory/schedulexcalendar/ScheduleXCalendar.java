@@ -37,8 +37,8 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
  *
  */
 @SuppressWarnings("serial")
-@NpmPackage(value = "@schedule-x/calendar", version = "2.27.2")
-@NpmPackage(value = "@schedule-x/theme-default", version = "2.27.2")
+@NpmPackage(value = "@schedule-x/calendar", version = "2.28.0")
+@NpmPackage(value = "@schedule-x/theme-default", version = "2.28.0")
 @JsModule("./src/vcf-schedule-x-calendar.js")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")

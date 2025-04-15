@@ -13,14 +13,12 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
-import com.vaadin.flow.component.dependency.JsModule;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import com.vaadin.flow.component.dependency.JsModule;
 
 /**
  * Vaadin Wrapper Add-on for <a href="https://schedule-x.dev/">Schedule-X Calendar</a>.
@@ -34,22 +32,22 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     super();
   }
 
-  public ScheduleXCalendar(List<CalendarView> views, List<Event> events) {
-    super(views, events);
+  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider) {
+    super(views, eventProvider);
   }
 
-  public ScheduleXCalendar(List<CalendarView> views, List<Event> events, Configuration configuration) {
-    super(views, events, configuration);
+  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider, Configuration configuration) {
+    super(views, eventProvider, configuration);
   }
   
-  public ScheduleXCalendar(List<CalendarView> views, List<Event> events, Configuration configuration,
+  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider, Configuration configuration,
       Map<String, Calendar> calendars) {
-    super(views, events, configuration, calendars);
+    super(views, eventProvider, configuration, calendars);
   }
 
   protected void initCalendar() {
     this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3, $4)", this,
-        viewsToJson(), "[" + eventsToJson() + "]",
+        viewsToJson(),
         configurationToJson(), calendarsToJson());
   }
  

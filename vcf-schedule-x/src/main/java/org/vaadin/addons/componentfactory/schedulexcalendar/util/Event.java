@@ -13,13 +13,15 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +73,7 @@ public class Event implements Serializable {
    * Optional custom content to render in different views.
    */
   private EventCustomContent customContent;
- 
+
   @Override
   public int hashCode() {
     return Objects.hash(id);
@@ -94,12 +96,12 @@ public class Event implements Serializable {
     js.put("id", id);
     js.put("start", start);
     js.put("end", end);
-   
+
     Optional.ofNullable(title).ifPresent(value -> js.put("title", value));
     Optional.ofNullable(description).ifPresent(value -> js.put("description", value));
     Optional.ofNullable(location).ifPresent(value -> js.put("location", value));
     Optional.ofNullable(calendarId).ifPresent(value -> js.put("calendarId", value));
-    
+
     if (people != null && !people.isEmpty()) {
       JsonArray jsonPeople = Json.createArray();
       for (int i = 0; i < people.size(); i++) {
@@ -107,20 +109,24 @@ public class Event implements Serializable {
       }
       js.put("people", jsonPeople);
     }
-    
+
     if (options != null) {
       js.put("_options", options.toJson());
     }
 
     if (customContent != null) {
       JsonObject jsonCustomContent = Json.createObject();
-      Optional.ofNullable(customContent.getTimeGrid()).ifPresent(v -> jsonCustomContent.put("timeGrid", v));
-      Optional.ofNullable(customContent.getDateGrid()).ifPresent(v -> jsonCustomContent.put("dateGrid", v));
-      Optional.ofNullable(customContent.getMonthGrid()).ifPresent(v -> jsonCustomContent.put("monthGrid", v));
-      Optional.ofNullable(customContent.getMonthAgenda()).ifPresent(v -> jsonCustomContent.put("monthAgenda", v));
+      Optional.ofNullable(customContent.getTimeGrid())
+          .ifPresent(v -> jsonCustomContent.put("timeGrid", v));
+      Optional.ofNullable(customContent.getDateGrid())
+          .ifPresent(v -> jsonCustomContent.put("dateGrid", v));
+      Optional.ofNullable(customContent.getMonthGrid())
+          .ifPresent(v -> jsonCustomContent.put("monthGrid", v));
+      Optional.ofNullable(customContent.getMonthAgenda())
+          .ifPresent(v -> jsonCustomContent.put("monthAgenda", v));
       js.put("_customContent", jsonCustomContent);
     }
-    
+
     return js.toJson();
   }
 
@@ -144,6 +150,14 @@ public class Event implements Serializable {
       }
       return json;
     }
+  }
+
+  public LocalDateTime getStartDateTime() {
+    return LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+  }
+
+  public LocalDateTime getEndDateTime() {
+    return LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
   }
 
   @Setter

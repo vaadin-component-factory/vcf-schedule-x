@@ -13,7 +13,7 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-public enum ResourceView implements ViewType {
+public enum ResourceView implements View {
 
   HOURLY("createHourlyView"), DAILY("createDailyView");
 

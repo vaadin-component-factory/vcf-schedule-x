@@ -31,7 +31,7 @@ import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 @SuppressWarnings("serial")
 @NpmPackage(value = "@schedule-x/calendar", version = "2.28.0")
@@ -45,7 +45,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Views available to the user.
    */
-  private List<? extends ViewType> views = new ArrayList<>();
+  private List<? extends View> views = new ArrayList<>();
 
   /**
    * Map of calendar IDs to their configuration. The key will be used as the JS object key on the
@@ -65,18 +65,18 @@ public abstract class BaseScheduleXCalendar extends Div {
     setClassName("vcf-schedule-x-calendar");
   }
 
-  public BaseScheduleXCalendar(List<? extends ViewType> views, List<Event> events) {
+  public BaseScheduleXCalendar(List<? extends View> views, List<Event> events) {
     this();
     this.views = new ArrayList<>(views);
     this.events = new ArrayList<>(events);
   }
 
-  public BaseScheduleXCalendar(List<? extends ViewType> views, List<Event> events, Configuration configuration) {
+  public BaseScheduleXCalendar(List<? extends View> views, List<Event> events, Configuration configuration) {
     this(views, events);
     this.configuration = configuration;
   }
 
-  public BaseScheduleXCalendar(List<? extends ViewType> views, List<Event> events, Configuration configuration,
+  public BaseScheduleXCalendar(List<? extends View> views, List<Event> events, Configuration configuration,
       Map<String, Calendar> calendars) {
     this(views, events, configuration);
     this.calendars = calendars;

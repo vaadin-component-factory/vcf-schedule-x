@@ -13,7 +13,7 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-public enum CalendarView implements ViewType {
+public enum CalendarView implements View {
 
   DAY("createViewDay"), MONTH_GRID("createViewMonthGrid"), MONTH_AGENDA(
       "createViewMonthAgenda"), WEEK("createViewWeek");

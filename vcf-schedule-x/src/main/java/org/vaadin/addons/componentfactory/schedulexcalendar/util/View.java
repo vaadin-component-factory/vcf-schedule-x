@@ -13,7 +13,7 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-public interface ViewType {
+public interface View {
 
   public String getName();
   

@@ -13,18 +13,19 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import java.util.Arrays;
+import java.util.Map;
+import org.vaadin.addons.componentfactory.schedulexcalendar.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorDefinition;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
-import java.util.Arrays;
-import java.util.Map;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorDefinition;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -70,7 +71,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
 
     ScheduleXCalendar calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID, CalendarView.MONTH_AGENDA),
-        Arrays.asList(event1, event2), configuration, calendars);
+        EventProvider.of(Arrays.asList(event1, event2)), configuration, calendars);
     
     // calendar.addValueChangeListener(ev->{
     // updateMessage(message, calendar);

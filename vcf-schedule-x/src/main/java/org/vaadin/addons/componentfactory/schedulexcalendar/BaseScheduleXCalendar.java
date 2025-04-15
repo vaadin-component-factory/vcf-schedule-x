@@ -13,7 +13,19 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.NpmPackage;
@@ -21,20 +33,12 @@ import com.vaadin.flow.component.html.Div;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 @SuppressWarnings("serial")
 @NpmPackage(value = "@schedule-x/calendar", version = "2.28.0")
+@NpmPackage(value = "@schedule-x/events-service", version = "2.28.0")
 @NpmPackage(value = "@schedule-x/theme-default", version = "2.28.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
@@ -52,8 +56,8 @@ public abstract class BaseScheduleXCalendar extends Div {
    * client.
    */
   private Map<String, Calendar> calendars = new HashMap<String, Calendar>();
-
-  private List<Event> events = new ArrayList<>();
+  
+  private EventProvider eventProvider;
 
   /**
    * Optional global calendar configuration settings.
@@ -65,20 +69,20 @@ public abstract class BaseScheduleXCalendar extends Div {
     setClassName("vcf-schedule-x-calendar");
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, List<Event> events) {
+  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider) {
     this();
     this.views = new ArrayList<>(views);
-    this.events = new ArrayList<>(events);
+    this.eventProvider = eventProvider;
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, List<Event> events, Configuration configuration) {
-    this(views, events);
+  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider, Configuration configuration) {
+    this(views, eventProvider);
     this.configuration = configuration;
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, List<Event> events, Configuration configuration,
+  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider, Configuration configuration,
       Map<String, Calendar> calendars) {
-    this(views, events, configuration);
+    this(views, eventProvider, configuration);
     this.calendars = calendars;
   }
   
@@ -98,9 +102,10 @@ public abstract class BaseScheduleXCalendar extends Div {
     return jsonArray.toJson();
   }
 
-  protected String eventsToJson() {
-    return this.events != null
-        ? this.events.stream().map(event -> event.getJson()).collect(Collectors.joining(","))
+  protected String eventsToJson(LocalDateTime start, LocalDateTime end) {
+    List<Event> events = eventProvider.getEvents(start, end);
+    return events != null
+        ? String.format("[%s]",events.stream().map(event -> event.getJson()).collect(Collectors.joining(",")))
         : "";
   }
   
@@ -124,6 +129,12 @@ public abstract class BaseScheduleXCalendar extends Div {
   protected void onDetach(DetachEvent detachEvent) {
     super.onDetach(detachEvent);
     this.getElement().removeAllChildren();
+  }
+  
+  @ClientCallable
+  void updateRange(String start, String end) {
+    String events = eventsToJson(LocalDateTime.parse(start,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), LocalDateTime.parse(end,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+    this.getElement().executeJs("this.calendar.eventsService.set(JSON.parse($0))", events);
   }
   
 }

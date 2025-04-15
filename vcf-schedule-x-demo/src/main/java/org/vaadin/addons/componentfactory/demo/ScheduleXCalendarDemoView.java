@@ -21,10 +21,10 @@ import java.util.Arrays;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorTheme;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -50,11 +50,11 @@ public class ScheduleXCalendarDemoView extends DemoView {
     // source-example-heading: Basic Use Demo
 
     Calendar work = new Calendar("work");
-    work.setLightColors(new ColorTheme("#f91c45", "#ffd2dc", "#59000d"));
-    work.setDarkColors(new ColorTheme("#ffc0cc", "#a24258", "#ffdee6"));
+    work.setLightColors(new ColorDefinition("#f91c45", "#ffd2dc", "#59000d"));
+    work.setDarkColors(new ColorDefinition("#ffc0cc", "#a24258", "#ffdee6"));
     Calendar leisure = new Calendar("leisure");
-    leisure.setLightColors(new ColorTheme("#1cf9b0", "#dafff0", "#004d3d"));
-    leisure.setDarkColors(new ColorTheme("#c0fff5", "#42a297", "#e6fff5"));
+    leisure.setLightColors(new ColorDefinition("#1cf9b0", "#dafff0", "#004d3d"));
+    leisure.setDarkColors(new ColorDefinition("#c0fff5", "#42a297", "#e6fff5"));
     Map<String, Calendar> calendars = Map.of("work", work, "leisure", leisure);
 
     Event event1 = new Event("1", "2025-04-15 10:05", "2025-04-15 10:35");
@@ -66,12 +66,12 @@ public class ScheduleXCalendarDemoView extends DemoView {
     
     Configuration configuration = new Configuration();
     configuration.setSelectedDate("2025-04-17");
-    configuration.setDefaultView(View.MONTH_GRID);
+    configuration.setDefaultView(CalendarView.MONTH_GRID);
 
     ScheduleXCalendar calendar = new ScheduleXCalendar(
-        Arrays.asList(View.DAY, View.WEEK, View.MONTH_GRID, View.MONTH_AGENDA),
+        Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID, CalendarView.MONTH_AGENDA),
         Arrays.asList(event1, event2), configuration, calendars);
-
+    
     // calendar.addValueChangeListener(ev->{
     // updateMessage(message, calendar);
     // });

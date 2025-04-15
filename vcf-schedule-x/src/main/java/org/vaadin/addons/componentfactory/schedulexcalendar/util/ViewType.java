@@ -13,19 +13,8 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-public enum View {
+public interface ViewType {
 
-  DAY("createViewDay"), MONTH_GRID("createViewMonthGrid"), MONTH_AGENDA(
-      "createViewMonthAgenda"), WEEK("createViewWeek");
-
-  private String name;
-
-  private View(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
-  }
-
+  public String getName();
+  
 }

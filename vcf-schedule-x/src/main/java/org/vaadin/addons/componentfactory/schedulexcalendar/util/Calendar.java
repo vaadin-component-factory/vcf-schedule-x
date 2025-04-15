@@ -25,7 +25,8 @@ import lombok.Setter;
 /**
  * Represents a single calendar definition.
  * <p>The events of a single calendar can be sorted into different categories, called calendars.
- * @see <a href="https://schedule-x.dev/docs/calendar/calendars">Calendars documentation</a>.
+ * 
+ * @see <a href="https://schedule-x.dev/docs/calendar/calendars">Calendars documentation</a>
  */
 @SuppressWarnings("serial")
 @Getter
@@ -42,12 +43,12 @@ public class Calendar implements Serializable {
   /**
    * Optional colors for light theme.
    */
-  private ColorTheme lightColors;
+  private ColorDefinition lightColors;
 
   /**
    * Optional colors for dark theme.
    */
-  private ColorTheme darkColors;
+  private ColorDefinition darkColors;
 
   /**
    * Serialize this calendar to a JsonObject (excluding its ID).
@@ -66,7 +67,7 @@ public class Calendar implements Serializable {
   @Getter
   @Setter
   @RequiredArgsConstructor
-  public static class ColorTheme implements Serializable {
+  public static class ColorDefinition implements Serializable {
 
     @NonNull
     private String main;

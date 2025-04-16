@@ -16,6 +16,8 @@ package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
@@ -32,6 +34,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Configuration implements Serializable {
+  
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   /**
    * The preferred view to display when the calendar is first rendered. all views that you import
@@ -44,7 +48,7 @@ public class Configuration implements Serializable {
    * The default date to display when the calendar is first rendered. Only accepts YYYY-MM-DD
    * format. Defaults to the current date.
    */
-  private String selectedDate;
+  private LocalDate selectedDate;
 
   /**
    * Set the language. List of supported languages: https://schedule-x.dev/docs/calendar/language
@@ -103,7 +107,7 @@ public class Configuration implements Serializable {
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));
-    Optional.ofNullable(selectedDate).ifPresent(value -> js.put("selectedDate", value));
+    Optional.ofNullable(selectedDate).ifPresent(value -> js.put("selectedDate", value.format(DATE_FORMATTER)));
     Optional.ofNullable(locale).ifPresent(value -> js.put("locale", value));
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);

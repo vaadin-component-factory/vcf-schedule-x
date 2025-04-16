@@ -13,19 +13,20 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
+import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
 
 /**
  * Calendar event definition.
@@ -38,14 +39,17 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class Event implements Serializable {
 
+  private static final DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+  
   @NonNull
   private String id;
 
   @NonNull
-  private String start;
+  private LocalDateTime start;
 
   @NonNull
-  private String end;
+  private LocalDateTime end;
 
   private String title;
 
@@ -99,8 +103,8 @@ public class Event implements Serializable {
   public String getJson() {
     JsonObject js = Json.createObject();
     js.put("id", id);
-    js.put("start", start);
-    js.put("end", end);
+    js.put("start", start.format(DATE_TIME_FORMATTER));
+    js.put("end", end.format(DATE_TIME_FORMATTER));
 
     Optional.ofNullable(title).ifPresent(value -> js.put("title", value));
     Optional.ofNullable(description).ifPresent(value -> js.put("description", value));
@@ -157,14 +161,6 @@ public class Event implements Serializable {
       }
       return json;
     }
-  }
-
-  public LocalDateTime getStartDateTime() {
-    return LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-  }
-
-  public LocalDateTime getEndDateTime() {
-    return LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
   }
 
   @Setter

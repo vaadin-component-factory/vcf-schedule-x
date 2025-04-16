@@ -61,7 +61,7 @@ public class ScheduleXResourceViewDemoView extends DemoView {
     Map<String, Calendar> calendars = Map.of("work", work, "leisure", leisure);
 
     Configuration configuration = new Configuration();
-    configuration.setSelectedDate("2024-05-06");
+    configuration.setSelectedDate(LocalDate.of(2024, 05, 06));
     configuration.setDefaultView(ResourceView.HOURLY);
 
     Resource resource1 = new Resource("conveyor-belt-a");

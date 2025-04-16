@@ -73,7 +73,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
     event2.setCalendarId("work");
 
     Configuration configuration = new Configuration();
-    configuration.setSelectedDate("2025-04-17");
+    configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
     configuration.setDefaultView(CalendarView.MONTH_GRID);
 
     ScheduleXCalendar calendar = new ScheduleXCalendar(

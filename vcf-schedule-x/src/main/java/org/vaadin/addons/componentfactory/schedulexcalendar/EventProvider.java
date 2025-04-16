@@ -23,7 +23,7 @@ public class EventProvider {
   public static EventProvider of(List<Event> events) {
     EventProvider eventProvider = new EventProvider((startDate, endDate) -> {
       return events.stream().filter(
-          event -> event.getStartDateTime().isAfter(startDate) && event.getEndDateTime().isBefore(endDate))
+          event -> event.getStart().isAfter(startDate) && event.getEnd().isBefore(endDate))
           .collect(Collectors.toList());
     });
     return eventProvider;

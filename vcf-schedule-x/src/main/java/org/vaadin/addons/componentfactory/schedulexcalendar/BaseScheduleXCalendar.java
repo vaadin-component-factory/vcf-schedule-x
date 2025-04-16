@@ -117,7 +117,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * Serialize all calendars as a JSON object. Example: { "personal": { ... }, "work": { ... } }
    */
   protected String calendarsToJson() {
-    if(calendars.isEmpty()) {
+    if(calendars == null || calendars.isEmpty()) {
       return "{}";
     }
     JsonObject calendarJson = Json.createObject();

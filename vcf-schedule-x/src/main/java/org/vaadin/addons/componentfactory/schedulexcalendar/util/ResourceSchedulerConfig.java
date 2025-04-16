@@ -1,16 +1,16 @@
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
+import com.vaadin.flow.internal.Pair;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -74,12 +74,12 @@ public class ResourceSchedulerConfig implements Serializable {
   /**
    * Optionally sets the initially displayed hours in the hourly view.
    */
-  private List<LocalDateTime> initialHours = new ArrayList<LocalDateTime>();
+  private Pair<LocalDateTime, LocalDateTime> initialHours;
 
   /**
    * Optionally sets the initially displayed days in the daily view.
    */
-  private List<LocalTime> initialDays = new ArrayList<LocalTime>();
+  private Pair<LocalDate, LocalDate> initialDays;
 
   // TODO: Callbacks not implemented
 
@@ -102,16 +102,17 @@ public class ResourceSchedulerConfig implements Serializable {
     }
 
     if (initialHours != null) {
-      js.put("initialHours", initialHours.stream()
-          .map(dateTime -> dateTime.format(DATE_TIME_FORMATTER)).collect(Collectors.joining(",")));
+      js.put("initialHours", initialHours.getFirst().format(DATE_TIME_FORMATTER) + ","
+          + initialHours.getSecond().format(DATE_TIME_FORMATTER));
     }
 
     if (initialDays != null) {
-      js.put("initialDays", initialDays.stream().map(date -> date.format(DATE_FORMATTER))
-          .collect(Collectors.joining(",")));
+      js.put("initialDays", initialDays.getFirst().format(DATE_FORMATTER) + ","
+          + initialDays.getSecond().format(DATE_FORMATTER));
     }
 
     return js.toJson();
   }
+
 }
 

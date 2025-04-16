@@ -9,24 +9,33 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorDefinition;
 
 @SuppressWarnings("serial")
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class Resource implements Serializable {
 
   private String label;
   
   private String labelHtml;
   
+  @NonNull
   private String id;
     
-  private Calendar calendar;  
+  private String colorName; 
+  
+  private ColorDefinition lightColors;
+  
+  private ColorDefinition darkColors;
   
   private List<Resource> resources = new ArrayList<Resource>();
   
-  private boolean isOpen = false;
+  private boolean isOpen = true;
   
   @Override
   public int hashCode() {
@@ -50,19 +59,16 @@ public class Resource implements Serializable {
     js.put("id", id);
     Optional.ofNullable(label).ifPresent(value -> js.put("label", value));
     Optional.ofNullable(labelHtml).ifPresent(value -> js.put("labelHTML", value));
-    
-    if(calendar != null) {
-      Optional.ofNullable(calendar.getColorName()).ifPresent(value -> js.put("colorName", value));
-      Optional.ofNullable(calendar.getLightColors()).ifPresent(colors -> js.put("lightColors", colors.toJsonObject()));
-      Optional.ofNullable(calendar.getDarkColors()).ifPresent(colors -> js.put("darkColors", colors.toJsonObject()));
-    }
+    Optional.ofNullable(colorName).ifPresent(value -> js.put("colorName", value));
+    Optional.ofNullable(lightColors).ifPresent(colors -> js.put("lightColors", colors.toJsonObject()));
+    Optional.ofNullable(darkColors).ifPresent(colors -> js.put("darkColors", colors.toJsonObject()));
     
     if (resources != null && !resources.isEmpty()) {
-      JsonArray jsonResources = Json.createArray();
+      JsonArray resArray = Json.createArray();
       for (int i = 0; i < resources.size(); i++) {
-        jsonResources.set(i, resources.get(i).getJson());
+        resArray.set(i, Json.parse(resources.get(i).getJson()));
       }
-      js.put("resources", jsonResources);
+      js.put("resources", resArray);
     }
     
     js.put("isOpen", isOpen);

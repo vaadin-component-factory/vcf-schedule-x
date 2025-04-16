@@ -73,6 +73,11 @@ public class Event implements Serializable {
    * Optional custom content to render in different views.
    */
   private EventCustomContent customContent;
+  
+  /**
+   * Id of the resource, only for {@link ScheduleXResourceView Resource View}
+   */
+  private String resourceId;
 
   @Override
   public int hashCode() {
@@ -126,6 +131,8 @@ public class Event implements Serializable {
           .ifPresent(v -> jsonCustomContent.put("monthAgenda", v));
       js.put("_customContent", jsonCustomContent);
     }
+    
+    Optional.ofNullable(resourceId).ifPresent(value -> js.put("resourceId", value));
 
     return js.toJson();
   }

@@ -45,10 +45,10 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     super(views, eventProvider, configuration, calendars);
   }
 
+  @Override
   protected void initCalendar() {
-    this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3, $4)", this,
-        viewsToJson(),
-        configurationToJson(), calendarsToJson());
+    this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3)", this,
+        viewsToJson(), configurationToJson(), calendarsToJson());
   }
- 
+
 }

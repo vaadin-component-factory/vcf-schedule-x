@@ -38,7 +38,7 @@ public class Configuration implements Serializable {
    * have a "name" property, which helps you identify them. Defaults to the first view in the
    * "views" list.
    */
-  private CalendarView defaultView;
+  private View defaultView;
 
   /**
    * The default date to display when the calendar is first rendered. Only accepts YYYY-MM-DD

@@ -13,76 +13,80 @@
  */
 
 import {
-    createCalendar, createViewDay,
-    createViewMonthAgenda,
-    createViewMonthGrid,
-    createViewWeek
+	createCalendar, createViewDay,
+	createViewMonthAgenda,
+	createViewMonthGrid,
+	createViewWeek
 } from '@schedule-x/calendar';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 
 const viewFactoryMap = {
-    createViewDay: createViewDay,
-    createViewMonthAgenda: createViewMonthAgenda,
-    createViewMonthGrid: createViewMonthGrid,
-    createViewWeek: createViewWeek
+	createViewDay: createViewDay,
+	createViewMonthAgenda: createViewMonthAgenda,
+	createViewMonthGrid: createViewMonthGrid,
+	createViewWeek: createViewWeek
 };
 
 const viewNameMap = {
-    createViewDay: createViewDay().name,
-    createViewMonthAgenda: createViewMonthAgenda().name,
-    createViewMonthGrid: createViewMonthGrid().name,
-    createViewWeek: createViewWeek().name
+	createViewDay: createViewDay().name,
+	createViewMonthAgenda: createViewMonthAgenda().name,
+	createViewMonthGrid: createViewMonthGrid().name,
+	createViewWeek: createViewWeek().name
 };
 
 window.vcfschedulexcalendar = {
 
-    create: function(container, viewsJson, configJson, calendarsJson) {
-        setTimeout(() => this._createCalendar(container, viewsJson, configJson, calendarsJson));
-    },
+	create: function(container, viewsJson, configJson, calendarsJson) {
+		setTimeout(() => this._createCalendar(container, viewsJson, configJson, calendarsJson));
+	},
 
-    _createCalendar: function(container, viewsJson, configJson, calendarsJson) {
+	_createCalendar: function(container, viewsJson, configJson, calendarsJson) {
 
-        const viewFnNames = JSON.parse(viewsJson || "[]");
-        const config = this._processConfiguration(configJson);
-        const parsedCalendars = JSON.parse(calendarsJson || "[]");
+		const viewFnNames = JSON.parse(viewsJson || "[]");
+		const config = this._processConfiguration(configJson);
+		const parsedCalendars = JSON.parse(calendarsJson || "[]");
 
-        const views = viewFnNames
-            .map(fnName => viewFactoryMap[fnName])
-            .filter(Boolean)
-            .map(factory => factory());
+		const views = viewFnNames
+			.map(fnName => viewFactoryMap[fnName])
+			.filter(Boolean)
+			.map(factory => factory());
 
-        const eventsServicePlugin = createEventsServicePlugin();
-        
-        let div = document.getElementById(container.id);
+		const eventsServicePlugin = createEventsServicePlugin();
 
-        // create calendar		 	  
-        const calendar = createCalendar({
-            views: views,
-            calendars: parsedCalendars,
-            callbacks: {
-                onRangeUpdate(range) {
-                    div.$server.updateRange(range.start, range.end);
-                }
-            },
-            ...config
-        },
-            [eventsServicePlugin]
-        )
+		let div = document.getElementById(container.id);
 
-        calendar.render(div);
-        div.calendar = calendar;
+		// create calendar		 	  
+		const calendar = createCalendar({
+			views: views,
+			calendars: parsedCalendars,
+			callbacks: {
+				onRangeUpdate(range) {
+					div.$server.updateRange(range.start, range.end);
+				},
+				beforeRender($app) {
+					const range = $app.calendarState.range.value;
+					div.$server.updateRange(range.start, range.end);
+				},
+			},
+			...config
+		},
+			[eventsServicePlugin]
+		)
 
-    },
+		calendar.render(div);
+		div.calendar = calendar;
 
-    _processConfiguration(configJson) {
-        if (!configJson) return {};
+	},
 
-        const parsedConfig = JSON.parse(configJson);
+	_processConfiguration(configJson) {
+		if (!configJson) return {};
 
-        if (parsedConfig.defaultView) {
-            parsedConfig.defaultView = viewNameMap[parsedConfig.defaultView];
-        }
+		const parsedConfig = JSON.parse(configJson);
 
-        return parsedConfig;
-    }
+		if (parsedConfig.defaultView) {
+			parsedConfig.defaultView = viewNameMap[parsedConfig.defaultView];
+		}
+
+		return parsedConfig;
+	}
 }

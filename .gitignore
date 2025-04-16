@@ -38,6 +38,7 @@ vcf-schedule-x-demo/src/main/bundles
 vcf-schedule-x-demo/src/main/frontend/generated
 vcf-schedule-x-demo/vite.config.ts
 vcf-schedule-x-demo/vite.generated.ts
+vcf-schedule-x-demo/.npmrc
 
 # ide configurations
 .vscode/settings.json

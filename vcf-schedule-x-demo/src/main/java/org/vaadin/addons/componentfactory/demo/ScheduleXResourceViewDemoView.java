@@ -13,7 +13,6 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
@@ -44,8 +43,6 @@ public class ScheduleXResourceViewDemoView extends DemoView {
   public void initView() {
     this.getStyle().set("max-width", "1500px");
     createBasicDemo();
-
-    addCard("Additional code used in the demo", new Span("These methods are used in the demo."));
   }
 
   private void createBasicDemo() {
@@ -110,12 +107,14 @@ public class ScheduleXResourceViewDemoView extends DemoView {
         new ScheduleXResourceView(Arrays.asList(ResourceView.HOURLY, ResourceView.DAILY),
             EventProvider.of(Arrays.asList(event1, event2, event3)), configuration, calendars,
             resourceSchedulerConfig);
+    
+    CalendarHeaderComponent header = new CalendarHeaderComponent(resourceView);
 
     // end-source-example
 
     resourceView.setId("basic-use-demo");
 
-    addCard("Basic Use Demo", resourceView);
+    addCard("Basic Use Demo", header, resourceView);
   }
 
 }

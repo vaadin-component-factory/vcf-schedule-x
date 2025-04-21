@@ -13,6 +13,8 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import com.vaadin.flow.demo.DemoView;
+import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -25,10 +27,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorD
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.demo.DemoView;
-import com.vaadin.flow.router.Route;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -43,13 +41,9 @@ public class ScheduleXCalendarDemoView extends DemoView {
   public void initView() {
     this.getStyle().set("max-width", "1500px");
     createBasicDemo();
-
-    addCard("Additional code used in the demo", new Span("These methods are used in the demo."));
   }
 
   private void createBasicDemo() {
-    Div message = createMessageDiv("basic-use-demo-message");
-
     // begin-source-example
     // source-example-heading: Basic Use Demo
 
@@ -69,8 +63,14 @@ public class ScheduleXCalendarDemoView extends DemoView {
     Event event2 =
         new Event("2", LocalDateTime.of(LocalDate.of(2025, 04, 16), LocalTime.of(16, 00)),
             LocalDateTime.of(LocalDate.of(2025, 04, 16), LocalTime.of(16, 45)));
-    event2.setTitle("Meeting with Jackie");
+    event2.setTitle("Meeting with Jackie O.");
     event2.setCalendarId("work");
+    
+    Event event3 =
+        new Event("3", LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 00)),
+            LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 25)));
+    event3.setTitle("Onboarding team meeting");
+    event3.setCalendarId("work");
 
     Configuration configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
@@ -79,33 +79,15 @@ public class ScheduleXCalendarDemoView extends DemoView {
     ScheduleXCalendar calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID,
             CalendarView.MONTH_AGENDA),
-        EventProvider.of(Arrays.asList(event1, event2)), configuration, calendars);
+        EventProvider.of(Arrays.asList(event1, event2, event3)), configuration, calendars);
 
-    // calendar.addValueChangeListener(ev->{
-    // updateMessage(message, calendar);
-    // });
+    CalendarHeaderComponent header = new CalendarHeaderComponent(calendar);
+        
     // end-source-example
-
+    
     calendar.setId("basic-use-demo");
 
-    addCard("Basic Use Demo", calendar, message);
+    addCard("Basic Use Demo", header, calendar);
   }
 
-
-  // begin-source-example
-  // source-example-heading: Additional code used in the demo
-  /**
-   * Additional code used in the demo
-   */
-  private void updateMessage(Div message, ScheduleXCalendar calendar) {
-    // message.setText("Entered text: " + calendar.getValue());
-  }
-
-  private Div createMessageDiv(String id) {
-    Div message = new Div();
-    message.setId(id);
-    message.getStyle().set("whiteSpace", "pre");
-    return message;
-  }
-  // end-source-example
 }

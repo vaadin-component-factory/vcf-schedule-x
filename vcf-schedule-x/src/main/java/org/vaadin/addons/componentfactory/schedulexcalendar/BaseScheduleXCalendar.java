@@ -13,17 +13,6 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.DetachEvent;
@@ -33,8 +22,20 @@ import com.vaadin.flow.component.html.Div;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 @SuppressWarnings("serial")
 @NpmPackage(value = "@schedule-x/calendar", version = "2.28.0")
@@ -46,6 +47,11 @@ import lombok.Setter;
 @Getter
 public abstract class BaseScheduleXCalendar extends Div {
 
+  protected static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  protected static final DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
   /**
    * Views available to the user.
    */
@@ -56,14 +62,14 @@ public abstract class BaseScheduleXCalendar extends Div {
    * client.
    */
   private Map<String, Calendar> calendars = new HashMap<String, Calendar>();
-  
+
   private EventProvider eventProvider;
 
   /**
    * Optional global calendar configuration settings.
    */
   private Configuration configuration;
-  
+
   public BaseScheduleXCalendar() {
     this.setId(String.valueOf(this.hashCode()));
     setClassName("vcf-schedule-x-calendar");
@@ -75,17 +81,18 @@ public abstract class BaseScheduleXCalendar extends Div {
     this.eventProvider = eventProvider;
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider, Configuration configuration) {
+  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider,
+      Configuration configuration) {
     this(views, eventProvider);
     this.configuration = configuration;
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider, Configuration configuration,
-      Map<String, Calendar> calendars) {
+  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider,
+      Configuration configuration, Map<String, Calendar> calendars) {
     this(views, eventProvider, configuration);
     this.calendars = calendars;
   }
-  
+
   @Override
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
@@ -104,11 +111,10 @@ public abstract class BaseScheduleXCalendar extends Div {
 
   protected String eventsToJson(LocalDateTime start, LocalDateTime end) {
     List<Event> events = eventProvider.getEvents(start, end);
-    return events != null
-        ? String.format("[%s]",events.stream().map(event -> event.getJson()).collect(Collectors.joining(",")))
-        : "";
+    return events != null ? String.format("[%s]",
+        events.stream().map(event -> event.getJson()).collect(Collectors.joining(","))) : "";
   }
-  
+
   protected String configurationToJson() {
     return configuration != null ? configuration.getJson() : "{}";
   }
@@ -117,7 +123,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * Serialize all calendars as a JSON object. Example: { "personal": { ... }, "work": { ... } }
    */
   protected String calendarsToJson() {
-    if(calendars == null || calendars.isEmpty()) {
+    if (calendars == null || calendars.isEmpty()) {
       return "{}";
     }
     JsonObject calendarJson = Json.createObject();
@@ -130,11 +136,31 @@ public abstract class BaseScheduleXCalendar extends Div {
     super.onDetach(detachEvent);
     this.getElement().removeAllChildren();
   }
-  
+
   @ClientCallable
   void updateRange(String start, String end) {
-    String events = eventsToJson(LocalDateTime.parse(start,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), LocalDateTime.parse(end,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+    String events = eventsToJson(LocalDateTime.parse(start, DATE_TIME_FORMATTER),
+        LocalDateTime.parse(end, DATE_TIME_FORMATTER));
     this.getElement().executeJs("this.calendar.eventsService.set(JSON.parse($0))", events);
   }
+
+  /**
+   * Sets the calendar view.
+   * 
+   * @param view the view to set
+   * @param selectedDate the current selected date
+   */
+  public abstract void setView(View view, LocalDate selectedDate);
+
+  /**
+   * Sets the calendar date.
+   * 
+   * @param selectedDate the date to set
+   */
+  public abstract void setSelectedDate(LocalDate selectedDate);
+ 
+  public abstract void navigateForwards();
   
+  public abstract void navigateBackwards();
+
 }

@@ -13,12 +13,14 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
+import com.vaadin.flow.component.dependency.JsModule;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import com.vaadin.flow.component.dependency.JsModule;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 /**
  * Vaadin Wrapper Add-on for <a href="https://schedule-x.dev/">Schedule-X Calendar</a>.
@@ -27,7 +29,7 @@ import com.vaadin.flow.component.dependency.JsModule;
 @SuppressWarnings("serial")
 @JsModule("./src/vcf-schedule-x-calendar.js")
 public class ScheduleXCalendar extends BaseScheduleXCalendar {
-  
+
   public ScheduleXCalendar() {
     super();
   }
@@ -36,19 +38,41 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     super(views, eventProvider);
   }
 
-  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider, Configuration configuration) {
+  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider,
+      Configuration configuration) {
     super(views, eventProvider, configuration);
   }
-  
-  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider, Configuration configuration,
-      Map<String, Calendar> calendars) {
+
+  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider,
+      Configuration configuration, Map<String, Calendar> calendars) {
     super(views, eventProvider, configuration, calendars);
   }
 
   @Override
   protected void initCalendar() {
-    this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3)", this,
-        viewsToJson(), configurationToJson(), calendarsToJson());
+    this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3)", this, viewsToJson(),
+        configurationToJson(), calendarsToJson());
   }
 
+  @Override
+  public void setView(View view, LocalDate selectedDate) {
+    this.getElement().executeJs("vcfschedulexcalendar.setView($0, $1, $2);", this, view.getName(),
+        selectedDate.format(DATE_FORMATTER));
+  }
+
+  @Override
+  public void setSelectedDate(LocalDate selectedDate) {
+    this.getElement().executeJs("vcfschedulexcalendar.setSelectedDate($0, $1);", this,
+        selectedDate.format(DATE_FORMATTER));
+  }
+
+  @Override
+  public void navigateForwards() {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public void navigateBackwards() {
+    // TODO Auto-generated method stub    
+  }
 }

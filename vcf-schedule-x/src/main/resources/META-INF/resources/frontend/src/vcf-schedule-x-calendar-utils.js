@@ -36,3 +36,7 @@ export function setCalendarView(calendar, viewName) {
 export function setCalendarSelectedDate(calendar, selectedDate) {
 	calendar.$app.datePickerState.selectedDate.value = selectedDate;
 }
+
+export function handleOnEventClick(div, calendarEvent) {
+	div.$server.onCalendarEventClick(calendarEvent.id);
+}

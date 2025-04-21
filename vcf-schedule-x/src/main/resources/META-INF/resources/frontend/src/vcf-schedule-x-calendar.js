@@ -20,6 +20,7 @@ import {
 } from '@schedule-x/calendar';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import {
+	handleOnEventClick,
 	processConfiguration,
 	setCalendarSelectedDate,
 	setCalendarView,
@@ -73,6 +74,9 @@ window.vcfschedulexcalendar = {
 					const range = $app.calendarState.range.value;
 					updateEvents(div, range);
 				},
+				onEventClick(calendarEvent) {
+					handleOnEventClick(div, calendarEvent);
+				},
 			},
 			...config
 		},
@@ -87,8 +91,8 @@ window.vcfschedulexcalendar = {
 	setView(container, view) {
 		setCalendarView(container.calendar, viewNameMap[view]);
 	},
-	
-	setSelectedDate(container, selectedDate){
+
+	setSelectedDate(container, selectedDate) {
 		setCalendarSelectedDate(container.calendar, selectedDate);
-	},	
+	},
 }

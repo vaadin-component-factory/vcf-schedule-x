@@ -19,6 +19,12 @@ import {
 	createViewWeek
 } from '@schedule-x/calendar';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
+import {
+	processConfiguration,
+	setCalendarSelectedDate,
+	setCalendarView,
+	updateEvents
+} from './vcf-schedule-x-calendar-utils.js';
 
 const viewFactoryMap = {
 	createViewDay: createViewDay,
@@ -43,7 +49,7 @@ window.vcfschedulexcalendar = {
 	_createCalendar: function(container, viewsJson, configJson, calendarsJson) {
 
 		const viewFnNames = JSON.parse(viewsJson || "[]");
-		const config = this._processConfiguration(configJson);
+		const config = processConfiguration(configJson, viewNameMap);
 		const parsedCalendars = JSON.parse(calendarsJson || "[]");
 
 		const views = viewFnNames
@@ -61,11 +67,11 @@ window.vcfschedulexcalendar = {
 			calendars: parsedCalendars,
 			callbacks: {
 				onRangeUpdate(range) {
-					div.$server.updateRange(range.start, range.end);
+					updateEvents(div, range);
 				},
 				beforeRender($app) {
 					const range = $app.calendarState.range.value;
-					div.$server.updateRange(range.start, range.end);
+					updateEvents(div, range);
 				},
 			},
 			...config
@@ -75,18 +81,14 @@ window.vcfschedulexcalendar = {
 
 		calendar.render(div);
 		div.calendar = calendar;
-
+		container.calendar = calendar;
 	},
 
-	_processConfiguration(configJson) {
-		if (!configJson) return {};
-
-		const parsedConfig = JSON.parse(configJson);
-
-		if (parsedConfig.defaultView) {
-			parsedConfig.defaultView = viewNameMap[parsedConfig.defaultView];
-		}
-
-		return parsedConfig;
-	}
+	setView(container, view) {
+		setCalendarView(container.calendar, viewNameMap[view]);
+	},
+	
+	setSelectedDate(container, selectedDate){
+		setCalendarSelectedDate(container.calendar, selectedDate);
+	},	
 }

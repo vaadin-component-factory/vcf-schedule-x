@@ -16,6 +16,12 @@ import { createCalendar } from '@schedule-x/calendar';
 import { createHourlyView, createDailyView, createConfig, TimeUnits } from '@sx-premium/resource-scheduler';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { signal } from "@preact/signals";
+import {
+	processConfiguration,
+	setCalendarSelectedDate,
+	setCalendarView,
+	updateEvents
+} from './vcf-schedule-x-calendar-utils.js';
 
 const resourceViewFactoryMap = {
 	createHourlyView,
@@ -36,7 +42,7 @@ window.vcfschedulexresourceview = {
 	_createResourceView: function(container, viewsJson, configJson, calendarsJson, resourceConfigJson) {
 
 		const viewFnNames = JSON.parse(viewsJson || "[]");
-		const config = this._processConfiguration(configJson);
+		const config = processConfiguration(configJson, resourceViewNameMap);
 		const parsedCalendars = JSON.parse(calendarsJson || "[]");
 
 		const resourceConfig = createConfig();
@@ -57,11 +63,11 @@ window.vcfschedulexresourceview = {
 			calendars: parsedCalendars,
 			callbacks: {
 				onRangeUpdate(range) {
-					div.$server.updateRange(range.start, range.end);
+					updateEvents(div, range);
 				},
 				beforeRender($app) {
 					const range = $app.calendarState.range.value;
-					div.$server.updateRange(range.start, range.end);
+					updateEvents(div, range);
 				},
 			},
 			...config
@@ -71,10 +77,11 @@ window.vcfschedulexresourceview = {
 
 		calendar.render(div);
 		div.calendar = calendar;
+		container.calendar = calendar;
 	},
 
 	/** 
-	 * Parse recieved json for ResourceSchedulerConfig
+	 * Parse received json for ResourceSchedulerConfig
 	 */
 	_processResourceSchedulerConfig(resourceConfig, resourceConfigJson) {
 		const parsed = JSON.parse(resourceConfigJson);
@@ -129,15 +136,11 @@ window.vcfschedulexresourceview = {
 		}
 	},
 
-	_processConfiguration(configJson) {
-		if (!configJson) return {};
-
-		const parsedConfig = JSON.parse(configJson);
-
-		if (parsedConfig.defaultView) {
-			parsedConfig.defaultView = resourceViewNameMap[parsedConfig.defaultView];
-		}
-
-		return parsedConfig;
-	}
+	setView(container, view) {
+		setCalendarView(container.calendar, resourceViewNameMap[view]);
+	},
+	
+	setSelectedDate(container, selectedDate){
+		setCalendarSelectedDate(container.calendar, selectedDate);
+	},
 }

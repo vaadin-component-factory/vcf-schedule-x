@@ -3,6 +3,7 @@ package org.vaadin.addons.componentfactory.schedulexcalendar;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 /**
  * A view for displaying resources (people, rooms, equipment etc.) in a time grid.
@@ -65,6 +67,28 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
 
   protected String resourceSchedulerConfigToJson() {
     return resourceSchedulerConfig != null ? resourceSchedulerConfig.getJson() : "{}";
+  }
+
+  @Override
+  public void setView(View view, LocalDate selectedDate) {
+    this.getElement().executeJs("vcfschedulexresourceview.setView($0, $1, $2);", this,
+        view.getName(), selectedDate.format(DATE_FORMATTER));
+  }
+
+  @Override
+  public void setSelectedDate(LocalDate selectedDate) {
+    this.getElement().executeJs("vcfschedulexresourceview.setSelectedDate($0, $1);", this,
+        selectedDate.format(DATE_FORMATTER));
+  }
+
+  @Override
+  public void navigateForwards() {
+    // TODO Auto-generated method stub    
+  }
+
+  @Override
+  public void navigateBackwards() {
+    // TODO Auto-generated method stub
   }
 
 }

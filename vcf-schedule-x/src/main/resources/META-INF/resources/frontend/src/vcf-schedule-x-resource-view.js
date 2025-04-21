@@ -17,6 +17,7 @@ import { createHourlyView, createDailyView, createConfig, TimeUnits } from '@sx-
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { signal } from "@preact/signals";
 import {
+	handleOnEventClick,
 	processConfiguration,
 	setCalendarSelectedDate,
 	setCalendarView,
@@ -68,6 +69,9 @@ window.vcfschedulexresourceview = {
 				beforeRender($app) {
 					const range = $app.calendarState.range.value;
 					updateEvents(div, range);
+				},
+				onEventClick(calendarEvent) {
+					handleOnEventClick(div, calendarEvent);
 				},
 			},
 			...config

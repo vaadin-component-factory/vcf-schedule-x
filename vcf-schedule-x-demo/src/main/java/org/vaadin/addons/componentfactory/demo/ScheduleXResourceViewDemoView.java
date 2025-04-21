@@ -13,6 +13,7 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
@@ -109,6 +110,9 @@ public class ScheduleXResourceViewDemoView extends DemoView {
             resourceSchedulerConfig);
     
     CalendarHeaderComponent header = new CalendarHeaderComponent(resourceView);
+    
+    resourceView.addCalendarEventClickEventListener(
+        e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
 
     // end-source-example
 

@@ -13,6 +13,7 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
@@ -65,7 +66,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
             LocalDateTime.of(LocalDate.of(2025, 04, 16), LocalTime.of(16, 45)));
     event2.setTitle("Meeting with Jackie O.");
     event2.setCalendarId("work");
-    
+
     Event event3 =
         new Event("3", LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 00)),
             LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 25)));
@@ -81,10 +82,13 @@ public class ScheduleXCalendarDemoView extends DemoView {
             CalendarView.MONTH_AGENDA),
         EventProvider.of(Arrays.asList(event1, event2, event3)), configuration, calendars);
 
+    calendar.addCalendarEventClickEventListener(
+        e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
+
     CalendarHeaderComponent header = new CalendarHeaderComponent(calendar);
-        
+
     // end-source-example
-    
+
     calendar.setId("basic-use-demo");
 
     addCard("Basic Use Demo", header, calendar);

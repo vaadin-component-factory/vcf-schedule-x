@@ -15,10 +15,14 @@ package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.shared.Registration;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
@@ -162,5 +166,41 @@ public abstract class BaseScheduleXCalendar extends Div {
   public abstract void navigateForwards();
   
   public abstract void navigateBackwards();
+  
+  /**
+   * Handles calendar event click.
+   * 
+   * @param eventId id of the event being clicked
+   */
+  @ClientCallable
+  private void onCalendarEventClick(String eventId) {
+    ComponentUtil.fireEvent(this, new CalendarEventClickEvent(this, eventId, false));
+  }
+  
+  /**
+   * Event fired when a calendar event is clicked.
+   */
+  @Getter
+  @Setter
+  public class CalendarEventClickEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private String eventId;
+    
+    public CalendarEventClickEvent(BaseScheduleXCalendar source, String eventId, boolean fromClient) {
+      super(source, fromClient);
+      this.eventId = eventId;
+    }
+  }
+  
+  /**
+   * Adds a CalendarEventClickEvent listener. 
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addCalendarEventClickEventListener(
+      ComponentEventListener<CalendarEventClickEvent> listener) {
+    return addListener(CalendarEventClickEvent.class, listener);
+  }
 
 }

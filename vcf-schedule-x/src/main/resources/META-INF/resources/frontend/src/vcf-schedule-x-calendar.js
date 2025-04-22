@@ -13,25 +13,21 @@
  */
 
 import {
-	createCalendar, createViewDay,
+	createViewDay, createViewMonthAgenda,
+	createViewMonthGrid, createViewWeek
+} from '@schedule-x/calendar';
+
+import {
+	createCommonCalendar,
+	setView,
+	setSelectedDate
+} from './vcf-schedule-x-base.js';
+
+const viewFactoryMap = {
+	createViewDay,
 	createViewMonthAgenda,
 	createViewMonthGrid,
 	createViewWeek
-} from '@schedule-x/calendar';
-import { createEventsServicePlugin } from '@schedule-x/events-service';
-import {
-	handleOnEventClick,
-	processConfiguration,
-	setCalendarSelectedDate,
-	setCalendarView,
-	updateEvents
-} from './vcf-schedule-x-calendar-utils.js';
-
-const viewFactoryMap = {
-	createViewDay: createViewDay,
-	createViewMonthAgenda: createViewMonthAgenda,
-	createViewMonthGrid: createViewMonthGrid,
-	createViewWeek: createViewWeek
 };
 
 const viewNameMap = {
@@ -42,57 +38,19 @@ const viewNameMap = {
 };
 
 window.vcfschedulexcalendar = {
-
-	create: function(container, viewsJson, configJson, calendarsJson) {
-		setTimeout(() => this._createCalendar(container, viewsJson, configJson, calendarsJson));
-	},
-
-	_createCalendar: function(container, viewsJson, configJson, calendarsJson) {
-
-		const viewFnNames = JSON.parse(viewsJson || "[]");
-		const config = processConfiguration(configJson, viewNameMap);
-		const parsedCalendars = JSON.parse(calendarsJson || "[]");
-
-		const views = viewFnNames
-			.map(fnName => viewFactoryMap[fnName])
-			.filter(Boolean)
-			.map(factory => factory());
-
-		const eventsServicePlugin = createEventsServicePlugin();
-
-		let div = document.getElementById(container.id);
-
-		// create calendar		 	  
-		const calendar = createCalendar({
-			views: views,
-			calendars: parsedCalendars,
-			callbacks: {
-				onRangeUpdate(range) {
-					updateEvents(div, range);
-				},
-				beforeRender($app) {
-					const range = $app.calendarState.range.value;
-					updateEvents(div, range);
-				},
-				onEventClick(calendarEvent) {
-					handleOnEventClick(div, calendarEvent);
-				},
-			},
-			...config
-		},
-			[eventsServicePlugin]
-		)
-
-		calendar.render(div);
-		div.calendar = calendar;
-		container.calendar = calendar;
+	create(container, viewsJson, configJson, calendarsJson) {
+		setTimeout(() =>
+			createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
+				viewsJson
+			})
+		);
 	},
 
 	setView(container, view) {
-		setCalendarView(container.calendar, viewNameMap[view]);
+		setView(container, view, viewNameMap);
 	},
 
 	setSelectedDate(container, selectedDate) {
-		setCalendarSelectedDate(container.calendar, selectedDate);
-	},
-}
+		setSelectedDate(container, selectedDate);
+	}
+};

@@ -12,17 +12,20 @@
  * the License.
  */
 
-import { createCalendar } from '@schedule-x/calendar';
-import { createHourlyView, createDailyView, createConfig, TimeUnits } from '@sx-premium/resource-scheduler';
-import { createEventsServicePlugin } from '@schedule-x/events-service';
-import { signal } from "@preact/signals";
 import {
-	handleOnEventClick,
-	processConfiguration,
-	setCalendarSelectedDate,
-	setCalendarView,
-	updateEvents
-} from './vcf-schedule-x-calendar-utils.js';
+	createHourlyView,
+	createDailyView,
+	createConfig,
+	TimeUnits
+} from '@sx-premium/resource-scheduler';
+
+import {
+	createCommonCalendar,
+	setView,
+	setSelectedDate
+} from './vcf-schedule-x-base.js';
+
+import { signal } from "@preact/signals";
 
 const resourceViewFactoryMap = {
 	createHourlyView,
@@ -35,58 +38,18 @@ const resourceViewNameMap = {
 };
 
 window.vcfschedulexresourceview = {
+	create(container, viewsJson, configJson, calendarsJson, resourceConfigJson) {
+		setTimeout(() => {
+			const resourceConfig = createConfig();
+			this._processResourceSchedulerConfig(resourceConfig, resourceConfigJson);
 
-	create: function(container, viewsJson, configJson, calendarsJson, resourceConfigJson) {
-		setTimeout(() => this._createResourceView(container, viewsJson, configJson, calendarsJson, resourceConfigJson));
+			createCommonCalendar(container, resourceViewFactoryMap, resourceViewNameMap, configJson, calendarsJson, {
+				viewsJson,
+				resourceConfig
+			});
+		});
 	},
 
-	_createResourceView: function(container, viewsJson, configJson, calendarsJson, resourceConfigJson) {
-
-		const viewFnNames = JSON.parse(viewsJson || "[]");
-		const config = processConfiguration(configJson, resourceViewNameMap);
-		const parsedCalendars = JSON.parse(calendarsJson || "[]");
-
-		const resourceConfig = createConfig();
-		this._processResourceSchedulerConfig(resourceConfig, resourceConfigJson);
-
-		const views = viewFnNames
-			.map(fnName => resourceViewFactoryMap[fnName])
-			.filter(Boolean)
-			.map(factory => factory(resourceConfig));
-
-		const eventsServicePlugin = createEventsServicePlugin();
-
-		let div = document.getElementById(container.id);
-
-		// create calendar		 	  
-		const calendar = createCalendar({
-			views: views,
-			calendars: parsedCalendars,
-			callbacks: {
-				onRangeUpdate(range) {
-					updateEvents(div, range);
-				},
-				beforeRender($app) {
-					const range = $app.calendarState.range.value;
-					updateEvents(div, range);
-				},
-				onEventClick(calendarEvent) {
-					handleOnEventClick(div, calendarEvent);
-				},
-			},
-			...config
-		},
-			[eventsServicePlugin]
-		)
-
-		calendar.render(div);
-		div.calendar = calendar;
-		container.calendar = calendar;
-	},
-
-	/** 
-	 * Parse received json for ResourceSchedulerConfig
-	 */
 	_processResourceSchedulerConfig(resourceConfig, resourceConfigJson) {
 		const parsed = JSON.parse(resourceConfigJson);
 		const timeUnits = new TimeUnits();
@@ -99,30 +62,19 @@ window.vcfschedulexresourceview = {
 				isOpen: signal(resource.isOpen)
 			}))
 		);
-
 		this._assignIfExists(resourceConfig, parsed, 'resourceHeight');
 		this._assignIfExists(resourceConfig, parsed, 'eventHeight');
 		this._assignIfExists(resourceConfig, parsed, 'dragAndDrop');
 		this._assignIfExists(resourceConfig, parsed, 'resize');
 		this._assignIfExists(resourceConfig, parsed, 'infiniteScroll');
-		this._assignIfExists(
-			resourceConfig,
-			parsed,
-			'initialHours',
-			raw => {
-				const [start, end] = this._parseInitialRange(raw);
-				return timeUnits.getDayHoursBetween(start, end);
-			}
-		);
-		this._assignIfExists(
-			resourceConfig,
-			parsed,
-			'initialDays',
-			raw => {
-				const [start, end] = this._parseInitialRange(raw);
-				return timeUnits.getDaysBetween(start, end);
-			}
-		);
+		this._assignIfExists(resourceConfig, parsed, 'initialHours', raw => {
+			const [start, end] = this._parseInitialRange(raw);
+			return timeUnits.getDayHoursBetween(start, end);
+		});
+		this._assignIfExists(resourceConfig, parsed, 'initialDays', raw => {
+			const [start, end] = this._parseInitialRange(raw);
+			return timeUnits.getDaysBetween(start, end);
+		});
 	},
 
 	_parseInitialRange(value) {
@@ -141,10 +93,10 @@ window.vcfschedulexresourceview = {
 	},
 
 	setView(container, view) {
-		setCalendarView(container.calendar, resourceViewNameMap[view]);
+		setView(container, view, resourceViewNameMap);
 	},
-	
-	setSelectedDate(container, selectedDate){
-		setCalendarSelectedDate(container.calendar, selectedDate);
-	},
-}
+
+	setSelectedDate(container, selectedDate) {
+		setSelectedDate(container, selectedDate);
+	}
+};

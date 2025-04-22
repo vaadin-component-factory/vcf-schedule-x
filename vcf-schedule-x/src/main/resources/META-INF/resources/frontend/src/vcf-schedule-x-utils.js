@@ -40,3 +40,4 @@ export function setCalendarSelectedDate(calendar, selectedDate) {
 export function handleOnEventClick(div, calendarEvent) {
 	div.$server.onCalendarEventClick(calendarEvent.id);
 }
+

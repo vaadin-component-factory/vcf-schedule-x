@@ -20,9 +20,12 @@ import {
 } from '@sx-premium/resource-scheduler';
 
 import {
+	addEvent,
 	createCommonCalendar,
+	removeEvent,
 	setView,
-	setSelectedDate
+	setSelectedDate, 
+	updateEvent
 } from './vcf-schedule-x-base.js';
 
 import { signal } from "@preact/signals";
@@ -98,5 +101,17 @@ window.vcfschedulexresourceview = {
 
 	setSelectedDate(container, selectedDate) {
 		setSelectedDate(container, selectedDate);
-	}
+	},
+	
+	addEvent(container, calendarEvent) {
+		addEvent(container, calendarEvent);
+	},
+	
+	removeEvent(container, calendarEventId) {
+		removeEvent(container, calendarEventId);
+	},
+	
+	updateEvent(container, calendarEvent) {
+		updateEvent(container, calendarEvent);
+	},
 };

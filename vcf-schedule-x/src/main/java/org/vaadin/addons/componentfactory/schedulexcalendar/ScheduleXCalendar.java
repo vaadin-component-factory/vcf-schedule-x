@@ -20,6 +20,7 @@ import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 /**
@@ -74,5 +75,20 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   @Override
   public void navigateBackwards() {
     // TODO Auto-generated method stub    
+  }
+
+  @Override
+  public void addEvent(Event event) {
+    this.getElement().executeJs("vcfschedulexcalendar.addEvent($0, $1);", this, event.getJson());
+  }
+
+  @Override
+  public void removeEvent(String eventId) {
+    this.getElement().executeJs("vcfschedulexcalendar.removeEvent($0, $1);", this, eventId);
+  }
+  
+  @Override
+  public void updateEvent(Event event) {
+    this.getElement().executeJs("vcfschedulexcalendar.updateEvent($0, $1);", this, event.getJson());
   }
 }

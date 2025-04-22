@@ -24,7 +24,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @NpmPackage(value = "preact", version = "10.26.4")
 @NpmPackage(value = "@preact/signals", version = "2.0.2")
 @NpmPackage(value = "@sx-premium/resource-scheduler", version = "3.15.0")
-@NpmPackage(value = "@schedule-x/translations", version = "2.28.0")
 @JsModule("./src/vcf-schedule-x-resource-view.js")
 @CssImport("@sx-premium/resource-scheduler/index.css")
 @Setter

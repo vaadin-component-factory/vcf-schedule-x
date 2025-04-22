@@ -13,7 +13,9 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
@@ -86,12 +88,61 @@ public class ScheduleXCalendarDemoView extends DemoView {
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
 
     CalendarHeaderComponent header = new CalendarHeaderComponent(calendar);
-
+    
     // end-source-example
 
     calendar.setId("basic-use-demo");
 
-    addCard("Basic Use Demo", header, calendar);
+    addCard("Basic Use Demo", header, calendar, getEventHandlingLayout(calendar));
   }
 
+  private HorizontalLayout getEventHandlingLayout(ScheduleXCalendar calendar) {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidthFull();
+
+    LocalDate testEventDate = LocalDate.now().plusDays(1);
+
+    Event testEvent = new Event("test", LocalDateTime.of(testEventDate, LocalTime.of(10, 00)),
+        LocalDateTime.of(testEventDate, LocalTime.of(11, 00)));
+    testEvent.setTitle("Test event");
+
+    Button addTestEventButton = new Button("Click to add test event");
+    Button updateTestEventButton = new Button("Click to update test event");
+    Button removeTestEventButton = new Button("Click to remove test event");
+
+    addTestEventButton.addClickListener(e -> {
+      calendar.addEvent(testEvent);
+      updateTestEventButton.setEnabled(true);
+      removeTestEventButton.setEnabled(true);
+    });
+    addTestEventButton.setDisableOnClick(true);
+
+    updateTestEventButton.addClickListener(e -> {
+      testEvent.setTitle("Test event updated");
+      calendar.updateEvent(testEvent);
+    });
+    updateTestEventButton.setEnabled(false);
+    updateTestEventButton.setDisableOnClick(true);
+
+    removeTestEventButton.addClickListener(e -> {
+      calendar.removeEvent(testEvent.getId());
+      testEvent.setTitle("Test event");
+      addTestEventButton.setEnabled(true);
+      updateTestEventButton.setEnabled(false);
+    });
+    removeTestEventButton.setEnabled(false);
+    removeTestEventButton.setDisableOnClick(true);
+
+    calendar.addCalendarEventAddedEventListener(
+        e -> Notification.show("Calendar event with id '" + e.getEventId() + "' added."));
+    
+    calendar.addCalendarEventUpdatedEventListener(
+        e -> Notification.show("Calendar event with id '" + e.getEventId() + "' updated."));
+    
+    calendar.addCalendarEventRemovedEventListener(
+        e -> Notification.show("Calendar event with id '" + e.getEventId() + "' removed."));
+
+    layout.add(addTestEventButton, updateTestEventButton, removeTestEventButton);
+    return layout;
+  }
 }

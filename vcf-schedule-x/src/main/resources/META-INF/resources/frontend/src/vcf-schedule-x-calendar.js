@@ -18,9 +18,12 @@ import {
 } from '@schedule-x/calendar';
 
 import {
+	addEvent,
 	createCommonCalendar,
+	removeEvent,
 	setView,
-	setSelectedDate
+	setSelectedDate,
+	updateEvent
 } from './vcf-schedule-x-base.js';
 
 const viewFactoryMap = {
@@ -52,5 +55,17 @@ window.vcfschedulexcalendar = {
 
 	setSelectedDate(container, selectedDate) {
 		setSelectedDate(container, selectedDate);
-	}
+	},
+	
+	addEvent(container, calendarEvent) {
+		addEvent(container, calendarEvent);
+	},
+	
+	removeEvent(container, calendarEventId) {
+		removeEvent(container, calendarEventId);
+	},
+	
+	updateEvent(container, calendarEvent) {
+		updateEvent(container, calendarEvent);
+	},
 };

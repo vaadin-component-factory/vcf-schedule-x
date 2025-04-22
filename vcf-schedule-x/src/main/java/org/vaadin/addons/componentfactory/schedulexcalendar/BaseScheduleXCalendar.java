@@ -19,6 +19,8 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.DomEvent;
+import com.vaadin.flow.component.EventData;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
@@ -162,11 +164,11 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @param selectedDate the date to set
    */
   public abstract void setSelectedDate(LocalDate selectedDate);
- 
+
   public abstract void navigateForwards();
-  
+
   public abstract void navigateBackwards();
-  
+
   /**
    * Handles calendar event click.
    * 
@@ -176,24 +178,24 @@ public abstract class BaseScheduleXCalendar extends Div {
   private void onCalendarEventClick(String eventId) {
     ComponentUtil.fireEvent(this, new CalendarEventClickEvent(this, eventId, false));
   }
-  
+
   /**
    * Event fired when a calendar event is clicked.
    */
   @Getter
-  @Setter
   public class CalendarEventClickEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
     private String eventId;
-    
-    public CalendarEventClickEvent(BaseScheduleXCalendar source, String eventId, boolean fromClient) {
+
+    public CalendarEventClickEvent(BaseScheduleXCalendar source, String eventId,
+        boolean fromClient) {
       super(source, fromClient);
       this.eventId = eventId;
     }
   }
-  
+
   /**
-   * Adds a CalendarEventClickEvent listener. 
+   * Adds a CalendarEventClickEvent listener.
    * 
    * @param listener the listener to be added
    * @return a handle that can be used for removing the listener
@@ -203,4 +205,105 @@ public abstract class BaseScheduleXCalendar extends Div {
     return addListener(CalendarEventClickEvent.class, listener);
   }
 
+  /**
+   * Adds the given event to the calendar.
+   * 
+   * @param event calendar event to be added
+   */
+  public abstract void addEvent(Event event);
+
+  /**
+   * Removes the event with given id from the calendar.
+   * 
+   * @param eventId id of the event to be removed
+   */
+  public abstract void removeEvent(String eventId);
+
+  /**
+   * Updates the given event.
+   * 
+   * @param event the event to be updated
+   */
+  public abstract void updateEvent(Event event);
+
+  /**
+   * Event fired when a calendar event is added to the calendar.
+   */
+  @Getter
+  @DomEvent("calendar-event-added")
+  public static class CalendarEventAddedEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private final String eventId;
+
+    public CalendarEventAddedEvent(BaseScheduleXCalendar source, boolean fromClient,
+        @EventData(value = "event.detail.eventId") String eventId) {
+      super(source, fromClient);
+      this.eventId = eventId;
+    }
+  }
+
+  /**
+   * Adds a CalendarEventAddedEvent listener.
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addCalendarEventAddedEventListener(
+      ComponentEventListener<CalendarEventAddedEvent> listener) {
+    return addListener(CalendarEventAddedEvent.class, listener);
+  }
+  
+  /**
+   * Event fired when a calendar event is removed from the calendar.
+   */
+  @Getter
+  @DomEvent("calendar-event-removed")
+  public static class CalendarEventRemovedEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private final String eventId;
+
+    public CalendarEventRemovedEvent(BaseScheduleXCalendar source, boolean fromClient,
+        @EventData(value = "event.detail.eventId") String eventId) {
+      super(source, fromClient);
+      this.eventId = eventId;
+    }
+  }
+
+  /**
+   * Adds a CalendarEventRemovedEvent listener.
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addCalendarEventRemovedEventListener(
+      ComponentEventListener<CalendarEventRemovedEvent> listener) {
+    return addListener(CalendarEventRemovedEvent.class, listener);
+  }
+  
+  /**
+   * Event fired when a calendar event is updated.
+   */
+  @Getter
+  @DomEvent("calendar-event-updated")
+  public static class CalendarEventUpdatedEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private final String eventId;
+
+    public CalendarEventUpdatedEvent(BaseScheduleXCalendar source, boolean fromClient,
+        @EventData(value = "event.detail.eventId") String eventId) {
+      super(source, fromClient);
+      this.eventId = eventId;
+    }
+  }
+
+  /**
+   * Adds a CalendarEventUpdatedEvent listener.
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addCalendarEventUpdatedEventListener(
+      ComponentEventListener<CalendarEventUpdatedEvent> listener) {
+    return addListener(CalendarEventUpdatedEvent.class, listener);
+  }
 }

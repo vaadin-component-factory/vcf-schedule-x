@@ -1,3 +1,17 @@
+/*
+ * Copyright 2025 Vaadin Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 import { createCalendar } from '@schedule-x/calendar';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import {
@@ -16,7 +30,7 @@ import {
  * @param {Object} viewNameMap - A map of view function names to view names (strings).
  * @param {string} configJson - The calendar configuration as JSON.
  * @param {string} calendarsJson - The calendars as JSON.
- * @param {Object} calendarOptions - Additional options, like viewsJson or resourceConfig.
+ * @param {Object} calendarOptions - Additional options.
  */
 export function createCommonCalendar(container, viewFactories, viewNameMap, configJson, calendarsJson, calendarOptions = {}) {
 	const viewFnNames = JSON.parse(calendarOptions.viewsJson || "[]");
@@ -74,4 +88,32 @@ export function setView(container, view, viewNameMap) {
  */
 export function setSelectedDate(container, selectedDate) {
 	setCalendarSelectedDate(container.calendar, selectedDate);
+}
+
+/**
+ * Adds an event to the calendar.
+ */
+export function addEvent(container, calendarEvent) {
+	const eventJson = JSON.parse(calendarEvent);
+	const eventId = eventJson.id;
+	container.calendar.eventsService.add(eventJson);
+	container.dispatchEvent(new CustomEvent('calendar-event-added', { detail: { eventId: eventId } }));
+}
+
+/**
+ * Removes an event from the calendar.
+ */
+export function removeEvent(container, calendarEventId) {
+	container.calendar.eventsService.remove(calendarEventId);
+	container.dispatchEvent(new CustomEvent('calendar-event-removed', { detail: { eventId: calendarEventId } }));
+}
+
+/**
+ * Updates an existing event.
+ */
+export function updateEvent(container, calendarEvent) {
+	const eventJson = JSON.parse(calendarEvent);
+	const eventId = eventJson.id;
+	container.calendar.eventsService.update(eventJson);
+	container.dispatchEvent(new CustomEvent('calendar-event-updated', { detail: { eventId: eventId } }));
 }

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
@@ -90,4 +91,18 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
     // TODO Auto-generated method stub
   }
 
+  @Override
+  public void addEvent(Event event) {
+    this.getElement().executeJs("vcfschedulexresourceview.addEvent($0, $1);", this, event.getJson());
+  }
+  
+  @Override
+  public void removeEvent(String eventId) {
+    this.getElement().executeJs("vcfschedulexresourceview.removeEvent($0, $1);", this, eventId);
+  }
+  
+  @Override
+  public void updateEvent(Event event) {
+    this.getElement().executeJs("vcfschedulexresourceview.updateEvent($0, $1);", this, event.getJson());
+  }
 }

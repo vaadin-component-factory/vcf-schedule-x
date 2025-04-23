@@ -16,6 +16,7 @@ import { createCalendar } from '@schedule-x/calendar';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import {
 	handleOnEventClick,
+	handleOnSelectedDateUpdate,
 	processConfiguration,
 	setCalendarSelectedDate,
 	setCalendarView,
@@ -59,6 +60,9 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			},
 			onEventClick(calendarEvent) {
 				handleOnEventClick(div, calendarEvent);
+			},
+			onSelectedDateUpdate(date) {
+				handleOnSelectedDateUpdate(div, date);
 			},
 		},
 		...config
@@ -116,4 +120,37 @@ export function updateEvent(container, calendarEvent) {
 	const eventId = eventJson.id;
 	container.calendar.eventsService.update(eventJson);
 	container.dispatchEvent(new CustomEvent('calendar-event-updated', { detail: { eventId: eventId } }));
+}
+
+/**
+ * This function adapts navigation logic from the Schedule-X library.
+ * Original source: 
+ * https://github.com/schedule-x/schedule-x/blob/main/packages/calendar/src/components/header/forward-backward-navigation.tsx
+ * 
+ * Schedule-X is licensed under the MIT License:
+ * https://github.com/schedule-x/schedule-x/blob/main/LICENSE
+ */
+export function navigateCalendar(calendar, direction) {
+	const $app = calendar.$app;
+	const selectedView = $app.config.views.value.find(
+		view => view.name === $app.calendarState.view.value
+	);
+	if (!selectedView) return;
+
+	const unitCount = direction === 'forwards'
+		? selectedView.backwardForwardUnits
+		: -selectedView.backwardForwardUnits;
+
+	const nextDate = selectedView.backwardForwardFn(
+		$app.datePickerState.selectedDate.value,
+		unitCount
+	);
+
+	// minDate / maxDate bounds check
+	if ((direction === 'forwards' && $app.config.maxDate.value && nextDate > $app.config.maxDate.value) ||
+		(direction === 'backwards' && $app.config.minDate.value && nextDate < $app.config.minDate.value)) {
+		return;
+	}
+
+	setCalendarSelectedDate(calendar, nextDate);
 }

@@ -41,3 +41,6 @@ export function handleOnEventClick(div, calendarEvent) {
 	div.$server.onCalendarEventClick(calendarEvent.id);
 }
 
+export function handleOnSelectedDateUpdate(div, date) {
+	div.$server.onSelectedDateUpdate(date);
+}

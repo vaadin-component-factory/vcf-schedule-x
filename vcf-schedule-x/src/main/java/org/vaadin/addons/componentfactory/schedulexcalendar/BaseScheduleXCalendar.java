@@ -47,6 +47,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @NpmPackage(value = "@schedule-x/calendar", version = "2.28.0")
 @NpmPackage(value = "@schedule-x/events-service", version = "2.28.0")
 @NpmPackage(value = "@schedule-x/theme-default", version = "2.28.0")
+@NpmPackage(value = "@schedule-x/resize", version = "2.28.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 @Setter
@@ -204,15 +205,16 @@ public abstract class BaseScheduleXCalendar extends Div {
       ComponentEventListener<CalendarEventClickEvent> listener) {
     return addListener(CalendarEventClickEvent.class, listener);
   }
-  
+
   /**
    * Handles selected date update on client side. The selected date has format YYYY-MM-DD.
    * 
-   * @param selectedDate the new selected date 
+   * @param selectedDate the new selected date
    */
   @ClientCallable
   private void onSelectedDateUpdate(String selectedDate) {
-    ComponentUtil.fireEvent(this, new SelectedDateUpdateEvent(this, LocalDate.parse(selectedDate), false));
+    ComponentUtil.fireEvent(this,
+        new SelectedDateUpdateEvent(this, LocalDate.parse(selectedDate), false));
   }
 
   /**
@@ -288,7 +290,7 @@ public abstract class BaseScheduleXCalendar extends Div {
       ComponentEventListener<CalendarEventAddedEvent> listener) {
     return addListener(CalendarEventAddedEvent.class, listener);
   }
-  
+
   /**
    * Event fired when a calendar event is removed from the calendar.
    */
@@ -315,7 +317,7 @@ public abstract class BaseScheduleXCalendar extends Div {
       ComponentEventListener<CalendarEventRemovedEvent> listener) {
     return addListener(CalendarEventRemovedEvent.class, listener);
   }
-  
+
   /**
    * Event fired when a calendar event is updated.
    */
@@ -342,4 +344,49 @@ public abstract class BaseScheduleXCalendar extends Div {
       ComponentEventListener<CalendarEventUpdatedEvent> listener) {
     return addListener(CalendarEventUpdatedEvent.class, listener);
   }
+
+  /**
+   * Handles event update on resize.
+   * 
+   * @param eventId the id of the updated event
+   * @param start the new start date of the updated event
+   * @param end the new end date of the updated event
+   */
+  @ClientCallable
+  private void onEventUpdateOnResize(String eventId, String start, String end) {
+    ComponentUtil.fireEvent(this,
+        new EventUpdateOnResizeEvent(this, eventId, LocalDateTime.parse(start, DATE_TIME_FORMATTER),
+            LocalDateTime.parse(end, DATE_TIME_FORMATTER), false));
+  }
+
+  /**
+   * Event fired when an event is updated on resize on client side.
+   */
+  @Getter
+  public class EventUpdateOnResizeEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private String eventId;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+
+    public EventUpdateOnResizeEvent(BaseScheduleXCalendar source, String eventId,
+        LocalDateTime startDate, LocalDateTime endDate, boolean fromClient) {
+      super(source, fromClient);
+      this.eventId = eventId;
+      this.startDate = startDate;
+      this.endDate = endDate;
+    }
+  }
+
+  /**
+   * Adds a EventUpdateOnResizeEvent listener.
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addEventUpdateOnResizeEventListener(
+      ComponentEventListener<EventUpdateOnResizeEvent> listener) {
+    return addListener(EventUpdateOnResizeEvent.class, listener);
+  }
+
 }

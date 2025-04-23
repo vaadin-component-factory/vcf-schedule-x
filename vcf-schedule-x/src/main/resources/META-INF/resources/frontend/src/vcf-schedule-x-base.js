@@ -14,9 +14,11 @@
 
 import { createCalendar } from '@schedule-x/calendar';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
+import { createResizePlugin } from '@schedule-x/resize';
 import {
 	handleOnEventClick,
 	handleOnSelectedDateUpdate,
+	handleEventUpdateOnResize,
 	processConfiguration,
 	setCalendarSelectedDate,
 	setCalendarView,
@@ -44,6 +46,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 		.map(factory => factory(calendarOptions.resourceConfig)); // optional for resource views
 
 	const eventsServicePlugin = createEventsServicePlugin();
+	const resizePlugin = createResizePlugin(calendarOptions.resizeInterval);
 
 	let div = document.getElementById(container.id);
 
@@ -64,9 +67,15 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			onSelectedDateUpdate(date) {
 				handleOnSelectedDateUpdate(div, date);
 			},
+			/**
+			 * Is called when an event is updated through drag and drop or resize
+			 * */
+			onEventUpdate(updatedEvent) {
+				handleEventUpdateOnResize(div, updatedEvent);
+			},
 		},
 		...config
-	}, [eventsServicePlugin]);
+	}, [eventsServicePlugin, resizePlugin]);
 
 	calendar.render(div);
 	div.calendar = calendar;

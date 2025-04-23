@@ -19,8 +19,11 @@ import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
@@ -40,6 +43,8 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
 @Route("resource")
 public class ScheduleXResourceViewDemoView extends DemoView {
 
+  private List<Event> events;
+  
   @Override
   public void initView() {
     this.getStyle().set("max-width", "1500px");
@@ -86,33 +91,51 @@ public class ScheduleXResourceViewDemoView extends DemoView {
 
     ResourceSchedulerConfig resourceSchedulerConfig = new ResourceSchedulerConfig();
     resourceSchedulerConfig.setResources(Arrays.asList(resource1, resource2));
+    resourceSchedulerConfig.setResize(true);
 
+    LocalDate eventsDate = LocalDate.of(2024, 05, 06);
+    
     Event event1 =
-        new Event("1", LocalDateTime.of(LocalDate.of(2024, 05, 06), LocalTime.of(02, 00)),
-            LocalDateTime.of(LocalDate.of(2024, 05, 06), LocalTime.of(07, 55)));
+        new Event("1", LocalDateTime.of(eventsDate, LocalTime.of(02, 00)),
+            LocalDateTime.of(eventsDate, LocalTime.of(07, 55)));
     event1.setTitle("Tom");
     event1.setCalendarId("leisure");
     event1.setResourceId("conveyor-belt-b");
-    Event event2 = new Event("2", LocalDateTime.of(LocalDate.of(2024, 05, 06), LocalTime.of(8, 00)),
-        LocalDateTime.of(LocalDate.of(2024, 05, 06), LocalTime.of(14, 00)));
+    Event event2 = new Event("2", LocalDateTime.of(eventsDate, LocalTime.of(8, 00)),
+        LocalDateTime.of(eventsDate, LocalTime.of(14, 00)));
     event2.setTitle("Marsha");
     event2.setCalendarId("work");
     event2.setResourceId("conveyor-belt-a-1");
-    Event event3 = new Event("3", LocalDateTime.of(LocalDate.of(2024, 05, 06), LocalTime.of(8, 00)),
-        LocalDateTime.of(LocalDate.of(2024, 05, 06), LocalTime.of(14, 00)));
+    Event event3 = new Event("3", LocalDateTime.of(eventsDate, LocalTime.of(8, 00)),
+        LocalDateTime.of(eventsDate, LocalTime.of(14, 00)));
     event3.setTitle("Jane");
     event3.setCalendarId("work");
     event3.setResourceId("conveyor-belt-a-2");
+    
+    events = new ArrayList<Event>();
+    events.addAll(Arrays.asList(event1, event2, event3));
 
     ScheduleXResourceView resourceView =
         new ScheduleXResourceView(Arrays.asList(ResourceView.HOURLY, ResourceView.DAILY),
-            EventProvider.of(Arrays.asList(event1, event2, event3)), configuration, calendars,
+            EventProvider.of(events), configuration, calendars,
             resourceSchedulerConfig);
     
     CalendarHeaderComponent header = new CalendarHeaderComponent(resourceView);
     
     resourceView.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
+    
+    resourceView.addEventUpdateOnResizeEventListener(e -> {
+      String updatedEventId = e.getEventId();
+      Optional<Event> optionalEvent = events.stream()
+          .filter(ev -> ev.getId().equals(updatedEventId))
+          .findFirst();
+      
+      optionalEvent.ifPresent(event -> {
+          event.setStart(e.getStartDate());
+          event.setEnd(e.getEndDate());
+      });
+    }); 
 
     // end-source-example
 

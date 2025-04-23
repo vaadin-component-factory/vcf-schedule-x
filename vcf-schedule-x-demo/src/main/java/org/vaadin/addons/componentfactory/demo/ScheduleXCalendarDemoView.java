@@ -78,15 +78,14 @@ public class ScheduleXCalendarDemoView extends DemoView {
             LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 25)));
     event3.setTitle("Onboarding team meeting");
     event3.setCalendarId("work");
-    
-    
+        
     events = new ArrayList<Event>();
     events.addAll(Arrays.asList(event1, event2, event3));
 
     Configuration configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
     configuration.setDefaultView(CalendarView.MONTH_GRID);
-
+      
     ScheduleXCalendar calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID,
             CalendarView.MONTH_AGENDA),

@@ -21,7 +21,9 @@ import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
@@ -40,6 +42,8 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 @Route("")
 public class ScheduleXCalendarDemoView extends DemoView {
 
+  private List<Event> events;
+  
   @Override
   public void initView() {
     this.getStyle().set("max-width", "1500px");
@@ -74,6 +78,10 @@ public class ScheduleXCalendarDemoView extends DemoView {
             LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 25)));
     event3.setTitle("Onboarding team meeting");
     event3.setCalendarId("work");
+    
+    
+    events = new ArrayList<Event>();
+    events.addAll(Arrays.asList(event1, event2, event3));
 
     Configuration configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
@@ -82,7 +90,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
     ScheduleXCalendar calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID,
             CalendarView.MONTH_AGENDA),
-        EventProvider.of(Arrays.asList(event1, event2, event3)), configuration, calendars);
+        EventProvider.of(events), configuration, calendars);
 
     calendar.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
@@ -112,6 +120,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
 
     addTestEventButton.addClickListener(e -> {
       calendar.addEvent(testEvent);
+      events.add(testEvent);
       updateTestEventButton.setEnabled(true);
       removeTestEventButton.setEnabled(true);
     });
@@ -126,6 +135,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
 
     removeTestEventButton.addClickListener(e -> {
       calendar.removeEvent(testEvent.getId());
+      events.remove(testEvent);
       testEvent.setTitle("Test event");
       addTestEventButton.setEnabled(true);
       updateTestEventButton.setEnabled(false);

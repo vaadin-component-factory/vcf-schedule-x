@@ -44,3 +44,10 @@ export function handleOnEventClick(div, calendarEvent) {
 export function handleOnSelectedDateUpdate(div, date) {
 	div.$server.onSelectedDateUpdate(date);
 }
+
+/**
+ * This handles event updates on resize or dnd(not implemented yet)
+ */
+export function handleEventUpdateOnResize(div, updatedEvent) {
+	div.$server.onEventUpdateOnResize(updatedEvent.id, updatedEvent.start, updatedEvent.end);
+}

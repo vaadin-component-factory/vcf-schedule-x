@@ -204,6 +204,42 @@ public abstract class BaseScheduleXCalendar extends Div {
       ComponentEventListener<CalendarEventClickEvent> listener) {
     return addListener(CalendarEventClickEvent.class, listener);
   }
+  
+  /**
+   * Handles selected date update on client side. The selected date has format YYYY-MM-DD.
+   * 
+   * @param selectedDate the new selected date 
+   */
+  @ClientCallable
+  private void onSelectedDateUpdate(String selectedDate) {
+    ComponentUtil.fireEvent(this, new SelectedDateUpdateEvent(this, LocalDate.parse(selectedDate), false));
+  }
+
+  /**
+   * Event fired when the selected date is updated on client side.
+   */
+  @Getter
+  public class SelectedDateUpdateEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private LocalDate selectedDate;
+
+    public SelectedDateUpdateEvent(BaseScheduleXCalendar source, LocalDate selectedDate,
+        boolean fromClient) {
+      super(source, fromClient);
+      this.selectedDate = selectedDate;
+    }
+  }
+
+  /**
+   * Adds a SelectedDateUpdateEvent listener.
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addSelectedDateUpdateEventListener(
+      ComponentEventListener<SelectedDateUpdateEvent> listener) {
+    return addListener(SelectedDateUpdateEvent.class, listener);
+  }
 
   /**
    * Adds the given event to the calendar.

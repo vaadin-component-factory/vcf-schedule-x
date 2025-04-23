@@ -83,12 +83,12 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
 
   @Override
   public void navigateForwards() {
-    // TODO Auto-generated method stub    
+    this.getElement().executeJs("vcfschedulexresourceview.navigateForwards($0)", this);
   }
 
   @Override
   public void navigateBackwards() {
-    // TODO Auto-generated method stub
+    this.getElement().executeJs("vcfschedulexresourceview.navigateBackwards($0)", this);   
   }
 
   @Override

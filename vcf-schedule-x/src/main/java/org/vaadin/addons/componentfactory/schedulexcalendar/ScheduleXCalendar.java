@@ -69,12 +69,12 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
 
   @Override
   public void navigateForwards() {
-    // TODO Auto-generated method stub
+    this.getElement().executeJs("vcfschedulexcalendar.navigateForwards($0)", this);
   }
 
   @Override
   public void navigateBackwards() {
-    // TODO Auto-generated method stub    
+    this.getElement().executeJs("vcfschedulexcalendar.navigateBackwards($0)", this);   
   }
 
   @Override
@@ -90,5 +90,5 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   @Override
   public void updateEvent(Event event) {
     this.getElement().executeJs("vcfschedulexcalendar.updateEvent($0, $1);", this, event.getJson());
-  }
+  } 
 }

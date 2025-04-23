@@ -22,6 +22,7 @@ import {
 import {
 	addEvent,
 	createCommonCalendar,
+	navigateCalendar,
 	removeEvent,
 	setView,
 	setSelectedDate, 
@@ -113,5 +114,13 @@ window.vcfschedulexresourceview = {
 	
 	updateEvent(container, calendarEvent) {
 		updateEvent(container, calendarEvent);
+	},
+	
+	navigateForwards(container) {
+		navigateCalendar(container.calendar, 'forwards');
+	},
+	
+	navigateBackwards(container) {
+		navigateCalendar(container.calendar, 'backwards');
 	},
 };

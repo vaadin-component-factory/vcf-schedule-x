@@ -36,6 +36,10 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     datePicker.addValueChangeListener(e -> {
       calendar.setSelectedDate(e.getValue());
     });
+    
+    calendar.addSelectedDateUpdateEventListener(e -> {
+      datePicker.setValue(e.getSelectedDate());
+    });
 
     ComboBox<View> viewsComboBox = new ComboBox<View>("View");
     viewsComboBox.setItems(new ArrayList<View>(views));
@@ -81,8 +85,7 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     Button previousButton = new Button(VaadinIcon.CHEVRON_LEFT.create());
     previousButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY,
         ButtonVariant.LUMO_CONTRAST);
-    previousButton.addClickListener(e -> {
-    });
+    previousButton.addClickListener(e -> calendar.navigateBackwards());
     Button nextButton = new Button(VaadinIcon.CHEVRON_RIGHT.create());
     nextButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY,
         ButtonVariant.LUMO_CONTRAST);

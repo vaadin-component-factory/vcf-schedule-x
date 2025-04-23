@@ -20,6 +20,7 @@ import {
 import {
 	addEvent,
 	createCommonCalendar,
+	navigateCalendar,
 	removeEvent,
 	setView,
 	setSelectedDate,
@@ -56,16 +57,25 @@ window.vcfschedulexcalendar = {
 	setSelectedDate(container, selectedDate) {
 		setSelectedDate(container, selectedDate);
 	},
-	
+
 	addEvent(container, calendarEvent) {
 		addEvent(container, calendarEvent);
 	},
-	
+
 	removeEvent(container, calendarEventId) {
 		removeEvent(container, calendarEventId);
 	},
-	
+
 	updateEvent(container, calendarEvent) {
 		updateEvent(container, calendarEvent);
 	},
+
+	navigateForwards(container) {
+		navigateCalendar(container.calendar, 'forwards');
+	},
+
+	navigateBackwards(container) {
+		navigateCalendar(container.calendar, 'backwards');
+	},
+		
 };

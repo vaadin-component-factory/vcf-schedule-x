@@ -102,8 +102,6 @@ public class Configuration implements Serializable {
    */
   private boolean skipValidation = true;
 
-  // TODO: Callbacks not implemented
-
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));

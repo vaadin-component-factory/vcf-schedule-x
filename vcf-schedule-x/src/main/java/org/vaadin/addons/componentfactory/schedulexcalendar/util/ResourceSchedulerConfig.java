@@ -81,8 +81,6 @@ public class ResourceSchedulerConfig implements Serializable {
    */
   private Pair<LocalDate, LocalDate> initialDays;
 
-  // TODO: Callbacks not implemented
-
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(hourWidth).ifPresent(value -> js.put("hourWidth", value));

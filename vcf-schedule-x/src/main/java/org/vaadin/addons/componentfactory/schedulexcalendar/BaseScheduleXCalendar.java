@@ -44,10 +44,10 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 @SuppressWarnings("serial")
-@NpmPackage(value = "@schedule-x/calendar", version = "2.28.0")
-@NpmPackage(value = "@schedule-x/events-service", version = "2.28.0")
-@NpmPackage(value = "@schedule-x/theme-default", version = "2.28.0")
-@NpmPackage(value = "@schedule-x/resize", version = "2.28.0")
+@NpmPackage(value = "@schedule-x/calendar", version = "2.29.0")
+@NpmPackage(value = "@schedule-x/events-service", version = "2.29.0")
+@NpmPackage(value = "@schedule-x/theme-default", version = "2.29.0")
+@NpmPackage(value = "@schedule-x/resize", version = "2.29.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 @Setter

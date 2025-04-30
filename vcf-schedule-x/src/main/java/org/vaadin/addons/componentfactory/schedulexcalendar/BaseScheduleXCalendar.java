@@ -346,30 +346,30 @@ public abstract class BaseScheduleXCalendar extends Div {
   }
 
   /**
-   * Handles event update on resize.
+   * Handles event update on resize or drag and drop.
    * 
    * @param eventId the id of the updated event
    * @param start the new start date of the updated event
    * @param end the new end date of the updated event
    */
   @ClientCallable
-  private void onEventUpdateOnResize(String eventId, String start, String end) {
+  private void onEventUpdate(String eventId, String start, String end) {
     ComponentUtil.fireEvent(this,
-        new EventUpdateOnResizeEvent(this, eventId, LocalDateTime.parse(start, DATE_TIME_FORMATTER),
+        new EventUpdateEvent(this, eventId, LocalDateTime.parse(start, DATE_TIME_FORMATTER),
             LocalDateTime.parse(end, DATE_TIME_FORMATTER), false));
   }
 
   /**
-   * Event fired when an event is updated on resize on client side.
+   * Event fired when an event is updated on resize or drag and drop on client side.
    */
   @Getter
-  public class EventUpdateOnResizeEvent extends ComponentEvent<BaseScheduleXCalendar> {
+  public class EventUpdateEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
     private String eventId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    public EventUpdateOnResizeEvent(BaseScheduleXCalendar source, String eventId,
+    public EventUpdateEvent(BaseScheduleXCalendar source, String eventId,
         LocalDateTime startDate, LocalDateTime endDate, boolean fromClient) {
       super(source, fromClient);
       this.eventId = eventId;
@@ -379,14 +379,14 @@ public abstract class BaseScheduleXCalendar extends Div {
   }
 
   /**
-   * Adds a EventUpdateOnResizeEvent listener.
+   * Adds a {@code EventUpdateEvent} listener.
    * 
    * @param listener the listener to be added
    * @return a handle that can be used for removing the listener
    */
-  public Registration addEventUpdateOnResizeEventListener(
-      ComponentEventListener<EventUpdateOnResizeEvent> listener) {
-    return addListener(EventUpdateOnResizeEvent.class, listener);
+  public Registration addEventUpdateEventListener(
+      ComponentEventListener<EventUpdateEvent> listener) {
+    return addListener(EventUpdateEvent.class, listener);
   }
 
 }

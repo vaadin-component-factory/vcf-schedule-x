@@ -145,8 +145,8 @@ public class ScheduleXResourceViewDemoView extends DemoView {
     resourceView.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
 
-    // add on event resize listener
-    resourceView.addEventUpdateOnResizeEventListener(e -> {
+    // add listener on event resizing
+    resourceView.addEventUpdateEventListener(e -> {
       String updatedEventId = e.getEventId();
       Optional<Event> optionalEvent =
           events.stream().filter(ev -> ev.getId().equals(updatedEventId)).findFirst();

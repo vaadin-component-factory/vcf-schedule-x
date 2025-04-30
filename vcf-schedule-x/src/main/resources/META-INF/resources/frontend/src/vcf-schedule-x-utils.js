@@ -46,8 +46,8 @@ export function handleOnSelectedDateUpdate(div, date) {
 }
 
 /**
- * This handles event updates on resize or dnd(not implemented yet)
+ * This handles event updates on resize or dnd
  */
-export function handleEventUpdateOnResize(div, updatedEvent) {
-	div.$server.onEventUpdateOnResize(updatedEvent.id, updatedEvent.start, updatedEvent.end);
+export function handleEventUpdate(div, updatedEvent) {
+	div.$server.onEventUpdate(updatedEvent.id, updatedEvent.start, updatedEvent.end);
 }

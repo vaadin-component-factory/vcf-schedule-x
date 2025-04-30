@@ -18,7 +18,7 @@ import { createResizePlugin } from '@schedule-x/resize';
 import {
 	handleOnEventClick,
 	handleOnSelectedDateUpdate,
-	handleEventUpdateOnResize,
+	handleEventUpdate,
 	processConfiguration,
 	setCalendarSelectedDate,
 	setCalendarView,
@@ -68,10 +68,10 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 				handleOnSelectedDateUpdate(div, date);
 			},
 			/**
-			 * Is called when an event is updated through drag and drop or resize
+			 * Is called when an event is updated through drag and drop or resize.
 			 * */
 			onEventUpdate(updatedEvent) {
-				handleEventUpdateOnResize(div, updatedEvent);
+				handleEventUpdate(div, updatedEvent);
 			},
 		},
 		...config

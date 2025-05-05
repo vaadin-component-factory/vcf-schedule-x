@@ -71,12 +71,12 @@ public class Configuration implements Serializable {
   /**
    * The minimum date that can be displayed.
    */
-  private String minDate;
+  private LocalDate minDate;
 
   /**
    * The maximum date that can be displayed.
    */
-  private String maxDate;
+  private LocalDate maxDate;
 
   private WeekOptions weekOptions;
 
@@ -122,8 +122,8 @@ public class Configuration implements Serializable {
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);
     Optional.ofNullable(dayBoundaries).ifPresent(value -> js.put("dayBoundaries", value.toJson()));
-    Optional.ofNullable(minDate).ifPresent(value -> js.put("minDate", value));
-    Optional.ofNullable(maxDate).ifPresent(value -> js.put("maxDate", value));
+    Optional.ofNullable(minDate).ifPresent(value -> js.put("minDate", value.format(DATE_FORMATTER)));
+    Optional.ofNullable(maxDate).ifPresent(value -> js.put("maxDate", value.format(DATE_FORMATTER)));
     Optional.ofNullable(weekOptions).ifPresent(value -> js.put("weekOptions", value.toJson()));
     Optional.ofNullable(monthGridOptions)
         .ifPresent(value -> js.put("monthGridOptions", value.toJson()));

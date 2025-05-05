@@ -32,6 +32,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.CurrentTimeIndicatorConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 
@@ -88,6 +89,10 @@ public class ScheduleXCalendarDemoView extends DemoView {
     configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
     configuration.setDefaultView(CalendarView.MONTH_GRID);
     configuration.setDragAndDropInterval(TimeInterval.MIN_30);
+    CurrentTimeIndicatorConfig currentTimeIndicator = new CurrentTimeIndicatorConfig();
+    currentTimeIndicator.setFullWeekWidth(true);
+    currentTimeIndicator.setTimeZoneOffset(120);
+    configuration.setCurrentTimeIndicatorConfig(currentTimeIndicator);
       
     ScheduleXCalendar calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID,

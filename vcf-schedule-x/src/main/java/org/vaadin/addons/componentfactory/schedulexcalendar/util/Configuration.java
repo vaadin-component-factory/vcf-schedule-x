@@ -26,15 +26,12 @@ import lombok.Setter;
 /**
  * Java representation of the configuration options for the Schedule-X Calendar. This configuration
  * is used to customize the behavior and appearance of the calendar views.
- * 
- * @see <a href="https://schedule-x.dev/docs/calendar/configuration">Calendar configuration
- * documentation</a>
  */
 @SuppressWarnings("serial")
 @Getter
 @Setter
 public class Configuration implements Serializable {
-  
+
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   /**
@@ -101,21 +98,24 @@ public class Configuration implements Serializable {
    * performance if you are loading a lot of events, and you are sure that the events are valid.
    */
   private boolean skipValidation = true;
-  
+
   /**
    * Time interval that can be configured for event resizing.
    */
   private TimeInterval resizeInterval;
-  
+
   /**
    * Time interval that can be configured for drag and drop of an event.
    */
   private TimeInterval dragAndDropInterval;
 
+  private CurrentTimeIndicatorConfig currentTimeIndicatorConfig;
+
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));
-    Optional.ofNullable(selectedDate).ifPresent(value -> js.put("selectedDate", value.format(DATE_FORMATTER)));
+    Optional.ofNullable(selectedDate)
+        .ifPresent(value -> js.put("selectedDate", value.format(DATE_FORMATTER)));
     Optional.ofNullable(locale).ifPresent(value -> js.put("locale", value));
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);
@@ -128,8 +128,12 @@ public class Configuration implements Serializable {
     js.put("showWeekNumbers", showWeekNumbers);
     js.put("isResponsive", isResponsive);
     js.put("skipValidation", skipValidation);
-    Optional.ofNullable(resizeInterval).ifPresent(value -> js.put("resizeInterval", value.getInterval()));
-    Optional.ofNullable(dragAndDropInterval).ifPresent(value -> js.put("dragAndDropInterval", value.getInterval()));
+    Optional.ofNullable(resizeInterval)
+        .ifPresent(value -> js.put("resizeInterval", value.getInterval()));
+    Optional.ofNullable(dragAndDropInterval)
+        .ifPresent(value -> js.put("dragAndDropInterval", value.getInterval()));
+    Optional.ofNullable(currentTimeIndicatorConfig)
+        .ifPresent(value -> js.put("currentTimeIndicatorConfig", value.toJson()));
     return js.toJson();
   }
 
@@ -214,6 +218,32 @@ public class Configuration implements Serializable {
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
       Optional.ofNullable(nEventsPerDay).ifPresent(value -> js.put("nEventsPerDay", value));
+      return js;
+    }
+  }
+
+  /**
+   * Configuration to add a current time indicator to the calendar. It will automatically update
+   * every minute.
+   */
+  @Getter
+  @Setter
+  public static class CurrentTimeIndicatorConfig implements Serializable {
+
+    /**
+     * Whether the indicator should be displayed in the full width of the week. Defaults to false
+     */
+    private Boolean fullWeekWidth;
+
+    /**
+     * Time zone offset in minutes. Can be any offset valid according to UTC (-720 to 840).
+     */
+    private Integer timeZoneOffset;
+
+    public JsonObject toJson() {
+      JsonObject js = Json.createObject();
+      Optional.ofNullable(fullWeekWidth).ifPresent(value -> js.put("fullWeekWidth", value));
+      Optional.ofNullable(timeZoneOffset).ifPresent(value -> js.put("timeZoneOffset", value));
       return js;
     }
   }

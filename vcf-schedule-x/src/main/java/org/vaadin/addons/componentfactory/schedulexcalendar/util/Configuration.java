@@ -17,6 +17,7 @@ import elemental.json.Json;
 import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import lombok.Setter;
 public class Configuration implements Serializable {
 
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
   /**
    * The preferred view to display when the calendar is first rendered. all views that you import
@@ -150,13 +152,13 @@ public class Configuration implements Serializable {
   @Getter
   @Setter
   public static class DayBoundaries implements Serializable {
-    private String start;
-    private String end;
+    private LocalTime start;
+    private LocalTime end;
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
-      Optional.ofNullable(start).ifPresent(value -> js.put("start", value));
-      Optional.ofNullable(end).ifPresent(value -> js.put("end", value));
+      Optional.ofNullable(start).ifPresent(value -> js.put("start", value.format(TIME_FORMATTER)));
+      Optional.ofNullable(end).ifPresent(value -> js.put("end", value.format(TIME_FORMATTER)));
       js.put("dayBoundaries", js);
       return js;
     }

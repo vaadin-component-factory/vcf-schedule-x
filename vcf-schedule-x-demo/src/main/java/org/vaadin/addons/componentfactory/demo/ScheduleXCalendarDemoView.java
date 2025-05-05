@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
@@ -32,6 +33,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorD
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -85,6 +87,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
     Configuration configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
     configuration.setDefaultView(CalendarView.MONTH_GRID);
+    configuration.setDragAndDropInterval(TimeInterval.MIN_30);
       
     ScheduleXCalendar calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID,
@@ -93,6 +96,18 @@ public class ScheduleXCalendarDemoView extends DemoView {
 
     calendar.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
+    
+    // add listener on event on dnd
+    calendar.addEventUpdateEventListener(e -> {
+      String updatedEventId = e.getEventId();
+      Optional<Event> optionalEvent =
+          events.stream().filter(ev -> ev.getId().equals(updatedEventId)).findFirst();
+      optionalEvent.ifPresent(event -> {
+        event.setStart(e.getStartDate());
+        event.setEnd(e.getEndDate());
+        Notification.show("Event with id " + updatedEventId + " updated");
+      });
+    });
 
     CalendarHeaderComponent header = new CalendarHeaderComponent(calendar);
     

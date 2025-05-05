@@ -113,6 +113,7 @@ public class ScheduleXResourceViewDemoView extends DemoView {
     resourceSchedulerConfig = new ResourceSchedulerConfig();
     resourceSchedulerConfig.setResources(resources);
     resourceSchedulerConfig.setResize(true);
+    resourceSchedulerConfig.setDragAndDrop(true);
 
     // create events
     LocalDate eventsDate = LocalDate.of(2024, 05, 06);
@@ -145,7 +146,7 @@ public class ScheduleXResourceViewDemoView extends DemoView {
     resourceView.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
 
-    // add listener on event resizing
+    // add listener on event resizing or dnd
     resourceView.addEventUpdateEventListener(e -> {
       String updatedEventId = e.getEventId();
       Optional<Event> optionalEvent =

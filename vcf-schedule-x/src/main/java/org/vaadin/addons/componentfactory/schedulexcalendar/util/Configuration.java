@@ -168,11 +168,11 @@ public class Configuration implements Serializable {
   @Setter
   public static class WeekOptions implements Serializable {
     /**
-     * The total height in px of the week grid (week- and day views),
+     * The total height in px of the week grid (week and day views).
      */
     private Integer gridHeight;
     /**
-     * The number of days to display in week view,
+     * The number of days to display in week view.
      */
     private Integer nDays;
     /**
@@ -213,7 +213,7 @@ public class Configuration implements Serializable {
   @Setter
   public static class MonthGridOptions implements Serializable {
     /**
-     * Number of events to display in a day cell before the "+ N events" button is shown
+     * Number of events to display in a day cell before the "+ N events" button is shown.
      */
     private Integer nEventsPerDay;
 

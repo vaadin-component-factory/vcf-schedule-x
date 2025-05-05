@@ -48,6 +48,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @NpmPackage(value = "@schedule-x/events-service", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/theme-default", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/resize", version = "2.29.0")
+@NpmPackage(value = "@schedule-x/drag-and-drop", version = "2.29.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 @Setter

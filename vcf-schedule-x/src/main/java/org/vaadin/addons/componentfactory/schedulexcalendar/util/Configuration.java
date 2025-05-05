@@ -101,6 +101,16 @@ public class Configuration implements Serializable {
    * performance if you are loading a lot of events, and you are sure that the events are valid.
    */
   private boolean skipValidation = true;
+  
+  /**
+   * Time interval that can be configured for event resizing.
+   */
+  private TimeInterval resizeInterval;
+  
+  /**
+   * Time interval that can be configured for drag and drop of an event.
+   */
+  private TimeInterval dragAndDropInterval;
 
   public String getJson() {
     JsonObject js = Json.createObject();
@@ -118,6 +128,8 @@ public class Configuration implements Serializable {
     js.put("showWeekNumbers", showWeekNumbers);
     js.put("isResponsive", isResponsive);
     js.put("skipValidation", skipValidation);
+    Optional.ofNullable(resizeInterval).ifPresent(value -> js.put("resizeInterval", value.getInterval()));
+    Optional.ofNullable(dragAndDropInterval).ifPresent(value -> js.put("dragAndDropInterval", value.getInterval()));
     return js.toJson();
   }
 

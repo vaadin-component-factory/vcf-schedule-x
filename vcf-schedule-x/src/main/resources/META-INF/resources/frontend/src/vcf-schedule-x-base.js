@@ -13,6 +13,7 @@
  */
 
 import { createCalendar } from '@schedule-x/calendar';
+import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { createResizePlugin } from '@schedule-x/resize';
 import {
@@ -46,7 +47,8 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 		.map(factory => factory(calendarOptions.resourceConfig)); // optional for resource views
 
 	const eventsServicePlugin = createEventsServicePlugin();
-	const resizePlugin = createResizePlugin(calendarOptions.resizeInterval);
+	const resizePlugin = createResizePlugin(config.resizeInterval);
+	const dragAndDropPlugin = createDragAndDropPlugin(config.dragAndDropInterval);
 
 	let div = document.getElementById(container.id);
 
@@ -75,7 +77,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			},
 		},
 		...config
-	}, [eventsServicePlugin, resizePlugin]);
+	}, [dragAndDropPlugin, eventsServicePlugin, resizePlugin]);
 
 	calendar.render(div);
 	div.calendar = calendar;

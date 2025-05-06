@@ -71,20 +71,22 @@ public class ScheduleXCalendarDemoView extends DemoView {
     leisure.setDarkColors(new ColorDefinition("#c0fff5", "#42a297", "#e6fff5"));
     Map<String, Calendar> calendars = Map.of("work", work, "leisure", leisure);
 
+    LocalDate today = LocalDate.now();
+    
     Event event1 =
-        new Event("1", LocalDateTime.of(LocalDate.of(2025, 04, 15), LocalTime.of(10, 05)),
-            LocalDateTime.of(LocalDate.of(2025, 04, 15), LocalTime.of(10, 35)));
+        new Event("1", LocalDateTime.of(today.minusDays(2), LocalTime.of(10, 05)),
+            LocalDateTime.of(today.minusDays(2), LocalTime.of(10, 35)));
     event1.setTitle("Coffee with John");
     event1.setCalendarId("leisure");
     Event event2 =
-        new Event("2", LocalDateTime.of(LocalDate.of(2025, 04, 16), LocalTime.of(16, 00)),
-            LocalDateTime.of(LocalDate.of(2025, 04, 16), LocalTime.of(16, 45)));
+        new Event("2", LocalDateTime.of(today.minusDays(1), LocalTime.of(16, 00)),
+            LocalDateTime.of(today.minusDays(1), LocalTime.of(16, 45)));
     event2.setTitle("Meeting with Jackie O.");
     event2.setCalendarId("work");
 
     Event event3 =
-        new Event("3", LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 00)),
-            LocalDateTime.of(LocalDate.of(2025, 05, 29), LocalTime.of(15, 25)));
+        new Event("3", LocalDateTime.of(today.plusDays(5), LocalTime.of(15, 00)),
+            LocalDateTime.of(today.plusDays(5), LocalTime.of(15, 25)));
     event3.setTitle("Onboarding team meeting");
     event3.setCalendarId("work");
         
@@ -92,7 +94,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
     events.addAll(Arrays.asList(event1, event2, event3));
 
     Configuration configuration = new Configuration();
-    configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
+    configuration.setSelectedDate(today.plusDays(1));
     configuration.setDefaultView(CalendarView.WEEK);
     configuration.setDragAndDropInterval(TimeInterval.MIN_30);
     CurrentTimeIndicatorConfig currentTimeIndicator = new CurrentTimeIndicatorConfig();

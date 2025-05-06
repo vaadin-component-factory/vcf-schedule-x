@@ -57,9 +57,8 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   }
 
   @Override
-  public void setView(View view, LocalDate selectedDate) {
-    this.getElement().executeJs("vcfschedulexcalendar.setView($0, $1, $2);", this, view.getName(),
-        selectedDate.format(DATE_FORMATTER));
+  public void setView(View view) {
+    this.getElement().executeJs("vcfschedulexcalendar.setView($0, $1);", this, view.getName());
   }
 
   @Override
@@ -75,7 +74,7 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
 
   @Override
   public void navigateBackwards() {
-    this.getElement().executeJs("vcfschedulexcalendar.navigateBackwards($0)", this);   
+    this.getElement().executeJs("vcfschedulexcalendar.navigateBackwards($0)", this);
   }
 
   @Override
@@ -87,19 +86,19 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   public void removeEvent(String eventId) {
     this.getElement().executeJs("vcfschedulexcalendar.removeEvent($0, $1);", this, eventId);
   }
-  
+
   @Override
   public void updateEvent(Event event) {
     this.getElement().executeJs("vcfschedulexcalendar.updateEvent($0, $1);", this, event.getJson());
-  } 
-  
+  }
+
   /**
-   * Scroll to an specific time.
-   * Only available for week and day views.
+   * Scroll to an specific time. Only available for week and day views.
    * 
    * @param time the time to scroll to in the view
    */
   public void scrollTo(LocalTime time) {
-    this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this, time.format(TIME_FORMATTER));
+    this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this,
+        time.format(TIME_FORMATTER));
   }
 }

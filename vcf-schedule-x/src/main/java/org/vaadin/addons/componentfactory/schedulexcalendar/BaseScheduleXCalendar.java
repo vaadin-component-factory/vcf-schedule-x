@@ -61,8 +61,7 @@ public abstract class BaseScheduleXCalendar extends Div {
       DateTimeFormatter.ofPattern("yyyy-MM-dd");
   protected static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-  protected static final DateTimeFormatter TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("HH:mm");
+  protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
   /**
    * Views available to the user.
@@ -160,9 +159,8 @@ public abstract class BaseScheduleXCalendar extends Div {
    * Sets the calendar view.
    * 
    * @param view the view to set
-   * @param selectedDate the current selected date
    */
-  public abstract void setView(View view, LocalDate selectedDate);
+  public abstract void setView(View view);
 
   /**
    * Sets the calendar date.
@@ -374,8 +372,8 @@ public abstract class BaseScheduleXCalendar extends Div {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    public EventUpdateEvent(BaseScheduleXCalendar source, String eventId,
-        LocalDateTime startDate, LocalDateTime endDate, boolean fromClient) {
+    public EventUpdateEvent(BaseScheduleXCalendar source, String eventId, LocalDateTime startDate,
+        LocalDateTime endDate, boolean fromClient) {
       super(source, fromClient);
       this.eventId = eventId;
       this.startDate = startDate;

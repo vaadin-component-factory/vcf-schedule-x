@@ -83,9 +83,8 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
   }
 
   @Override
-  public void setView(View view, LocalDate selectedDate) {
-    this.getElement().executeJs("vcfschedulexresourceview.setView($0, $1, $2);", this,
-        view.getName(), selectedDate.format(DATE_FORMATTER));
+  public void setView(View view) {
+    this.getElement().executeJs("vcfschedulexresourceview.setView($0, $1);", this, view.getName());
   }
 
   @Override
@@ -101,21 +100,23 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
 
   @Override
   public void navigateBackwards() {
-    this.getElement().executeJs("vcfschedulexresourceview.navigateBackwards($0)", this);   
+    this.getElement().executeJs("vcfschedulexresourceview.navigateBackwards($0)", this);
   }
 
   @Override
   public void addEvent(Event event) {
-    this.getElement().executeJs("vcfschedulexresourceview.addEvent($0, $1);", this, event.getJson());
+    this.getElement().executeJs("vcfschedulexresourceview.addEvent($0, $1);", this,
+        event.getJson());
   }
-  
+
   @Override
   public void removeEvent(String eventId) {
     this.getElement().executeJs("vcfschedulexresourceview.removeEvent($0, $1);", this, eventId);
   }
-  
+
   @Override
   public void updateEvent(Event event) {
-    this.getElement().executeJs("vcfschedulexresourceview.updateEvent($0, $1);", this, event.getJson());
+    this.getElement().executeJs("vcfschedulexresourceview.updateEvent($0, $1);", this,
+        event.getJson());
   }
 }

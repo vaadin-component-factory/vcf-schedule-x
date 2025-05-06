@@ -14,7 +14,6 @@
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import com.vaadin.flow.component.dependency.JsModule;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 /**
  * Vaadin Wrapper Add-on for <a href="https://schedule-x.dev/">Schedule-X Calendar</a>.
@@ -57,16 +55,10 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   }
 
   @Override
-  public void setView(View view) {
-    this.getElement().executeJs("vcfschedulexcalendar.setView($0, $1);", this, view.getName());
+  protected String getJsConnector() {
+    return "vcfschedulexcalendar";
   }
-
-  @Override
-  public void setSelectedDate(LocalDate selectedDate) {
-    this.getElement().executeJs("vcfschedulexcalendar.setSelectedDate($0, $1);", this,
-        selectedDate.format(DATE_FORMATTER));
-  }
-
+  
   @Override
   public void navigateForwards() {
     this.getElement().executeJs("vcfschedulexcalendar.navigateForwards($0)", this);
@@ -101,4 +93,5 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this,
         time.format(TIME_FORMATTER));
   }
+
 }

@@ -51,6 +51,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @NpmPackage(value = "@schedule-x/drag-and-drop", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/current-time", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/scroll-controller", version = "2.29.0")
+@NpmPackage(value = "@schedule-x/calendar-controls", version = "2.29.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 @Setter
@@ -75,6 +76,11 @@ public abstract class BaseScheduleXCalendar extends Div {
   private Map<String, Calendar> calendars = new HashMap<String, Calendar>();
 
   private EventProvider eventProvider;
+  
+  /**
+   * Current calendar view being shown.
+   */
+  private View view;
 
   /**
    * Optional global calendar configuration settings.
@@ -155,20 +161,47 @@ public abstract class BaseScheduleXCalendar extends Div {
     this.getElement().executeJs("this.calendar.eventsService.set(JSON.parse($0))", events);
   }
 
+  protected abstract String getJsConnector();
+
   /**
    * Sets the calendar view.
    * 
    * @param view the view to set
    */
-  public abstract void setView(View view);
+  public void setView(View view) {
+    this.getElement().executeJs(getJsConnector() + ".setView($0, $1);", this, view.getName());
+    this.view = view;
+  }
 
+  /**
+   * Gets the current calendar view in display.
+   * 
+   * @return the current view
+   */
+  public View getView() {
+    return this.view;
+  }
+  
   /**
    * Sets the calendar date.
    * 
    * @param selectedDate the date to set
    */
-  public abstract void setSelectedDate(LocalDate selectedDate);
+  public void setDate(LocalDate selectedDate) {
+    this.getElement().executeJs(getJsConnector() + ".setDate($0, $1);", this,
+        selectedDate.format(DATE_FORMATTER));
+    this.getConfiguration().setSelectedDate(selectedDate);
+  };
 
+  /**
+   * Gets the current date set in calendar.
+   * 
+   * @return current date
+   */
+  public LocalDate getDate() {
+    return configuration.getSelectedDate();
+  }
+  
   public abstract void navigateForwards();
 
   public abstract void navigateBackwards();

@@ -50,6 +50,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @NpmPackage(value = "@schedule-x/resize", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/drag-and-drop", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/current-time", version = "2.29.0")
+@NpmPackage(value = "@schedule-x/scroll-controller", version = "2.29.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 @Setter
@@ -60,6 +61,8 @@ public abstract class BaseScheduleXCalendar extends Div {
       DateTimeFormatter.ofPattern("yyyy-MM-dd");
   protected static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+  protected static final DateTimeFormatter TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("HH:mm");
 
   /**
    * Views available to the user.

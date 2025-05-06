@@ -113,6 +113,8 @@ public class Configuration implements Serializable {
 
   private CurrentTimeIndicatorConfig currentTimeIndicatorConfig;
 
+  private ScrollControllerConfig scrollControllerConfig;
+
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));
@@ -136,6 +138,8 @@ public class Configuration implements Serializable {
         .ifPresent(value -> js.put("dragAndDropInterval", value.getInterval()));
     Optional.ofNullable(currentTimeIndicatorConfig)
         .ifPresent(value -> js.put("currentTimeIndicatorConfig", value.toJson()));
+    Optional.ofNullable(scrollControllerConfig)
+        .ifPresent(value -> js.put("scrollControllerConfig", value.toJson()));
     return js.toJson();
   }
 
@@ -246,6 +250,26 @@ public class Configuration implements Serializable {
       JsonObject js = Json.createObject();
       Optional.ofNullable(fullWeekWidth).ifPresent(value -> js.put("fullWeekWidth", value));
       Optional.ofNullable(timeZoneOffset).ifPresent(value -> js.put("timeZoneOffset", value));
+      return js;
+    }
+  }
+
+  /**
+   * Configuration to control the scrolling in the week and day view grids.
+   */
+  @Getter
+  @Setter
+  public static class ScrollControllerConfig implements Serializable {
+
+    /**
+     * Initial scroll value.
+     */
+    private LocalTime initialScroll;
+
+    public JsonObject toJson() {
+      JsonObject js = Json.createObject();
+      Optional.ofNullable(initialScroll)
+          .ifPresent(value -> js.put("initialScroll", value.format(TIME_FORMATTER)));
       return js;
     }
   }

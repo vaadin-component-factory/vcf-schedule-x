@@ -77,5 +77,12 @@ window.vcfschedulexcalendar = {
 	navigateBackwards(container) {
 		navigateCalendar(container.calendar, 'backwards');
 	},
+	
+	/**
+	 * Scroll to a specific time. Only available for week and day views.
+	 */
+	scrollTo(container, time) {
+		container.calendar.$app.config.plugins.scrollController.scrollTo(time);
+	}
 		
 };

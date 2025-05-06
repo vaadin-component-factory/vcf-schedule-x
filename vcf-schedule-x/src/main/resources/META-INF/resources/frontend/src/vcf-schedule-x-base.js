@@ -13,6 +13,7 @@
  */
 
 import { createCalendar } from '@schedule-x/calendar';
+import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls';
 import { createCurrentTimePlugin } from '@schedule-x/current-time'
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
@@ -23,8 +24,8 @@ import {
 	handleOnSelectedDateUpdate,
 	handleEventUpdate,
 	processConfiguration,
-	setCalendarSelectedDate,
-	setCalendarView,
+	setSelectedDate,
+	setSelectedView,
 	updateEvents
 } from './vcf-schedule-x-utils.js';
 
@@ -53,6 +54,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const dragAndDropPlugin = createDragAndDropPlugin(config.dragAndDropInterval);
 	const currentTimeIndicatorPlugin = createCurrentTimePlugin(config.currentTimeIndicatorConfig);
 	const scrollControllerPlugin = createScrollControllerPlugin(config.scrollControllerConfig);
+	const calendarControlsPlugin = createCalendarControlsPlugin();
 
 	let div = document.getElementById(container.id);
 
@@ -81,7 +83,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			},
 		},
 		...config
-	}, [currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, resizePlugin, scrollControllerPlugin]);
+	}, [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, resizePlugin, scrollControllerPlugin]);
 
 	calendar.render(div);
 	div.calendar = calendar;
@@ -89,24 +91,24 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 }
 
 /**
- * Sets the current view on the calendar.
+ * Changes the calendar view.
  * 
  * @param {HTMLElement} container 
  * @param {string} view 
  * @param {Object} viewNameMap 
  */
 export function setView(container, view, viewNameMap) {
-	setCalendarView(container.calendar, viewNameMap[view]);
+	setSelectedView(container.calendar, viewNameMap[view]);	
 }
 
 /**
- * Sets the selected date on the calendar.
+ * Sets the date of the calendar.
  * 
  * @param {HTMLElement} container 
  * @param {string} selectedDate 
  */
-export function setSelectedDate(container, selectedDate) {
-	setCalendarSelectedDate(container.calendar, selectedDate);
+export function setDate(container, selectedDate) {
+	setSelectedDate(container.calendar, selectedDate);
 }
 
 /**
@@ -167,5 +169,5 @@ export function navigateCalendar(calendar, direction) {
 		return;
 	}
 
-	setCalendarSelectedDate(calendar, nextDate);
+	setSelectedDate(calendar, nextDate);
 }

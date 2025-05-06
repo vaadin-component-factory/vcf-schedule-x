@@ -28,13 +28,12 @@ export function updateEvents(div, range){
 	div.$server.updateRange(range.start, range.end);
 }
 
-export function setCalendarView(calendar, viewName) {
-	const selectedDate = calendar.$app.datePickerState.selectedDate.value;
-	calendar.$app.calendarState.setView(viewName, selectedDate);
+export function setSelectedView(calendar, viewName) {
+	calendar.$app.config.plugins.calendarControls.setView(viewName);
 }
 
-export function setCalendarSelectedDate(calendar, selectedDate) {
-	calendar.$app.datePickerState.selectedDate.value = selectedDate;
+export function setSelectedDate(calendar, selectedDate) {
+	calendar.$app.config.plugins.calendarControls.setDate(selectedDate);
 }
 
 export function handleOnEventClick(div, calendarEvent) {

@@ -25,7 +25,7 @@ import {
 	navigateCalendar,
 	removeEvent,
 	setView,
-	setSelectedDate, 
+	setDate, 
 	updateEvent
 } from './vcf-schedule-x-base.js';
 
@@ -100,8 +100,8 @@ window.vcfschedulexresourceview = {
 		setView(container, view, resourceViewNameMap);
 	},
 
-	setSelectedDate(container, selectedDate) {
-		setSelectedDate(container, selectedDate);
+	setDate(container, selectedDate) {
+		setDate(container, selectedDate);
 	},
 	
 	addEvent(container, calendarEvent) {

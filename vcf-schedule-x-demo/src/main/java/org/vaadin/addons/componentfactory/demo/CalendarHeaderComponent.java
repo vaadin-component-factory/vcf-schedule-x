@@ -34,7 +34,7 @@ public class CalendarHeaderComponent extends HorizontalLayout {
       datePicker.setValue(selectedDate);
     }
     datePicker.addValueChangeListener(e -> {
-      calendar.setSelectedDate(e.getValue());
+      calendar.setDate(e.getValue());
     });
     
     calendar.addSelectedDateUpdateEventListener(e -> {
@@ -72,13 +72,14 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     viewsComboBox.setValue(defaultView);
     viewsComboBox.addValueChangeListener(e -> {
       calendar.setView(e.getValue());
+//      Notification.show("View was changed to "  + calendar.getView());
     });
 
     Button todayButton = new Button("Today");
     todayButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
     todayButton.addClickListener(e -> {
       LocalDate today = LocalDate.now();
-      calendar.setSelectedDate(today);
+      calendar.setDate(today);
       datePicker.setValue(today);
     });
 

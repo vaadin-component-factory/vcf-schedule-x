@@ -13,9 +13,12 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
@@ -33,6 +36,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorD
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.CurrentTimeIndicatorConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.ScrollControllerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 
@@ -46,6 +50,8 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 public class ScheduleXCalendarDemoView extends DemoView {
 
   private List<Event> events;
+  
+  private ScheduleXCalendar calendar;
   
   @Override
   public void initView() {
@@ -87,14 +93,19 @@ public class ScheduleXCalendarDemoView extends DemoView {
 
     Configuration configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2025, 04, 17));
-    configuration.setDefaultView(CalendarView.MONTH_GRID);
+    configuration.setDefaultView(CalendarView.WEEK);
     configuration.setDragAndDropInterval(TimeInterval.MIN_30);
     CurrentTimeIndicatorConfig currentTimeIndicator = new CurrentTimeIndicatorConfig();
     currentTimeIndicator.setFullWeekWidth(true);
     currentTimeIndicator.setTimeZoneOffset(120);
     configuration.setCurrentTimeIndicatorConfig(currentTimeIndicator);
+    
+    // configure initial scroll value
+    ScrollControllerConfig scrollControllerConfig = new ScrollControllerConfig();
+    scrollControllerConfig.setInitialScroll(LocalTime.of(14, 50));
+    configuration.setScrollControllerConfig(scrollControllerConfig);    
       
-    ScheduleXCalendar calendar = new ScheduleXCalendar(
+    calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarView.DAY, CalendarView.WEEK, CalendarView.MONTH_GRID,
             CalendarView.MONTH_AGENDA),
         EventProvider.of(events), configuration, calendars);
@@ -115,15 +126,16 @@ public class ScheduleXCalendarDemoView extends DemoView {
     });
 
     CalendarHeaderComponent header = new CalendarHeaderComponent(calendar);
-    
-    // end-source-example
 
+    calendar.setHeight("500px");
+    // end-source-example
+    
     calendar.setId("basic-use-demo");
 
-    addCard("Basic Use Demo", header, calendar, getEventHandlingLayout(calendar));
+    addCard("Basic Use Demo", header, calendar, getEventHandlingLayout(), getScrollingLayout());
   }
 
-  private HorizontalLayout getEventHandlingLayout(ScheduleXCalendar calendar) {
+  private FieldSet getEventHandlingLayout() {
     HorizontalLayout layout = new HorizontalLayout();
     layout.setWidthFull();
 
@@ -172,6 +184,25 @@ public class ScheduleXCalendarDemoView extends DemoView {
         e -> Notification.show("Calendar event with id '" + e.getEventId() + "' removed."));
 
     layout.add(addTestEventButton, updateTestEventButton, removeTestEventButton);
-    return layout;
+    return createFieldSetLayout("Event handling testing", layout);
+  }
+  
+  private FieldSet getScrollingLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidthFull();
+    
+    TimePicker timePicker = new TimePicker("Select a time to scroll to");
+    timePicker.addValueChangeListener(e -> {
+      calendar.scrollTo(e.getValue());
+    }); 
+    
+    layout.add(timePicker);
+    
+    return createFieldSetLayout("Scrolling testing (only available for week and day views)", layout);
+  }
+  
+  private FieldSet createFieldSetLayout(String text, Component component) {
+    FieldSet fieldSet = new FieldSet(text, component);
+    return fieldSet;
   }
 }

@@ -15,6 +15,7 @@ package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import com.vaadin.flow.component.dependency.JsModule;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
@@ -91,4 +92,14 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   public void updateEvent(Event event) {
     this.getElement().executeJs("vcfschedulexcalendar.updateEvent($0, $1);", this, event.getJson());
   } 
+  
+  /**
+   * Scroll to an specific time.
+   * Only available for week and day views.
+   * 
+   * @param time the time to scroll to in the view
+   */
+  public void scrollTo(LocalTime time) {
+    this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this, time.format(TIME_FORMATTER));
+  }
 }

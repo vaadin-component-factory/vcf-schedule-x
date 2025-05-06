@@ -17,6 +17,7 @@ import { createCurrentTimePlugin } from '@schedule-x/current-time'
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { createResizePlugin } from '@schedule-x/resize';
+import { createScrollControllerPlugin } from '@schedule-x/scroll-controller';
 import {
 	handleOnEventClick,
 	handleOnSelectedDateUpdate,
@@ -51,6 +52,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const resizePlugin = createResizePlugin(config.resizeInterval);
 	const dragAndDropPlugin = createDragAndDropPlugin(config.dragAndDropInterval);
 	const currentTimeIndicatorPlugin = createCurrentTimePlugin(config.currentTimeIndicatorConfig);
+	const scrollControllerPlugin = createScrollControllerPlugin(config.scrollControllerConfig);
 
 	let div = document.getElementById(container.id);
 
@@ -79,7 +81,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			},
 		},
 		...config
-	}, [currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, resizePlugin]);
+	}, [currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, resizePlugin, scrollControllerPlugin]);
 
 	calendar.render(div);
 	div.calendar = calendar;

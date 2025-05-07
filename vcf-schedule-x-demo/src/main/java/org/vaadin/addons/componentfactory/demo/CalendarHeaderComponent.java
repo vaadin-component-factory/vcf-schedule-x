@@ -72,7 +72,6 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     viewsComboBox.setValue(defaultView);
     viewsComboBox.addValueChangeListener(e -> {
       calendar.setView(e.getValue());
-//      Notification.show("View was changed to "  + calendar.getView());
     });
 
     Button todayButton = new Button("Today");

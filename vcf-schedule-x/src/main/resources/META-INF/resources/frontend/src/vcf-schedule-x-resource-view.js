@@ -26,6 +26,15 @@ import {
 	removeEvent,
 	setView,
 	setDate, 
+	setFirstDayOfWeek,
+	setLocale,
+	setViews,
+	setDayBoundaries,
+	setWeekOptions,
+	setCalendars,
+	setMinDate,
+	setMaxDate,
+	setMonthGridOptions,
 	updateEvent
 } from './vcf-schedule-x-base.js';
 
@@ -102,6 +111,42 @@ window.vcfschedulexresourceview = {
 
 	setDate(container, selectedDate) {
 		setDate(container, selectedDate);
+	},
+	
+	setFirstDayOfWeek(container, firstDayOfWeek) {
+		setFirstDayOfWeek(container, firstDayOfWeek);
+	},
+	
+	setLocale(container, locale) {
+		setLocale(container, locale);
+	},
+	
+	setViews(container, viewsJson) {
+		setViews(container, viewsJson, resourceViewFactoryMap);
+	},
+	
+	setDayBoundaries(container, dayBoundariesJson) {
+		setDayBoundaries(container, dayBoundariesJson);
+	},
+	
+	setWeekOptions(container, weekOptionsJson) {
+		setWeekOptions(container, weekOptionsJson);
+	},
+	
+	setCalendars(container, calendarsJson) {
+		setCalendars(container, calendarsJson);
+	},
+	
+	setMinDate(container, minDate){
+		setMinDate(container, minDate);
+	},
+	
+	setMaxDate(container, maxDate){
+		setMaxDate(container, maxDate);
+	},
+	
+	setMonthGridOptions(container, monthGridOptionsJson){
+		setMonthGridOptions(container, monthGridOptionsJson);
 	},
 	
 	addEvent(container, calendarEvent) {

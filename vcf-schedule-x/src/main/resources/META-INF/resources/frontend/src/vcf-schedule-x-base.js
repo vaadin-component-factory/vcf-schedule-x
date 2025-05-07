@@ -24,8 +24,18 @@ import {
 	handleOnSelectedDateUpdate,
 	handleEventUpdate,
 	processConfiguration,
+	processViews,	
 	setSelectedDate,
 	setSelectedView,
+	updateFirstDayOfWeek,
+	updateLocale,
+	updateViews,
+	updateDayBoundaries,
+	updateWeekOptions,
+	updateCalendars,
+	updateMinDate,
+	updateMaxDate,
+	updateMonthGridOptions,
 	updateEvents
 } from './vcf-schedule-x-utils.js';
 
@@ -44,10 +54,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const config = processConfiguration(configJson, viewNameMap);
 	const parsedCalendars = JSON.parse(calendarsJson || "[]");
 
-	const views = viewFnNames
-		.map(fnName => viewFactories[fnName])
-		.filter(Boolean)
-		.map(factory => factory(calendarOptions.resourceConfig)); // optional for resource views
+	const views = processViews(viewFnNames, viewFactories, calendarOptions.resourceConfig);
 
 	const eventsServicePlugin = createEventsServicePlugin();
 	const resizePlugin = createResizePlugin(config.resizeInterval);
@@ -88,6 +95,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	calendar.render(div);
 	div.calendar = calendar;
 	container.calendar = calendar;
+	container.dispatchEvent(new CustomEvent('calendar-rendered'));
 }
 
 /**
@@ -109,6 +117,113 @@ export function setView(container, view, viewNameMap) {
  */
 export function setDate(container, selectedDate) {
 	setSelectedDate(container.calendar, selectedDate);
+}
+
+/**
+ * Sets the first day of the week for the calendar. 
+ * Value must be between 0 and 6 where 0 is Sunday, 1 is Monday etc.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} firstDayOfWeek 
+ * 
+ */
+export function setFirstDayOfWeek(container, firstDayOfWeek) {
+	updateFirstDayOfWeek(container.calendar, firstDayOfWeek);
+}
+
+/**
+ * Sets the locale of the calendar.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} locale 
+ * 
+ */
+export function setLocale(container, locale) {
+	updateLocale(container.calendar, locale);
+}
+
+/**
+ * Sets the available views for the calendar. The views to be set must include the currently active view name. 
+ * At least one view must be passed into this function.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} viewsJson 
+ * @param {Object} viewFactories
+ * 
+ */
+export function setViews(container, viewsJson, viewFactories) {
+	const viewFnNames = JSON.parse(viewsJson || "[]");
+	updateViews(container.calendar, viewFnNames, viewFactories);	
+}
+
+/**
+ * Sets the day boundaries of the calendar.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} dayBoundariesJson 
+ * 
+ */
+export function setDayBoundaries(container, dayBoundariesJson) {
+	const dayBoundaries = JSON.parse(dayBoundariesJson);
+	updateDayBoundaries(container.calendar, dayBoundaries);
+}
+
+/**
+ * Sets the week options of the calendar.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} weekOptionsJson 
+ * 
+ */
+export function setWeekOptions(container, weekOptionsJson) {
+	const weekOptions = JSON.parse(weekOptionsJson);
+	updateWeekOptions(container.calendar, weekOptions);
+}
+
+/** 
+ * Sets the available calendars to be displayed in the calendar.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} calendarsJson  
+ * 
+ */
+export function setCalendars(container, calendarsJson) {
+	const calendars = JSON.parse(calendarsJson);
+	updateCalendars(container.calendar, calendars);
+}
+
+/**
+ * Sets the min date for the calendar navigation.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} minDate 
+ * 
+ */
+export function setMinDate(container, minDate) {
+	updateMinDate(container.calendar, minDate);
+}
+
+/**
+ * Sets the max date for the calendar navigation.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} maxDate 
+ * 
+ */
+export function setMaxDate(container, maxDate) {
+	updateMaxDate(container.calendar, maxDate);
+}
+
+/**
+ * Sets the week options of the calendar.
+ * 
+ * @param {HTMLElement} container 
+ * @param {string} monthGridOptionsJson 
+ * 
+ */
+export function setMonthGridOptions(container, monthGridOptionsJson) {
+	const monthGridOptions = JSON.parse(monthGridOptionsJson);
+	updateMonthGridOptions(container.calendar, monthGridOptions);
 }
 
 /**

@@ -24,6 +24,7 @@ import com.vaadin.flow.component.EventData;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.function.SerializableRunnable;
 import com.vaadin.flow.shared.Registration;
 import elemental.json.Json;
 import elemental.json.JsonArray;
@@ -40,6 +41,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.DayBoundaries;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.MonthGridOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.WeekOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
@@ -64,6 +68,8 @@ public abstract class BaseScheduleXCalendar extends Div {
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
   protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
+  private boolean calendarRendered;
+
   /**
    * Views available to the user.
    */
@@ -76,7 +82,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   private Map<String, Calendar> calendars = new HashMap<String, Calendar>();
 
   private EventProvider eventProvider;
-  
+
   /**
    * Current calendar view being shown.
    */
@@ -114,6 +120,8 @@ public abstract class BaseScheduleXCalendar extends Div {
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
     this.initCalendar();
+    addCalendarRenderedListener(() -> {
+    });
   }
 
   protected abstract void initCalendar();
@@ -169,8 +177,10 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @param view the view to set
    */
   public void setView(View view) {
-    this.getElement().executeJs(getJsConnector() + ".setView($0, $1);", this, view.getName());
-    this.view = view;
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setView($0, $1);", this, view.getName());
+      this.view = view;
+    });
   }
 
   /**
@@ -181,16 +191,21 @@ public abstract class BaseScheduleXCalendar extends Div {
   public View getView() {
     return this.view;
   }
-  
+
   /**
    * Sets the calendar date.
    * 
    * @param selectedDate the date to set
    */
   public void setDate(LocalDate selectedDate) {
-    this.getElement().executeJs(getJsConnector() + ".setDate($0, $1);", this,
-        selectedDate.format(DATE_FORMATTER));
-    this.getConfiguration().setSelectedDate(selectedDate);
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setDate($0, $1);", this,
+          selectedDate.format(DATE_FORMATTER));
+      if (configuration == null) {
+        configuration = new Configuration();
+      }
+      configuration.setSelectedDate(selectedDate);
+    });
   };
 
   /**
@@ -201,7 +216,224 @@ public abstract class BaseScheduleXCalendar extends Div {
   public LocalDate getDate() {
     return configuration.getSelectedDate();
   }
-  
+
+  /**
+   * Set the first day of the week for the calendar. Value must be between 0 and 6 where 0 is
+   * Sunday, 1 is Monday etc.
+   * 
+   * @param firstDayOfWeek day to be shown as first day of the week;
+   */
+  public void setFirstDayOfWeek(Integer firstDayOfWeek) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setFirstDayOfWeek($0, $1);", this,
+          firstDayOfWeek);
+      if (configuration == null) {
+        configuration = new Configuration();
+      }
+      configuration.setFirstDayOfWeek(firstDayOfWeek);
+    });
+  }
+
+  /**
+   * Returns the day(number) shown as first day of the week in the calendars.
+   * 
+   * @return first day of the week
+   */
+  public Integer getFirstDayOfWeek() {
+    return configuration.getFirstDayOfWeek();
+  }
+
+  /**
+   * Sets the language for the calendar. List of supported languages:
+   * https://schedule-x.dev/docs/calendar/language
+   * 
+   * @param locale locale for the calendar
+   */
+  public void setCalendarLocale(String locale) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setLocale($0, $1);", this, locale);
+      if (configuration == null) {
+        configuration = new Configuration();
+      }
+      configuration.setLocale(locale);
+    });
+  }
+
+  /**
+   * Returns the current language/locale of the calendar.
+   * 
+   * @return the locale use by the calendar
+   */
+  public String getCalendarLocale() {
+    return configuration.getLocale();
+  }
+
+  /**
+   * Sets the available views for the calendar. The views to be set must include the currently
+   * active view name. At least one view must be passed into this function.
+   * 
+   * @param views the views to be shown by the calendar
+   */
+  public void setViews(List<? extends View> views) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setViews($0, $1);", this, viewsToJson());
+      this.views = new ArrayList<>(views);
+    });
+  }
+
+  /**
+   * Sets the day boundaries of the calendar.
+   * 
+   * @param dayBoundaries the day boundaries of the calendar
+   */
+  public void setDayBoundaries(DayBoundaries dayBoundaries) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setDayBoundaries($0, $1);", this,
+          dayBoundaries.toJson());
+      if (configuration == null) {
+        configuration = new Configuration();
+      }
+      configuration.setDayBoundaries(dayBoundaries);
+    });
+  }
+
+  /**
+   * Gets the day boundaries of the calendar.
+   * 
+   * @return the day boundaries of the calendar
+   */
+  public DayBoundaries getDayBoundaries() {
+    return configuration.getDayBoundaries();
+  }
+
+  /**
+   * Sets the week options of the calendar.
+   * 
+   * @param weekOptions the week options of the calendar
+   */
+  public void setWeekOptions(WeekOptions weekOptions) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setWeekOptions($0, $1);", this,
+          weekOptions.toJson());
+      if (configuration == null) {
+        configuration = new Configuration();
+      }
+      configuration.setWeekOptions(weekOptions);
+    });
+  }
+
+  /**
+   * Gets the week options of the calendar.
+   * 
+   * @return the week options of the calendar
+   */
+  public WeekOptions getWeekOptions() {
+    return configuration.getWeekOptions();
+  }
+
+  /**
+   * Sets the available calendars to be displayed in the calendar.
+   * 
+   * @param calendars the calendars to be displayed in the calendar
+   */
+  public void setCalendars(Map<String, Calendar> calendars) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setCalendars($0, $1);", this,
+          calendarsToJson());
+      this.calendars = calendars;
+    });
+  }
+
+  /**
+   * Sets the min date for the calendar navigation.
+   * 
+   * @param minDate the min date for the calendar navigation
+   */
+  public void setMinDate(LocalDate minDate) {
+    this.getElement().executeJs(getJsConnector() + ".setMinDate($0, $1);", this,
+        minDate.format(DATE_FORMATTER));
+    if (configuration == null) {
+      configuration = new Configuration();
+    }
+    configuration.setMinDate(minDate);
+  }
+
+  /**
+   * Gets the min date for the calendar navigation.
+   * 
+   * @return the min date for the calendar navigation
+   */
+  public LocalDate getMinDate() {
+    return configuration.getMinDate();
+  }
+
+  /**
+   * Sets the max date for the calendar navigation.
+   * 
+   * @param maxDate the max date for the calendar navigation
+   */
+  public void setMaxDate(LocalDate maxDate) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setMaxDate($0, $1);", this,
+          maxDate.format(DATE_FORMATTER));
+      if (configuration == null) {
+        configuration = new Configuration();
+      }
+      configuration.setMaxDate(maxDate);
+    });
+  }
+
+  /**
+   * Sets the max date for the calendar navigation.
+   * 
+   * @return the max date for the calendar navigation
+   */
+  public LocalDate getMaxDate() {
+    return configuration.getMaxDate();
+  }
+
+  /**
+   * Sets the month grid options of the calendar.
+   * 
+   * @param monthGridOptions the month grid options of the calendar
+   */
+  public void setMonthGridOptions(MonthGridOptions monthGridOptions) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setMonthGridOptions($0, $1);", this,
+          monthGridOptions.toJson());
+      if (configuration == null) {
+        configuration = new Configuration();
+      }
+      configuration.setMonthGridOptions(monthGridOptions);
+    });
+  }
+
+  /**
+   * Gets the month grid options of the calendar.
+   * 
+   * @return the month grid options of the calendar
+   */
+  public MonthGridOptions getMonthGridOptions() {
+    return configuration.getMonthGridOptions();
+  }
+
+  private void executeOnCalendarRendered(SerializableRunnable runnable) {
+    if (!calendarRendered) {
+      addCalendarRenderedListener(runnable);
+    } else {
+      runnable.run();
+    }
+  }
+
+  private void addCalendarRenderedListener(SerializableRunnable onRendered) {
+    this.getElement().addEventListener("calendar-rendered", ev -> {
+      if (!calendarRendered) {
+        calendarRendered = true;
+        onRendered.run();
+      }
+    });
+  }
+
   public abstract void navigateForwards();
 
   public abstract void navigateBackwards();

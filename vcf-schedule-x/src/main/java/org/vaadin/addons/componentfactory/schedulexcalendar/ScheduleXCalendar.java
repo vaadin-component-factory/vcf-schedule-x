@@ -39,7 +39,6 @@ import elemental.json.JsonValue;
 public class ScheduleXCalendar extends BaseScheduleXCalendar {
 
   private DrawnEventValidationCallback drawnEventValidationCallback;
-  private Integer drawSnapDuration = 30;
 
   public ScheduleXCalendar() {
     super();
@@ -165,12 +164,4 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     return addListener(CalendarEventDrawnEvent.class, listener);
   }
 
-  @ClientCallable
-  public Integer getDrawSnapDuration() {
-    return drawSnapDuration;
-  }
-
-  public void setDrawSnapDuration(Integer drawSnapDuration) {
-    this.drawSnapDuration = drawSnapDuration;
-  }
 }

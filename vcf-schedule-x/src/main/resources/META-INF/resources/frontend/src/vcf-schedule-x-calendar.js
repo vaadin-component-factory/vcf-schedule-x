@@ -51,10 +51,6 @@ const viewNameMap = {
 	createViewWeek: createViewWeek().name
 };
 
-async function getDrawSnapDuration(div) {
-  return await div.$server.getDrawSnapDuration();
-}
-
 window.vcfschedulexcalendar = {
 	create(container, viewsJson, configJson, calendarsJson) {
         const parsedConfig = JSON.parse(configJson);

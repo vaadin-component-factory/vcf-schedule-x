@@ -13,13 +13,13 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
+import com.vaadin.flow.function.SerializableBiFunction;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-
-import com.vaadin.flow.function.SerializableBiFunction;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceEvaluator;
 
 /**
  * This class provides events from different sources
@@ -35,11 +35,22 @@ public class EventProvider {
 
   public static EventProvider of(List<Event> events) {
     EventProvider eventProvider = new EventProvider((startDate, endDate) -> {
-      return events.stream().filter(
-          event -> event.getStart().isAfter(startDate) && event.getEnd().isBefore(endDate))
-          .collect(Collectors.toList());
+      return events.stream().filter(event -> {
+        boolean isWithin = event.getStart().isAfter(startDate) && event.getEnd().isBefore(endDate);
+        boolean isRecurringInRange = false;
+
+        if (event.getRecurrenceRule() != null) {
+          LocalDate start = event.getStart().toLocalDate();
+          isRecurringInRange = RecurrenceEvaluator.occursInRange(event.getRecurrenceRule(), start,
+              startDate.toLocalDate(), endDate.toLocalDate());
+        }
+
+        return isWithin || isRecurringInRange;
+
+      }).collect(Collectors.toList());
     });
     return eventProvider;
+
   }
 
   public static EventProvider of(

@@ -82,6 +82,11 @@ public class Event implements Serializable {
    * Id of the resource, only for {@link ScheduleXResourceView Resource View}
    */
   private String resourceId;
+  
+  /**
+   * The recurrence rule for the events if applicable. 
+   */
+  private RecurrenceRule recurrenceRule;
 
   @Override
   public int hashCode() {
@@ -137,6 +142,8 @@ public class Event implements Serializable {
     }
     
     Optional.ofNullable(resourceId).ifPresent(value -> js.put("resourceId", value));
+    
+    Optional.ofNullable(recurrenceRule).ifPresent(value -> js.put("rrule", value.getRule()));
 
     return js.toJson();
   }

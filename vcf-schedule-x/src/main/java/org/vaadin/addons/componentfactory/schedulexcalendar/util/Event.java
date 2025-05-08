@@ -13,20 +13,22 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
+import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
 
 /**
  * Calendar event definition.
@@ -39,8 +41,11 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceVie
 @RequiredArgsConstructor
 public class Event implements Serializable {
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER =
+  protected static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  protected static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+  protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
   
   @NonNull
   private String id;
@@ -87,6 +92,54 @@ public class Event implements Serializable {
    * The recurrence rule for the events if applicable. 
    */
   private RecurrenceRule recurrenceRule;
+
+  public Event(String id, String start, String end) {
+    this(id, parseDate(start,false),
+        parseDate(end,true));
+  }
+  
+  public Event(JsonValue json) {
+    JsonObject js = (JsonObject) json;
+    this.id = js.getString("id");
+    this.start = parseDate(js.getString("start"),false);
+    this.end = parseDate(js.getString("end"),true);
+    this.title = js.hasKey("title") ? js.getString("title") : null;
+    this.description = js.hasKey("description") ? js.getString("description") : null;
+    this.location = js.hasKey("location") ? js.getString("location") : null;
+    this.calendarId = js.hasKey("calendarId") ? js.getString("calendarId") : null;
+    this.resourceId = js.hasKey("resourceId") ? js.getString("resourceId") : null;
+
+    if (js.hasKey("people")) {
+      JsonArray jsonPeople = js.getArray("people");
+      for (int i = 0; i < jsonPeople.length(); i++) {
+        people.add(jsonPeople.get(i).asString());
+      }
+    }
+
+    if (js.hasKey("_options")) {
+      options = new EventOptions();
+      options.disableDND = js.getObject("_options").getBoolean("disableDND");
+      options.disableResize = js.getObject("_options").getBoolean("disableResize");
+      JsonArray additionalClasses = js.getObject("_options").getArray("additionalClasses");
+      for (int i = 0; i < additionalClasses.length(); i++) {
+        options.additionalClasses.add(additionalClasses.get(i).asString());
+      }
+    }
+
+    if (js.hasKey("_customContent")) {
+      customContent = new EventCustomContent();
+      JsonObject jsonCustomContent = js.getObject("_customContent");
+      customContent.timeGrid =
+          jsonCustomContent.hasKey("timeGrid") ? jsonCustomContent.getString("timeGrid") : null;
+      customContent.dateGrid =
+          jsonCustomContent.hasKey("dateGrid") ? jsonCustomContent.getString("dateGrid") : null;
+      customContent.monthGrid =
+          jsonCustomContent.hasKey("monthGrid") ? jsonCustomContent.getString("monthGrid") : null;
+      customContent.monthAgenda =
+          jsonCustomContent.hasKey("monthAgenda") ? jsonCustomContent.getString("monthAgenda")
+              : null;
+    }
+  }
 
   @Override
   public int hashCode() {
@@ -146,6 +199,19 @@ public class Event implements Serializable {
     Optional.ofNullable(recurrenceRule).ifPresent(value -> js.put("rrule", value.getRule()));
 
     return js.toJson();
+  }
+  
+  private static LocalDateTime parseDate(String date, boolean end) {
+    LocalDateTime result;
+    try {
+      result = LocalDateTime.parse(date, DATE_TIME_FORMATTER);
+    } catch (Exception e) {
+      result = LocalDate.parse(date, DATE_FORMATTER).atStartOfDay();
+      if (end) {
+        result = result.withHour(23).withMinute(59).withSecond(59);
+      }
+    }
+    return result;
   }
 
   @Setter

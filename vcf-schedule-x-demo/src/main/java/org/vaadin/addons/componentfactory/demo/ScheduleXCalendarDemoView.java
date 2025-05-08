@@ -114,6 +114,7 @@ public class ScheduleXCalendarDemoView extends DemoView {
     calendar = new ScheduleXCalendar(Arrays.asList(CalendarView.DAY, CalendarView.WEEK,
         CalendarView.MONTH_GRID, CalendarView.MONTH_AGENDA), EventProvider.of(events),
         configuration, calendars);
+    calendar.setDrawSnapDuration(15);
 
     calendar.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
@@ -183,6 +184,8 @@ public class ScheduleXCalendarDemoView extends DemoView {
     });
     removeTestEventButton.setEnabled(false);
     removeTestEventButton.setDisableOnClick(true);
+    
+    calendar.addCalendarEventDrawnEventListener(e -> events.add(e.getEvent()));
 
     calendar.addCalendarEventAddedEventListener(
         e -> Notification.show("Calendar event with id '" + e.getEventId() + "' added."));

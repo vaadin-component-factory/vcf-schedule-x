@@ -13,7 +13,6 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
-import com.vaadin.flow.component.dependency.JsModule;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +20,26 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
+import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.function.SerializableFunction;
+import com.vaadin.flow.shared.Registration;
+import elemental.json.JsonValue;
 
 /**
  * Vaadin Wrapper Add-on for <a href="https://schedule-x.dev/">Schedule-X Calendar</a>.
  *
  */
 @SuppressWarnings("serial")
+@NpmPackage(value = "@sx-premium/draw", version = "3.15.0")
 @JsModule("./src/vcf-schedule-x-calendar.js")
 public class ScheduleXCalendar extends BaseScheduleXCalendar {
+
+  private DrawnEventValidationCallback drawnEventValidationCallback;
+  private Integer drawSnapDuration = 30;
 
   public ScheduleXCalendar() {
     super();
@@ -73,6 +84,12 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   public void addEvent(Event event) {
     this.getElement().executeJs("vcfschedulexcalendar.addEvent($0, $1);", this, event.getJson());
   }
+  
+  @ClientCallable
+  void addEvent(JsonValue jsonValue) {
+    Event event = new Event(jsonValue);
+    this.fireEvent(new CalendarEventDrawnEvent(this, true, event));
+  }
 
   @Override
   public void removeEvent(String eventId) {
@@ -93,5 +110,67 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this,
         time.format(TIME_FORMATTER));
   }
+  
+  /**
+   * Sets the drawn event validation callback.
+   * 
+   * @param drawnEventValidationCallback
+   */
+  public void setDrawnEventValidationCallback(
+      DrawnEventValidationCallback drawnEventValidationCallback) {
+    this.drawnEventValidationCallback = drawnEventValidationCallback;
+  }
 
+  /**
+   * Validates drawn event by calling drawnEventValidationCallback.
+   * 
+   * @param eventId the id of the updated event
+   * @param start the new start date of the updated event
+   * @param end the new end date of the updated event
+   */
+  @ClientCallable
+  private boolean validateDrawnEvent(String eventId, String start, String end) {
+    if (drawnEventValidationCallback != null) {
+      return drawnEventValidationCallback.apply(new Event(eventId, start, end));
+    }
+    return true;
+  }
+
+  /**
+   * Callback interface for validating drawn events.
+   */
+  public static class DrawnEventValidationCallback implements SerializableFunction<Event, Boolean> {
+    @Override
+    public Boolean apply(Event arg0) {
+      return true;
+    }
+  }
+  
+  public static class CalendarEventDrawnEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private final Event event;
+
+    public CalendarEventDrawnEvent(BaseScheduleXCalendar source, boolean fromClient, Event event) {
+      super(source, fromClient);
+      this.event = event;
+    }
+
+    public Event getEvent() {
+      return event;
+    }
+  }
+  
+  public Registration addCalendarEventDrawnEventListener(
+      ComponentEventListener<CalendarEventDrawnEvent> listener) {
+    return addListener(CalendarEventDrawnEvent.class, listener);
+  }
+
+  @ClientCallable
+  public Integer getDrawSnapDuration() {
+    return drawSnapDuration;
+  }
+
+  public void setDrawSnapDuration(Integer drawSnapDuration) {
+    this.drawSnapDuration = drawSnapDuration;
+  }
 }

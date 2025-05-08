@@ -49,7 +49,7 @@ import {
  * @param {string} calendarsJson - The calendars as JSON.
  * @param {Object} calendarOptions - Additional options.
  */
-export function createCommonCalendar(container, viewFactories, viewNameMap, configJson, calendarsJson, calendarOptions = {}) {
+export function createCommonCalendar(container, viewFactories, viewNameMap, configJson, calendarsJson, calendarOptions = {}, drawPlugin) {
 	const viewFnNames = JSON.parse(calendarOptions.viewsJson || "[]");
 	const config = processConfiguration(configJson, viewNameMap);
 	const parsedCalendars = JSON.parse(calendarsJson || "[]");
@@ -65,6 +65,8 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const recurrencePlugin = createEventRecurrencePlugin();
 
 	let div = document.getElementById(container.id);
+    let plugins = [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
+    if (drawPlugin) plugins.push(drawPlugin);
 
 	const calendar = createCalendar({
 		views: views,
@@ -89,9 +91,30 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			onEventUpdate(updatedEvent) {
 				handleEventUpdate(div, updatedEvent);
 			},
+           onMouseDownDateTime(dateTime, mouseDownEvent) {
+            if(drawPlugin) {
+                 drawPlugin.drawTimeGridEvent(dateTime, mouseDownEvent, {
+                   title: 'Unknown event'
+                 })
+             };
+           },
+           onMouseDownMonthGridDate(date, _mouseDownEvent) {
+            if(drawPlugin) {
+                 drawPlugin.drawMonthGridEvent(date, {
+                   title: 'Unknown event'
+                 })
+             };
+           },
+           onMouseDownDateGridDate(date, mouseDownEvent) {
+            if(drawPlugin) {
+                 drawPlugin.drawDateGridEvent(date, mouseDownEvent, {
+                   title: 'Unknown event'
+                 })
+             };
+           }
 		},
 		...config
-	}, [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin]);
+	}, plugins);
 
 	calendar.render(div);
 	div.calendar = calendar;

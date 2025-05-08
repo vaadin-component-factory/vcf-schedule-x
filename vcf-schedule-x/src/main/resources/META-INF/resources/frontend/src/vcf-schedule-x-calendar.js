@@ -35,6 +35,7 @@ import {
 	setMonthGridOptions,
 	updateEvent
 } from './vcf-schedule-x-base.js';
+import { createDrawPlugin } from "@sx-premium/draw";
 
 const viewFactoryMap = {
 	createViewDay,
@@ -50,13 +51,33 @@ const viewNameMap = {
 	createViewWeek: createViewWeek().name
 };
 
+async function getDrawSnapDuration(div) {
+  return await div.$server.getDrawSnapDuration();
+}
+
 window.vcfschedulexcalendar = {
 	create(container, viewsJson, configJson, calendarsJson) {
-		setTimeout(() =>
-			createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
-				viewsJson
-			})
-		);
+        let div = document.getElementById(container.id);
+        getDrawSnapDuration(div).then((drawSnapDuration)=>{
+            const drawPlugin = createDrawPlugin({
+              // (Optional) callback that runs on mouseup after drawing an event, before calling onFinishDrawing
+              onBeforeFinishDrawing: (async (event) => {
+                let validation = await div.$server.validateDrawnEvent(event.id, event.start, event.end);
+                if (validation) {
+                    div.$server.addEvent(event);
+                }
+                return false;
+              }),
+             
+              // (Optional) configure the intervals, in minutes, at which a time grid-event can be drawn. Valid values: 15, 30, 60
+              snapDuration: drawSnapDuration
+            });
+            setTimeout(() =>
+                createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
+                    viewsJson
+                }, drawPlugin)
+            );
+        });
 	},
 
 	setView(container, view) {

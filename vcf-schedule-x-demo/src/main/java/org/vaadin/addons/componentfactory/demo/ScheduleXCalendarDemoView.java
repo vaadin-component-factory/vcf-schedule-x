@@ -13,15 +13,6 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.FieldSet;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.timepicker.TimePicker;
-import com.vaadin.flow.demo.DemoView;
-import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,6 +28,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorD
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.CurrentTimeIndicatorConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.DrawOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.ScrollControllerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule;
@@ -44,6 +36,15 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule.
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule.Frequency;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule.Until;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.FieldSet;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.demo.DemoView;
+import com.vaadin.flow.router.Route;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -110,11 +111,14 @@ public class ScheduleXCalendarDemoView extends DemoView {
     ScrollControllerConfig scrollControllerConfig = new ScrollControllerConfig();
     scrollControllerConfig.setInitialScroll(LocalTime.of(14, 50));
     configuration.setScrollControllerConfig(scrollControllerConfig);
+    DrawOptions drawOptions = new DrawOptions();
+    drawOptions.setDefaultTitle("New event");
+    drawOptions.setSnapDrawDuration(15);
+    configuration.setDrawOptions(drawOptions);
 
     calendar = new ScheduleXCalendar(Arrays.asList(CalendarView.DAY, CalendarView.WEEK,
         CalendarView.MONTH_GRID, CalendarView.MONTH_AGENDA), EventProvider.of(events),
         configuration, calendars);
-    calendar.setDrawSnapDuration(15);
 
     calendar.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));

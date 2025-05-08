@@ -94,21 +94,21 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
            onMouseDownDateTime(dateTime, mouseDownEvent) {
             if(drawPlugin) {
                  drawPlugin.drawTimeGridEvent(dateTime, mouseDownEvent, {
-                   title: 'Unknown event'
+                   title: config.drawOptions.defaultTitle
                  })
              };
            },
            onMouseDownMonthGridDate(date, _mouseDownEvent) {
             if(drawPlugin) {
                  drawPlugin.drawMonthGridEvent(date, {
-                   title: 'Unknown event'
+                   title: config.drawOptions.defaultTitle
                  })
              };
            },
            onMouseDownDateGridDate(date, mouseDownEvent) {
             if(drawPlugin) {
                  drawPlugin.drawDateGridEvent(date, mouseDownEvent, {
-                   title: 'Unknown event'
+                   title: config.drawOptions.defaultTitle
                  })
              };
            }

@@ -16,7 +16,7 @@ import { createCalendar } from '@schedule-x/calendar';
 import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls';
 import { createCurrentTimePlugin } from '@schedule-x/current-time'
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
-import { createEventsServicePlugin } from '@schedule-x/events-service';
+import { createEventRecurrencePlugin, createEventsServicePlugin } from "@schedule-x/event-recurrence";
 import { createResizePlugin } from '@schedule-x/resize';
 import { createScrollControllerPlugin } from '@schedule-x/scroll-controller';
 import {
@@ -62,6 +62,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const currentTimeIndicatorPlugin = createCurrentTimePlugin(config.currentTimeIndicatorConfig);
 	const scrollControllerPlugin = createScrollControllerPlugin(config.scrollControllerConfig);
 	const calendarControlsPlugin = createCalendarControlsPlugin();
+	const recurrencePlugin = createEventRecurrencePlugin();
 
 	let div = document.getElementById(container.id);
 
@@ -90,7 +91,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			},
 		},
 		...config
-	}, [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, resizePlugin, scrollControllerPlugin]);
+	}, [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin]);
 
 	calendar.render(div);
 	div.calendar = calendar;

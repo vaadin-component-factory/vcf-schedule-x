@@ -15,7 +15,6 @@ package org.vaadin.addons.componentfactory.demo;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.FieldSet;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.demo.Card;
 import com.vaadin.flow.router.Route;
@@ -27,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import org.vaadin.addons.componentfactory.schedulexcalendar.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
@@ -36,30 +36,36 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.SchedulingAssistantConfig;
 
 /**
- * View for {@link ScheduleXResourceView} demo.
+ * View for {@link ScheduleXResourceView} demo with {@code SchedulingAssistantConfig}.
  *
  * @author Vaadin Ltd
  */
 @SuppressWarnings("serial")
-@Route("resource")
-public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
+@Route("scheduling")
+public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
   private List<Resource> resources;
   private Configuration configuration;
   private Map<String, Calendar> calendars;
   private ResourceSchedulerConfig resourceSchedulerConfig;
+  private SchedulingAssistantConfig schedulingAssistantConfig;
   private ScheduleXResourceView resourceView;
-  private CalendarHeaderComponent header;
   private Card resourceViewCard;
-  private FieldSet resourcesLayout;
+  private FieldSet schedulingAssistantLayout;
+  private Button scheduleEventDummyButton;
+  
+  // saving values for possible event creation based on assistant updates
+  private String proposedStart;
+  private String proposedEnd;
  
   @Override
   protected void createBasicDemo() {
     // begin-source-example
-    // source-example-heading: Basic Use Demo
+    // source-example-heading: Scheduling Assistant Demo
 
     // create categories for events
     Calendar work = new Calendar("work");
@@ -104,8 +110,13 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     // resource scheduler configuration
     resourceSchedulerConfig = new ResourceSchedulerConfig();
     resourceSchedulerConfig.setResources(resources);
-    resourceSchedulerConfig.setResize(true);
-    resourceSchedulerConfig.setDragAndDrop(true);
+
+    // scheduling assistant configuration
+    LocalDate configDate = LocalDate.of(2024, 05, 06);
+    LocalDateTime dateStart = LocalDateTime.of(configDate, LocalTime.of(10, 00));
+    LocalDateTime dateEnd = LocalDateTime.of(configDate, LocalTime.of(12, 00));
+
+    schedulingAssistantConfig = new SchedulingAssistantConfig(dateStart, dateEnd);
 
     // create events
     LocalDate eventsDate = LocalDate.of(2024, 05, 06);
@@ -131,13 +142,6 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     // create resource view
     resourceView = getScheduleXResourceView();
 
-    // create header component
-    header = new CalendarHeaderComponent(resourceView);
-
-    // add event click listener
-    resourceView.addCalendarEventClickEventListener(
-        e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
-
     // add listener on event resizing or dnd
     resourceView.addEventUpdateEventListener(e -> {
       String updatedEventId = e.getEventId();
@@ -149,14 +153,36 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
       });
     });
 
+    // add scheduling assistant updates listener
+    scheduleEventDummyButton = new Button();
+    scheduleEventDummyButton.addClickListener(e -> {
+      Event scheduledEvent = new Event(UUID.randomUUID().toString(), proposedStart, proposedEnd);
+      scheduledEvent.setTitle("Scheduled Event");
+      scheduledEvent.setResourceId("conveyor-belt-a-1");
+      resourceView.addEvent(scheduledEvent);
+      events.add(scheduledEvent);
+    });
+    resourceView.addSchedulingAssistantUpdateListener(e -> {
+      String currentStart = e.getCurrentStart();
+      String currentEnd = e.getCurrentEnd();
+      boolean hasCollision = e.isHasCollision();
+
+      proposedStart = currentStart;
+      proposedEnd = currentEnd;
+      
+      String buttonLabel = "Available range between " + currentStart + " and " + currentEnd;
+      scheduleEventDummyButton.setText(buttonLabel);
+      scheduleEventDummyButton.setEnabled(!hasCollision);
+    });
+
     // create demo card containing resource view
     createResourceViewDemoCard();
 
     // end-source-example
 
-    resourceView.setId("basic-use-demo");
+    resourceView.setId("scheduling-assistant-demo");
 
-    addCard("Basic Use Demo", resourceViewCard);
+    addCard("Scheduling Assistant Demo", resourceViewCard);
   }
 
   // begin-source-example
@@ -167,67 +193,21 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
 
   private void createResourceViewDemoCard() {
     resourceViewCard = new Card();
-    resourcesLayout = getResourceHandlingLayout();
-    resourceViewCard.add(header, resourceView, resourcesLayout);
+    schedulingAssistantLayout = getSchedulingEventHandlingLayout();
+    resourceViewCard.add(resourceView, schedulingAssistantLayout);
   }
 
   private ScheduleXResourceView getScheduleXResourceView() {
-    return new ScheduleXResourceView(Arrays.asList(ResourceView.HOURLY, ResourceView.DAILY),
-        EventProvider.of(events), configuration, calendars, resourceSchedulerConfig);
+    return new ScheduleXResourceView(Arrays.asList(ResourceView.HOURLY),
+        EventProvider.of(events), configuration, calendars, resourceSchedulerConfig,
+        schedulingAssistantConfig);
   }
- 
-  private FieldSet getResourceHandlingLayout() {
+  
+  private FieldSet getSchedulingEventHandlingLayout() {
     HorizontalLayout layout = new HorizontalLayout();
-    layout.setWidthFull();
-
-    // nested resource to be added as child of 'Conveyor Belt A'
-    Resource resource1_3 = new Resource("test-resource");
-    resource1_3.setLabel("Test Resource");
-    resource1_3.setColorName("test-resource");
-    ColorDefinition lightColorResource1_3 = new ColorDefinition("#f9d71c", "#fff5aa", "#594800");
-    resource1_3.setLightColors(lightColorResource1_3);
-
-    // new resource
-    Resource resource3 = new Resource("test-resource-2");
-    resource3.setLabel("Test Resource 2");
-    resource3.setColorName("test-resource-2");
-    ColorDefinition lightColorResource3 = new ColorDefinition("#2f5c56", "#a5e9e0", "#59000d");
-    resource3.setLightColors(lightColorResource3);
-
-    Button addNestedResourceButton = new Button("Click to add resource to 'Conveyor Belt A'");
-    Button addNewResourceButton = new Button("Click to add new resource");
-
-    addNestedResourceButton.addClickListener(e -> {
-      for (Resource resource : resources) {
-        if (resource.getId().equals("conveyor-belt-a")) {
-          List<Resource> resourcesUpdated = new ArrayList<Resource>(resource.getResources());
-          resourcesUpdated.add(resource1_3);
-          resource.setResources(resourcesUpdated);
-          break;
-        }
-      }
-      refreshViewOnResourceUpdate();
-    });
-    addNestedResourceButton.setDisableOnClick(true);
-
-    addNewResourceButton.addClickListener(e -> {
-      resources.add(resource3);
-      refreshViewOnResourceUpdate();
-    });
-    addNewResourceButton.setDisableOnClick(true);
-
-    layout.add(addNestedResourceButton, addNewResourceButton);
-    return createFieldSetLayout("Resource Handling testing", layout);
+    layout.setWidthFull();    
+    layout.add(scheduleEventDummyButton);
+    return createFieldSetLayout("Scheduling Event Handling testing", layout);
   }
-
-  private void refreshViewOnResourceUpdate() {
-    resourceSchedulerConfig.setResources(resources);
-    resourceViewCard.removeAll();
-    resourceView = getScheduleXResourceView();
-    header = new CalendarHeaderComponent(resourceView);
-    resourceViewCard.add(header, resourceView, resourcesLayout);
-  }
-
   // end-source-example
-
 }

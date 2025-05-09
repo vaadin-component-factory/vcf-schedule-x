@@ -13,6 +13,12 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.FieldSet;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -36,15 +42,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule.
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule.Frequency;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule.Until;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.FieldSet;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.timepicker.TimePicker;
-import com.vaadin.flow.demo.DemoView;
-import com.vaadin.flow.router.Route;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -53,21 +50,14 @@ import com.vaadin.flow.router.Route;
  */
 @SuppressWarnings("serial")
 @Route("")
-public class ScheduleXCalendarDemoView extends DemoView {
+public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
 
   private ScheduleXCalendar calendar;
 
   @Override
-  public void initView() {
-    this.getStyle().set("max-width", "1500px");
-    createBasicDemo();
-
-    addCard("Additional code used in the demo", new Span("These methods are used in the demo."));
-  }
-
-  private void createBasicDemo() {
+  protected void createBasicDemo() {
     // begin-source-example
     // source-example-heading: Basic Use Demo
 
@@ -272,12 +262,6 @@ public class ScheduleXCalendarDemoView extends DemoView {
 
     return createFieldSetLayout("Scrolling testing (only available for week and day views)",
         layout);
-  }
-
-  private FieldSet createFieldSetLayout(String text, Component component) {
-    FieldSet fieldSet = new FieldSet(text, component);
-    fieldSet.getStyle().setBorderRadius("var(--lumo-border-radius-s)");
-    return fieldSet;
   }
 
   // end-source-example

@@ -51,14 +51,16 @@ const resourceViewNameMap = {
 };
 
 window.vcfschedulexresourceview = {
-	create(container, viewsJson, configJson, calendarsJson, resourceConfigJson) {
+	create(container, viewsJson, configJson, calendarsJson, resourceConfigJson, schedulingAssistantJson) {
 		setTimeout(() => {
 			const resourceConfig = createConfig();
 			this._processResourceSchedulerConfig(resourceConfig, resourceConfigJson);
+			const schedulingAssistantConfig = schedulingAssistantJson === "{}" ? null : JSON.parse(schedulingAssistantJson);
 
 			createCommonCalendar(container, resourceViewFactoryMap, resourceViewNameMap, configJson, calendarsJson, {
 				viewsJson,
-				resourceConfig
+				resourceConfig,
+				schedulingAssistantConfig
 			});
 		});
 	},

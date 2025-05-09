@@ -13,9 +13,14 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.DomEvent;
+import com.vaadin.flow.component.EventData;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.shared.Registration;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -25,6 +30,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.SchedulingAssistantConfig;
 
 /**
  * A view for displaying resources (people, rooms, equipment etc.) in a time grid.
@@ -36,13 +42,17 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
 @NpmPackage(value = "preact", version = "10.26.4")
 @NpmPackage(value = "@preact/signals", version = "2.0.2")
 @NpmPackage(value = "@sx-premium/resource-scheduler", version = "3.15.0")
+@NpmPackage(value = "@sx-premium/scheduling-assistant", version = "3.15.0")
 @JsModule("./src/vcf-schedule-x-resource-view.js")
 @CssImport("@sx-premium/resource-scheduler/index.css")
+@CssImport("@sx-premium/scheduling-assistant/index.css")
 @Setter
 @Getter
 public class ScheduleXResourceView extends BaseScheduleXCalendar {
 
   private ResourceSchedulerConfig resourceSchedulerConfig;
+
+  private SchedulingAssistantConfig schedulingAssistantConfig;
 
   public ScheduleXResourceView() {
     super();
@@ -70,14 +80,27 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
     this.resourceSchedulerConfig = resourceSchedulerConfig;
   }
 
+  public ScheduleXResourceView(List<ResourceView> views, EventProvider eventProvider,
+      Configuration configuration, Map<String, Calendar> calendars,
+      ResourceSchedulerConfig resourceSchedulerConfig,
+      SchedulingAssistantConfig schedulingAssistantConfig) {
+    this(views, eventProvider, configuration, calendars, resourceSchedulerConfig);
+    this.schedulingAssistantConfig = schedulingAssistantConfig;
+  }
+
   @Override
   protected void initCalendar() {
-    this.getElement().executeJs("vcfschedulexresourceview.create($0, $1, $2, $3, $4)", this,
-        viewsToJson(), configurationToJson(), calendarsToJson(), resourceSchedulerConfigToJson());
+    this.getElement().executeJs("vcfschedulexresourceview.create($0, $1, $2, $3, $4, $5)", this,
+        viewsToJson(), configurationToJson(), calendarsToJson(), resourceSchedulerConfigToJson(),
+        schedulingAssistantConfigToJson());
   }
 
   protected String resourceSchedulerConfigToJson() {
     return resourceSchedulerConfig != null ? resourceSchedulerConfig.getJson() : "{}";
+  }
+
+  protected String schedulingAssistantConfigToJson() {
+    return schedulingAssistantConfig != null ? schedulingAssistantConfig.getJson() : "{}";
   }
 
   @Override
@@ -111,5 +134,38 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
     this.getElement().executeJs("vcfschedulexresourceview.updateEvent($0, $1);", this,
         event.getJson());
   }
- 
+
+  /**
+   * Event fired when Scheduling Assistant is updated.
+   */
+  @Getter
+  @DomEvent("scheduling-assistant-update")
+  public static class SchedulingAssistantUpdateEvent extends ComponentEvent<ScheduleXResourceView> {
+
+    private final String currentStart;
+    private final String currentEnd;
+    private final boolean hasCollision;
+
+    public SchedulingAssistantUpdateEvent(ScheduleXResourceView source, boolean fromClient,
+        @EventData("event.detail.currentStart") String currentStart,
+        @EventData("event.detail.currentEnd") String currentEnd,
+        @EventData("event.detail.hasCollision") boolean hasCollision) {
+      super(source, fromClient);
+      this.currentStart = currentStart;
+      this.currentEnd = currentEnd;
+      this.hasCollision = hasCollision;
+    }
+  }
+
+  /**
+   * Adds a SchedulingAssistantUpdateEvent listener.
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addSchedulingAssistantUpdateListener(
+      ComponentEventListener<SchedulingAssistantUpdateEvent> listener) {
+    return addListener(SchedulingAssistantUpdateEvent.class, listener);
+  }
+
 }

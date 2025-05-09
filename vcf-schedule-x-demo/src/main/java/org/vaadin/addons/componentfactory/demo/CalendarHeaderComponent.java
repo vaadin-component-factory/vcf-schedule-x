@@ -17,9 +17,17 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 @SuppressWarnings("serial")
 public class CalendarHeaderComponent extends HorizontalLayout {
-
+  
+  private final ViewChangeListener viewChangeListener;
+  
   public CalendarHeaderComponent(BaseScheduleXCalendar calendar) {
+    this(calendar, null);
+  }
 
+  public CalendarHeaderComponent(BaseScheduleXCalendar calendar, ViewChangeListener listener) {
+
+    this.viewChangeListener = listener;
+    
     this.setWidthFull();
 
     Configuration calendarConf = calendar.getConfiguration();
@@ -69,9 +77,12 @@ public class CalendarHeaderComponent extends HorizontalLayout {
       }
       return null;
     });
-    viewsComboBox.setValue(defaultView);
+    viewsComboBox.setValue(defaultView);    
     viewsComboBox.addValueChangeListener(e -> {
       calendar.setView(e.getValue());
+      if (viewChangeListener != null) {
+        viewChangeListener.onViewChange(e.getValue());
+      }
     });
 
     Button todayButton = new Button("Today");

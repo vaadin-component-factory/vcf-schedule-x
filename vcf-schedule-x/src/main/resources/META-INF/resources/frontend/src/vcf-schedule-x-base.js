@@ -19,6 +19,7 @@ import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createEventRecurrencePlugin, createEventsServicePlugin } from "@schedule-x/event-recurrence";
 import { createResizePlugin } from '@schedule-x/resize';
 import { createScrollControllerPlugin } from '@schedule-x/scroll-controller';
+import { createSchedulingAssistant } from '@sx-premium/scheduling-assistant';
 import {
 	handleOnEventClick,
 	handleOnSelectedDateUpdate,
@@ -27,6 +28,7 @@ import {
 	processViews,	
 	setSelectedDate,
 	setSelectedView,
+	subscribeToSchedulingAssistantUpdates,
 	updateFirstDayOfWeek,
 	updateLocale,
 	updateViews,
@@ -63,10 +65,18 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const scrollControllerPlugin = createScrollControllerPlugin(config.scrollControllerConfig);
 	const calendarControlsPlugin = createCalendarControlsPlugin();
 	const recurrencePlugin = createEventRecurrencePlugin();
-
+	
 	let div = document.getElementById(container.id);
     let plugins = [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
     if (drawPlugin) plugins.push(drawPlugin);
+
+	// Add Scheduling Assistant plugin if applies
+	let schedulingAssistantConfigured = false;
+	if(calendarOptions.resourceConfig && calendarOptions.schedulingAssistantConfig){
+		const schedulingAssitantPlugin = createSchedulingAssistant(calendarOptions.schedulingAssistantConfig);
+		plugins.push(schedulingAssitantPlugin);	
+		schedulingAssistantConfigured = true;
+	}
 
 	const calendar = createCalendar({
 		views: views,
@@ -119,7 +129,14 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	calendar.render(div);
 	div.calendar = calendar;
 	container.calendar = calendar;
+	
+	// Dispatch event to know calendar was rendered
 	container.dispatchEvent(new CustomEvent('calendar-rendered'));
+	
+	// Subscribe to Scheduling Assistant updates if applies
+	if(schedulingAssistantConfigured){
+		subscribeToSchedulingAssistantUpdates(container);
+	}
 }
 
 /**

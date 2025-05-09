@@ -20,6 +20,7 @@ import { createEventRecurrencePlugin, createEventsServicePlugin } from "@schedul
 import { createResizePlugin } from '@schedule-x/resize';
 import { createScrollControllerPlugin } from '@schedule-x/scroll-controller';
 import { createSchedulingAssistant } from '@sx-premium/scheduling-assistant';
+import { createIcalendarPlugin } from '@schedule-x/ical';
 import {
 	handleOnEventClick,
 	handleOnSelectedDateUpdate,
@@ -64,11 +65,13 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const currentTimeIndicatorPlugin = createCurrentTimePlugin(config.currentTimeIndicatorConfig);
 	const scrollControllerPlugin = createScrollControllerPlugin(config.scrollControllerConfig);
 	const calendarControlsPlugin = createCalendarControlsPlugin();
+    const icalendarPlugin = config.iCal?createIcalendarPlugin({data:config.iCal.iCal}):null;
 	const recurrencePlugin = createEventRecurrencePlugin();
 	
 	let div = document.getElementById(container.id);
     let plugins = [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
     if (drawPlugin) plugins.push(drawPlugin);
+    if (icalendarPlugin) plugins.push(icalendarPlugin);
 
 	// Add Scheduling Assistant plugin if applies
 	let schedulingAssistantConfigured = false;

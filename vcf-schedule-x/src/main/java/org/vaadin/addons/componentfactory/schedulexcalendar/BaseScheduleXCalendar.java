@@ -56,6 +56,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @NpmPackage(value = "@schedule-x/scroll-controller", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/calendar-controls", version = "2.29.0")
 @NpmPackage(value = "@schedule-x/event-recurrence", version = "2.29.0")
+@NpmPackage(value = "@schedule-x/ical", version = "2.29.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 @Setter
@@ -166,7 +167,17 @@ public abstract class BaseScheduleXCalendar extends Div {
   void updateRange(String start, String end) {
     String events = eventsToJson(LocalDateTime.parse(start, DATE_TIME_FORMATTER),
         LocalDateTime.parse(end, DATE_TIME_FORMATTER));
-    this.getElement().executeJs("this.calendar.eventsService.set(JSON.parse($0))", events);
+    this.getElement().executeJs(
+        "if (this.calendar.$app.config.plugins.ICalendarPlugin) "
+        + "{"
+        + " this.calendar.$app.config.plugins.ICalendarPlugin.between($1, $2);"
+        + " JSON.parse($0).forEach(event => this.calendar.eventsService.add(event));"
+        + "}"
+        + " else "
+        + "{"
+        + " this.calendar.eventsService.set(JSON.parse($0))"
+        + "}",
+        events, start, end);
   }
 
   protected abstract String getJsConnector();

@@ -35,6 +35,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.CurrentTimeIndicatorConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.DrawOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.ICal;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.ScrollControllerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceRule;
@@ -101,6 +102,33 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     ScrollControllerConfig scrollControllerConfig = new ScrollControllerConfig();
     scrollControllerConfig.setInitialScroll(LocalTime.of(14, 50));
     configuration.setScrollControllerConfig(scrollControllerConfig);
+    ICal ical = new ICal();
+    ical.setICal("""
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+SUMMARY:Good morning
+DTSTART;TZID=America/New_York:20250506T103400
+DTEND;TZID=America/New_York:20250506T110400
+LOCATION:1000 Broadway Ave.\\, Brooklyn
+DESCRIPTION: Access-A-Ride trip to 900 Jay St.\\, Brooklyn
+STATUS:CONFIRMED
+SEQUENCE:3
+END:VEVENT
+BEGIN:VEVENT
+RRULE:FREQ=DAILY;COUNT=3
+SUMMARY:Good night
+DTSTART;TZID=America/New_York:20250509T200000
+DTEND;TZID=America/New_York:20250509T203000
+LOCATION:900 Jay St.\\, Brooklyn
+DESCRIPTION: Access-A-Ride trip to 1000 Broadway Ave.\\, Brooklyn
+STATUS:CONFIRMED
+SEQUENCE:3
+END:VEVENT
+END:VCALENDAR
+            """);
+    configuration.setICal(ical);
     DrawOptions drawOptions = new DrawOptions();
     drawOptions.setDefaultTitle("New event");
     drawOptions.setSnapDrawDuration(15);

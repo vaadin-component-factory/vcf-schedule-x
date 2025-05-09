@@ -95,3 +95,26 @@ export function updateMaxDate(calendar, maxDate) {
 export function updateMonthGridOptions(calendar, monthGridOptions) {
 	calendar.$app.config.plugins.calendarControls.setMonthGridOptions(monthGridOptions);
 }
+
+/**
+ * Subscribes to updates of Scheduling Assistant to inform server side about the updates.
+ */
+export function subscribeToSchedulingAssistantUpdates(container) {
+	const plugin = container.calendar.$app.config.plugins["scheduling-assistant"];
+
+	const emitCombinedUpdate = () => {
+		container.dispatchEvent(new CustomEvent('scheduling-assistant-update', {
+			detail: {
+				currentStart: plugin.currentStart.value,
+				currentEnd: plugin.currentEnd.value,
+				hasCollision: plugin.hasCollision.value
+			}
+		}));
+	};
+
+	// Subscribe and emit combined update when any signal changes
+	plugin.currentStart.subscribe(emitCombinedUpdate);
+	plugin.currentEnd.subscribe(emitCombinedUpdate);
+	plugin.hasCollision.subscribe(emitCombinedUpdate);
+}
+

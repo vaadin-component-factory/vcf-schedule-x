@@ -189,7 +189,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @return the current view
    */
   public View getView() {
-    return this.view;
+    return this.view == null ? this.getViews().get(0) : this.view;
   }
 
   /**

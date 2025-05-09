@@ -13,14 +13,14 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
+import elemental.json.Json;
+import elemental.json.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -83,6 +83,8 @@ public class Configuration implements Serializable {
   private MonthGridOptions monthGridOptions;
   
   private DrawOptions drawOptions;
+  
+  private ICal iCal;
 
   /**
    * Display week numbers. Not 100% according to ISO 8601, which considers a week to start on Monday
@@ -130,6 +132,7 @@ public class Configuration implements Serializable {
     Optional.ofNullable(maxDate).ifPresent(value -> js.put("maxDate", value.format(DATE_FORMATTER)));
     Optional.ofNullable(weekOptions).ifPresent(value -> js.put("weekOptions", value.toJson()));
     Optional.ofNullable(drawOptions).ifPresent(value -> js.put("drawOptions", value.toJson()));
+    Optional.ofNullable(iCal).ifPresent(value -> js.put("iCal", value.toJson()));
     Optional.ofNullable(monthGridOptions)
         .ifPresent(value -> js.put("monthGridOptions", value.toJson()));
     js.put("showWeekNumbers", showWeekNumbers);
@@ -242,6 +245,19 @@ public class Configuration implements Serializable {
       JsonObject js = Json.createObject();
       Optional.ofNullable(snapDrawDuration).ifPresent(value -> js.put("snapDrawDuration", value));
       Optional.ofNullable(defaultTitle).ifPresent(value -> js.put("defaultTitle", value));
+      return js;
+    }
+  }
+
+  @Getter
+  @Setter
+  public static class ICal implements Serializable {
+
+    private String iCal;
+
+    public JsonObject toJson() {
+      JsonObject js = Json.createObject();
+      Optional.ofNullable(iCal).ifPresent(value -> js.put("iCal", value));
       return js;
     }
   }

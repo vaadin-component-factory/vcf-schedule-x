@@ -58,9 +58,9 @@ window.vcfschedulexcalendar = {
         const drawPlugin = createDrawPlugin({
           // (Optional) callback that runs on mouseup after drawing an event, before calling onFinishDrawing
           onBeforeFinishDrawing: (async (event) => {
-            let validation = await div.$server.validateDrawnEvent(event.id, event.start, event.end);
+            let validation = await container.$server.validateDrawnEvent(event.id, event.start, event.end);
             if (validation) {
-                div.$server.addEvent(event);
+                container.$server.addEvent(event);
             }
             return false;
           }),

@@ -27,16 +27,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import org.vaadin.addons.componentfactory.schedulexcalendar.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorDefinition;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Resource;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceSchedulerConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.SchedulingAssistantConfig;
 
 /**
  * View for {@link ScheduleXResourceView} demo with {@code SchedulingAssistantConfig}.

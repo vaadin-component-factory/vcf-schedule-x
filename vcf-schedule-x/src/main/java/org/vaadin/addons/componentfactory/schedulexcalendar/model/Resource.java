@@ -1,4 +1,4 @@
-package org.vaadin.addons.componentfactory.schedulexcalendar.util;
+package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
 import elemental.json.Json;
 import elemental.json.JsonArray;
@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar.ColorDefinition;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 
 @SuppressWarnings("serial")
 @Getter

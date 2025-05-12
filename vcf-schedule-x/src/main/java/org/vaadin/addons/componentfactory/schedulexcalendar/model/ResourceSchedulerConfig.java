@@ -1,4 +1,4 @@
-package org.vaadin.addons.componentfactory.schedulexcalendar.util;
+package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
 import com.vaadin.flow.internal.Pair;
 import elemental.json.Json;

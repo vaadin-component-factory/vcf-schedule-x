@@ -17,6 +17,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule;
 
 /**
  * Utility class to evaluate recurrence rules against a date range.

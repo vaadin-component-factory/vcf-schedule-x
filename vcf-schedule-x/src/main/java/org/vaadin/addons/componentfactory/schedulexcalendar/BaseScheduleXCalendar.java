@@ -451,7 +451,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * Allows to navigate calendar backwards.
    */
   public void navigateBackwards() {
-    this.getElement().executeJs(getJsConnector() + "navigateBackwards($0)", this);
+    this.getElement().executeJs(getJsConnector() + ".navigateBackwards($0)", this);
   }
 
   /**

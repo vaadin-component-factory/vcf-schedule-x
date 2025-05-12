@@ -11,14 +11,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.schedulexcalendar;
+package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
 import com.vaadin.flow.function.SerializableBiFunction;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceEvaluator;
 
 /**

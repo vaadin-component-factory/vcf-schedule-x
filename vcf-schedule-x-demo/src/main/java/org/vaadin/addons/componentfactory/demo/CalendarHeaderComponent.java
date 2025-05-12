@@ -23,8 +23,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.vaadin.addons.componentfactory.schedulexcalendar.BaseScheduleXCalendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 

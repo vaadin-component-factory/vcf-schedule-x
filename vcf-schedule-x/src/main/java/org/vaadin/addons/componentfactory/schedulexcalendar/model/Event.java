@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.schedulexcalendar.util;
+package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
@@ -29,6 +28,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
 
 /**
  * Calendar event definition.

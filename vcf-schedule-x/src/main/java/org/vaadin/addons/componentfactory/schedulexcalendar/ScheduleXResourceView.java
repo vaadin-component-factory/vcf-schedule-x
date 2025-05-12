@@ -25,11 +25,12 @@ import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceSchedulerConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.SchedulingAssistantConfig;
 
 /**
  * A view for displaying resources (people, rooms, equipment etc.) in a time grid.

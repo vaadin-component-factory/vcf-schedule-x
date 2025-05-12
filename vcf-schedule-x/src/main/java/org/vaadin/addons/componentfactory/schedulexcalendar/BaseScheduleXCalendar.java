@@ -39,12 +39,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.DayBoundaries;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.MonthGridOptions;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration.WeekOptions;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DayBoundaries;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.MonthGridOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.WeekOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 @SuppressWarnings("serial")

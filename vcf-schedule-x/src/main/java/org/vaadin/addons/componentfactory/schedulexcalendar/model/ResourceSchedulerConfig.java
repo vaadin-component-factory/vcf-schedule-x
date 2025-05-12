@@ -7,12 +7,12 @@ import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
  * Java representation of the ResourceViewConfig for the Schedule-X Resource Scheduler. This
@@ -26,10 +26,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResourceSchedulerConfig implements Serializable {
-
-  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  private static final DateTimeFormatter DATE_TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
   /**
    * Width of a column in the hourly view.
@@ -100,13 +96,13 @@ public class ResourceSchedulerConfig implements Serializable {
     }
 
     if (initialHours != null) {
-      js.put("initialHours", initialHours.getFirst().format(DATE_TIME_FORMATTER) + ","
-          + initialHours.getSecond().format(DATE_TIME_FORMATTER));
+      js.put("initialHours", initialHours.getFirst().format(DateTimeFormatUtils.DATE_TIME_FORMATTER)
+          + "," + initialHours.getSecond().format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
     }
 
     if (initialDays != null) {
-      js.put("initialDays", initialDays.getFirst().format(DATE_FORMATTER) + ","
-          + initialDays.getSecond().format(DATE_FORMATTER));
+      js.put("initialDays", initialDays.getFirst().format(DateTimeFormatUtils.DATE_FORMATTER) + ","
+          + initialDays.getSecond().format(DateTimeFormatUtils.DATE_FORMATTER));
     }
 
     return js.toJson();

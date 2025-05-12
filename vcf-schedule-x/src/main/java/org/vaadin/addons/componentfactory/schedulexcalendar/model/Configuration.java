@@ -13,16 +13,16 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
+import elemental.json.Json;
+import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
@@ -34,9 +34,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @Getter
 @Setter
 public class Configuration implements Serializable {
-
-  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
   /**
    * The preferred view to display when the calendar is first rendered. all views that you import
@@ -83,9 +80,9 @@ public class Configuration implements Serializable {
   private WeekOptions weekOptions;
 
   private MonthGridOptions monthGridOptions;
-  
+
   private DrawOptions drawOptions;
-  
+
   private ICal iCal;
 
   /**
@@ -124,14 +121,16 @@ public class Configuration implements Serializable {
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));
-    Optional.ofNullable(selectedDate)
-        .ifPresent(value -> js.put("selectedDate", value.format(DATE_FORMATTER)));
+    Optional.ofNullable(selectedDate).ifPresent(
+        value -> js.put("selectedDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
     Optional.ofNullable(locale).ifPresent(value -> js.put("locale", value));
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);
     Optional.ofNullable(dayBoundaries).ifPresent(value -> js.put("dayBoundaries", value.toJson()));
-    Optional.ofNullable(minDate).ifPresent(value -> js.put("minDate", value.format(DATE_FORMATTER)));
-    Optional.ofNullable(maxDate).ifPresent(value -> js.put("maxDate", value.format(DATE_FORMATTER)));
+    Optional.ofNullable(minDate)
+        .ifPresent(value -> js.put("minDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
+    Optional.ofNullable(maxDate)
+        .ifPresent(value -> js.put("maxDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
     Optional.ofNullable(weekOptions).ifPresent(value -> js.put("weekOptions", value.toJson()));
     Optional.ofNullable(drawOptions).ifPresent(value -> js.put("drawOptions", value.toJson()));
     Optional.ofNullable(iCal).ifPresent(value -> js.put("iCal", value.toJson()));
@@ -169,8 +168,10 @@ public class Configuration implements Serializable {
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
-      Optional.ofNullable(start).ifPresent(value -> js.put("start", value.format(TIME_FORMATTER)));
-      Optional.ofNullable(end).ifPresent(value -> js.put("end", value.format(TIME_FORMATTER)));
+      Optional.ofNullable(start)
+          .ifPresent(value -> js.put("start", value.format(DateTimeFormatUtils.TIME_FORMATTER)));
+      Optional.ofNullable(end)
+          .ifPresent(value -> js.put("end", value.format(DateTimeFormatUtils.TIME_FORMATTER)));
       js.put("dayBoundaries", js);
       return js;
     }
@@ -235,7 +236,7 @@ public class Configuration implements Serializable {
       return js;
     }
   }
-  
+
   @Getter
   @Setter
   public static class DrawOptions implements Serializable {
@@ -304,8 +305,8 @@ public class Configuration implements Serializable {
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
-      Optional.ofNullable(initialScroll)
-          .ifPresent(value -> js.put("initialScroll", value.format(TIME_FORMATTER)));
+      Optional.ofNullable(initialScroll).ifPresent(
+          value -> js.put("initialScroll", value.format(DateTimeFormatUtils.TIME_FORMATTER)));
       return js;
     }
   }

@@ -106,11 +106,15 @@ public class Configuration implements Serializable {
 
   /**
    * Time interval that can be configured for event resizing.
+   * <p>
+   * Available values are 15 (default), 30 and 60.
    */
   private TimeInterval resizeInterval;
 
   /**
    * Time interval that can be configured for drag and drop of an event.
+   * <p>
+   * Available values are 15 (default), 30 and 60.
    */
   private TimeInterval dragAndDropInterval;
 
@@ -241,12 +245,17 @@ public class Configuration implements Serializable {
   @Setter
   public static class DrawOptions implements Serializable {
 
-    private Integer snapDrawDuration;
+    /**
+     * Time interval that can be configured, in minutes, at which a time grid-event can be drawn.
+     * Valid values: 15, 30, 60
+     */
+    private TimeInterval snapDrawDuration;
     private String defaultTitle;
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
-      Optional.ofNullable(snapDrawDuration).ifPresent(value -> js.put("snapDrawDuration", value));
+      Optional.ofNullable(snapDrawDuration)
+          .ifPresent(value -> js.put("snapDrawDuration", value.getInterval()));
       Optional.ofNullable(defaultTitle).ifPresent(value -> js.put("defaultTitle", value));
       return js;
     }

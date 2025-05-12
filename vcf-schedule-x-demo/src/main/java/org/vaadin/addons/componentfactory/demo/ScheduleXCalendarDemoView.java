@@ -139,7 +139,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     // draw options
     DrawOptions drawOptions = new DrawOptions();
     drawOptions.setDefaultTitle("New event");
-    drawOptions.setSnapDrawDuration(15);
+    drawOptions.setSnapDrawDuration(TimeInterval.MIN_15);
     configuration.setDrawOptions(drawOptions);
 
     // create calendar

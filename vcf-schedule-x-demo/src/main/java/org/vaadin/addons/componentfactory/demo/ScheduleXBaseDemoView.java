@@ -14,6 +14,7 @@
 package org.vaadin.addons.componentfactory.demo;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.demo.DemoView;
@@ -22,19 +23,20 @@ import com.vaadin.flow.demo.DemoView;
  * Base class for demo creation.
  */
 @SuppressWarnings("serial")
+@CssImport("./styles/demo-styles.css")
 public abstract class ScheduleXBaseDemoView extends DemoView {
 
-  public ScheduleXBaseDemoView() {}
+  public ScheduleXBaseDemoView() {
+    this.addClassName("vcf-schedule-x-demo");
+  }
   
   @Override
   public void initView() {
-    this.getStyle().set("max-width", "1500px");
-    createBasicDemo();
-
+    createDemo();
     addCard("Additional code used in the demo", new Span("These methods are used in the demo."));
   }
 
-  protected abstract void createBasicDemo();
+  protected abstract void createDemo();
 
   protected FieldSet createFieldSetLayout(String text, Component component) {
     FieldSet fieldSet = new FieldSet(text, component);

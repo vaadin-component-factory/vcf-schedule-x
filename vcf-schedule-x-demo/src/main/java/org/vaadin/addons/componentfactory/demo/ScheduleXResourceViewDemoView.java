@@ -43,7 +43,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
  * @author Vaadin Ltd
  */
 @SuppressWarnings("serial")
-@Route("resource")
+@Route(value = "resource", layout = DemoMainLayout.class)
 public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
@@ -57,7 +57,7 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
   private FieldSet resourcesLayout;
  
   @Override
-  protected void createBasicDemo() {
+  protected void createDemo() {
     // begin-source-example
     // source-example-heading: Basic Use Demo
 

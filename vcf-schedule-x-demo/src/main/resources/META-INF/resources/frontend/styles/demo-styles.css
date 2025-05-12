@@ -1,0 +1,8 @@
+.vcf-schedule-x-demo.demo-view {
+	max-width: 1500px;
+}
+
+.vcf-schedule-x-demo.demo-view h3 {
+	padding: 10px 5px;
+	font-size: var(--lumo-font-size-l);
+}

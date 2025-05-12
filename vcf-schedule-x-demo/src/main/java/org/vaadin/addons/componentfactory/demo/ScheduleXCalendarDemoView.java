@@ -50,7 +50,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
  * @author Vaadin Ltd
  */
 @SuppressWarnings("serial")
-@Route("")
+@Route(value = "calendar", layout = DemoMainLayout.class)
 public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
@@ -58,7 +58,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
   private ScheduleXCalendar calendar;
 
   @Override
-  protected void createBasicDemo() {
+  protected void createDemo() {
     // begin-source-example
     // source-example-heading: Basic Use Demo
 

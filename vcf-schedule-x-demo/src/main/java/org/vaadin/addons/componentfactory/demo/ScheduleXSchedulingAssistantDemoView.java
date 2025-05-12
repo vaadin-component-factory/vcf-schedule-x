@@ -44,7 +44,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
  * @author Vaadin Ltd
  */
 @SuppressWarnings("serial")
-@Route("scheduling")
+@Route(value = "scheduling", layout = DemoMainLayout.class)
 public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
@@ -63,7 +63,7 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
   private String proposedEnd;
  
   @Override
-  protected void createBasicDemo() {
+  protected void createDemo() {
     // begin-source-example
     // source-example-heading: Scheduling Assistant Demo
 

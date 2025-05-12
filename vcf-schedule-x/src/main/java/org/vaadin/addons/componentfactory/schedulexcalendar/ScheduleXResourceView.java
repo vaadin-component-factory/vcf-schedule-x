@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.SchedulingAssistantConfig;
@@ -106,33 +105,6 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
   @Override
   protected String getJsConnector() {
     return "vcfschedulexresourceview";
-  }
-
-  @Override
-  public void navigateForwards() {
-    this.getElement().executeJs("vcfschedulexresourceview.navigateForwards($0)", this);
-  }
-
-  @Override
-  public void navigateBackwards() {
-    this.getElement().executeJs("vcfschedulexresourceview.navigateBackwards($0)", this);
-  }
-
-  @Override
-  public void addEvent(Event event) {
-    this.getElement().executeJs("vcfschedulexresourceview.addEvent($0, $1);", this,
-        event.getJson());
-  }
-
-  @Override
-  public void removeEvent(String eventId) {
-    this.getElement().executeJs("vcfschedulexresourceview.removeEvent($0, $1);", this, eventId);
-  }
-
-  @Override
-  public void updateEvent(Event event) {
-    this.getElement().executeJs("vcfschedulexresourceview.updateEvent($0, $1);", this,
-        event.getJson());
   }
 
   /**

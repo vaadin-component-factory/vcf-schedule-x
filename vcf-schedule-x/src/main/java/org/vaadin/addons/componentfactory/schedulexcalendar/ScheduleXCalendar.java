@@ -68,36 +68,11 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   protected String getJsConnector() {
     return "vcfschedulexcalendar";
   }
-  
-  @Override
-  public void navigateForwards() {
-    this.getElement().executeJs("vcfschedulexcalendar.navigateForwards($0)", this);
-  }
-
-  @Override
-  public void navigateBackwards() {
-    this.getElement().executeJs("vcfschedulexcalendar.navigateBackwards($0)", this);
-  }
-
-  @Override
-  public void addEvent(Event event) {
-    this.getElement().executeJs("vcfschedulexcalendar.addEvent($0, $1);", this, event.getJson());
-  }
-  
+   
   @ClientCallable
   void addEvent(JsonValue jsonValue) {
     Event event = new Event(jsonValue);
     this.fireEvent(new CalendarEventDrawnEvent(this, true, event));
-  }
-
-  @Override
-  public void removeEvent(String eventId) {
-    this.getElement().executeJs("vcfschedulexcalendar.removeEvent($0, $1);", this, eventId);
-  }
-
-  @Override
-  public void updateEvent(Event event) {
-    this.getElement().executeJs("vcfschedulexcalendar.updateEvent($0, $1);", this, event.getJson());
   }
 
   /**

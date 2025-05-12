@@ -445,9 +445,19 @@ public abstract class BaseScheduleXCalendar extends Div {
     });
   }
 
-  public abstract void navigateForwards();
+  /**
+   * Allows to navigate calendar forwards.
+   */
+  public void navigateForwards() { 
+    this.getElement().executeJs(getJsConnector() + ".navigateForwards($0)", this);
+  }
 
-  public abstract void navigateBackwards();
+  /**
+   * Allows to navigate calendar backwards.
+   */
+  public void navigateBackwards() {
+    this.getElement().executeJs(getJsConnector() + "navigateBackwards($0)", this);
+  }
 
   /**
    * Handles calendar event click.
@@ -527,21 +537,27 @@ public abstract class BaseScheduleXCalendar extends Div {
    * 
    * @param event calendar event to be added
    */
-  public abstract void addEvent(Event event);
+  public void addEvent(Event event) {
+    this.getElement().executeJs(getJsConnector() + ".addEvent($0, $1);", this, event.getJson());
+  }
 
   /**
    * Removes the event with given id from the calendar.
    * 
    * @param eventId id of the event to be removed
    */
-  public abstract void removeEvent(String eventId);
+  public void removeEvent(String eventId) {
+    this.getElement().executeJs(getJsConnector() + ".removeEvent($0, $1);", this, eventId);
+  }
 
   /**
    * Updates the given event.
    * 
    * @param event the event to be updated
    */
-  public abstract void updateEvent(Event event);
+  public void updateEvent(Event event) {
+    this.getElement().executeJs(getJsConnector() + ".updateEvent($0, $1);", this, event.getJson());
+  }
 
   /**
    * Event fired when a calendar event is added to the calendar.

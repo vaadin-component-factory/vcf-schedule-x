@@ -57,14 +57,15 @@ window.vcfschedulexcalendar = {
         let drawSnapDuration = parsedConfig.drawOptions.snapDrawDuration;
         const drawPlugin = createDrawPlugin({
           // (Optional) callback that runs on mouseup after drawing an event, before calling onFinishDrawing
-          onBeforeFinishDrawing: (async (event) => {
-            let validation = await container.$server.validateDrawnEvent(event.id, event.start, event.end);
-            if (validation) {
-                container.$server.addEvent(event);
+          onFinishDrawing: (async event => {
+            let result = await container.$server.validateDrawnEvent(event.id, event.start, event.end);
+            if (result) {
+                await container.$server.addEvent(event);
+            } else {
+                container.calendar.eventsService.remove(event.id);
             }
-            return false;
           }),
-         
+          
           // (Optional) configure the intervals, in minutes, at which a time grid-event can be drawn. Valid values: 15, 30, 60
           snapDuration: drawSnapDuration
         });

@@ -31,7 +31,6 @@ import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,11 +40,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DayBoundaries;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.MonthGridOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.WeekOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 
 @SuppressWarnings("serial")
@@ -63,13 +63,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
 @Setter
 @Getter
 public abstract class BaseScheduleXCalendar extends Div {
-
-  protected static final DateTimeFormatter DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  protected static final DateTimeFormatter DATE_TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-  protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
+  
   private boolean calendarRendered;
 
   /**
@@ -166,8 +160,8 @@ public abstract class BaseScheduleXCalendar extends Div {
 
   @ClientCallable
   void updateRange(String start, String end) {
-    String events = eventsToJson(LocalDateTime.parse(start, DATE_TIME_FORMATTER),
-        LocalDateTime.parse(end, DATE_TIME_FORMATTER));
+    String events = eventsToJson(LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
+        LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER));
     this.getElement().executeJs(
         "if (this.calendar.$app.config.plugins.ICalendarPlugin) "
         + "{"
@@ -212,7 +206,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   public void setDate(LocalDate selectedDate) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setDate($0, $1);", this,
-          selectedDate.format(DATE_FORMATTER));
+          selectedDate.format(DateTimeFormatUtils.DATE_FORMATTER));
       if (configuration == null) {
         configuration = new Configuration();
       }
@@ -363,7 +357,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setMinDate(LocalDate minDate) {
     this.getElement().executeJs(getJsConnector() + ".setMinDate($0, $1);", this,
-        minDate.format(DATE_FORMATTER));
+        minDate.format(DateTimeFormatUtils.DATE_FORMATTER));
     if (configuration == null) {
       configuration = new Configuration();
     }
@@ -387,7 +381,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   public void setMaxDate(LocalDate maxDate) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setMaxDate($0, $1);", this,
-          maxDate.format(DATE_FORMATTER));
+          maxDate.format(DateTimeFormatUtils.DATE_FORMATTER));
       if (configuration == null) {
         configuration = new Configuration();
       }
@@ -651,8 +645,8 @@ public abstract class BaseScheduleXCalendar extends Div {
   @ClientCallable
   private void onEventUpdate(String eventId, String start, String end) {
     ComponentUtil.fireEvent(this,
-        new EventUpdateEvent(this, eventId, LocalDateTime.parse(start, DATE_TIME_FORMATTER),
-            LocalDateTime.parse(end, DATE_TIME_FORMATTER), false));
+        new EventUpdateEvent(this, eventId, LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
+            LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER), false));
   }
 
   /**

@@ -17,12 +17,12 @@ import elemental.json.Json;
 import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
  * Java model representing the SchedulingAssistant plugin config.
@@ -33,9 +33,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class SchedulingAssistantConfig implements Serializable {
   
-  private static final DateTimeFormatter DATE_TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
   @NonNull
   private LocalDateTime initialStart;
   
@@ -44,8 +41,8 @@ public class SchedulingAssistantConfig implements Serializable {
   
   public String getJson() {
     JsonObject js = Json.createObject();
-    Optional.ofNullable(initialStart).ifPresent(value -> js.put("initialStart", value.format(DATE_TIME_FORMATTER)));
-    Optional.ofNullable(initalEnd).ifPresent(value -> js.put("initialEnd", value.format(DATE_TIME_FORMATTER)));
+    Optional.ofNullable(initialStart).ifPresent(value -> js.put("initialStart", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
+    Optional.ofNullable(initalEnd).ifPresent(value -> js.put("initialEnd", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
     return js.toJson();
   }
 }

@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
  * Representation for the events recurrence rules.
@@ -150,11 +151,11 @@ public class RecurrenceRule implements Serializable {
      * Formats to RFC-compliant string: either `YYYYMMDD` or `YYYYMMDDTHHMMSS`.
      */
     public String format() {
-      DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("yyyyMMdd");
+      DateTimeFormatter dateFmt = DateTimeFormatUtils.COMPACT_DATE_FORMATTER;
       if (time == null) {
         return date.format(dateFmt);
       } else {
-        DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HHmmss");
+        DateTimeFormatter timeFmt = DateTimeFormatUtils.COMPACT_TIME_FORMATTER;
         return date.format(dateFmt) + "T" + time.format(timeFmt);
       }
     }

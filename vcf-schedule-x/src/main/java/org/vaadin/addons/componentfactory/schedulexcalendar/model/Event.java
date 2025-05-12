@@ -13,22 +13,22 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
  * Calendar event definition.
@@ -40,12 +40,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceVie
 @Getter
 @RequiredArgsConstructor
 public class Event implements Serializable {
-
-  protected static final DateTimeFormatter DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  protected static final DateTimeFormatter DATE_TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-  protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
   
   @NonNull
   private String id;
@@ -161,8 +155,8 @@ public class Event implements Serializable {
   public String getJson() {
     JsonObject js = Json.createObject();
     js.put("id", id);
-    js.put("start", start.format(DATE_TIME_FORMATTER));
-    js.put("end", end.format(DATE_TIME_FORMATTER));
+    js.put("start", start.format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
+    js.put("end", end.format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
 
     Optional.ofNullable(title).ifPresent(value -> js.put("title", value));
     Optional.ofNullable(description).ifPresent(value -> js.put("description", value));
@@ -204,9 +198,9 @@ public class Event implements Serializable {
   private static LocalDateTime parseDate(String date, boolean end) {
     LocalDateTime result;
     try {
-      result = LocalDateTime.parse(date, DATE_TIME_FORMATTER);
+      result = LocalDateTime.parse(date, DateTimeFormatUtils.DATE_TIME_FORMATTER);
     } catch (Exception e) {
-      result = LocalDate.parse(date, DATE_FORMATTER).atStartOfDay();
+      result = LocalDate.parse(date, DateTimeFormatUtils.DATE_FORMATTER).atStartOfDay();
       if (end) {
         result = result.withHour(23).withMinute(59).withSecond(59);
       }

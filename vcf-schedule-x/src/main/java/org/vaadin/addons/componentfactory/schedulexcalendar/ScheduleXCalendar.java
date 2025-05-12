@@ -21,6 +21,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -83,7 +84,7 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
    */
   public void scrollTo(LocalTime time) {
     this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this,
-        time.format(TIME_FORMATTER));
+        time.format(DateTimeFormatUtils.TIME_FORMATTER));
   }
   
   /**

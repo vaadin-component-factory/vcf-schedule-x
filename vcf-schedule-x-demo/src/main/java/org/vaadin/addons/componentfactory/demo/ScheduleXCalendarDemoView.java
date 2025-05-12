@@ -219,6 +219,8 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     removeTestEventButton.setDisableOnClick(true);
     
     calendar.addCalendarEventDrawnEventListener(e -> events.add(e.getEvent()));
+    
+    calendar.setDrawnEventValidationCallback(e -> e.getStart().getHour()>7 || e.getStart().getHour()<1);
 
     calendar.addCalendarEventAddedEventListener(
         e -> Notification.show("Calendar event with id '" + e.getEventId() + "' added."));

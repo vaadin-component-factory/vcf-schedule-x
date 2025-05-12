@@ -115,11 +115,8 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   /**
    * Callback interface for validating drawn events.
    */
-  public static class DrawnEventValidationCallback implements SerializableFunction<Event, Boolean> {
-    @Override
-    public Boolean apply(Event arg0) {
-      return true;
-    }
+  @FunctionalInterface
+  public static interface DrawnEventValidationCallback extends SerializableFunction<Event, Boolean> {
   }
   
   public static class CalendarEventDrawnEvent extends ComponentEvent<BaseScheduleXCalendar> {

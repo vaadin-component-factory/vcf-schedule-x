@@ -15,7 +15,7 @@ package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
 /**
  * Values that can be use to configure the length, in minutes, of the intervals that are used when
- * dragging or resizing events. Available values are 15 (default), 30 and 60.
+ * dragging, resizing or drawing events. Available values are 15, 30 and 60.
  */
 public enum TimeInterval {
 

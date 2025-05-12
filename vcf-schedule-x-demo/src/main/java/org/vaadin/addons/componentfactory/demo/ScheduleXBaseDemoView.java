@@ -18,6 +18,9 @@ import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.demo.DemoView;
 
+/**
+ * Base class for demo creation.
+ */
 @SuppressWarnings("serial")
 public abstract class ScheduleXBaseDemoView extends DemoView {
 

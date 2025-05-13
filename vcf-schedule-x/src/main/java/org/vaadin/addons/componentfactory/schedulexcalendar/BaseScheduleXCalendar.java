@@ -171,6 +171,9 @@ public abstract class BaseScheduleXCalendar extends Div {
         + " else "
         + "{"
         + " this.calendar.eventsService.set(JSON.parse($0))"
+        + "}"
+        + " if(this.calendar.$app.config.plugins.eventRecurrence){"
+        + " this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})"
         + "}",
         events, start, end);
   }

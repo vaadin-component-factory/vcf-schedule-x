@@ -86,6 +86,11 @@ public class Event implements Serializable {
    * The recurrence rule for the events if applicable. 
    */
   private RecurrenceRule recurrenceRule;
+  
+  /**
+   * List of date-times to be excluded from the recurrence set.
+   */
+  private List<LocalDateTime> excludedDates;
 
   public Event(String id, String start, String end) {
     this(id, parseDate(start,false),
@@ -132,7 +137,7 @@ public class Event implements Serializable {
       customContent.monthAgenda =
           jsonCustomContent.hasKey("monthAgenda") ? jsonCustomContent.getString("monthAgenda")
               : null;
-    }
+    } 
   }
 
   @Override
@@ -191,7 +196,15 @@ public class Event implements Serializable {
     Optional.ofNullable(resourceId).ifPresent(value -> js.put("resourceId", value));
     
     Optional.ofNullable(recurrenceRule).ifPresent(value -> js.put("rrule", value.getRule()));
-
+    
+    if (excludedDates != null && !excludedDates.isEmpty()) {
+      JsonArray jsonExDates = Json.createArray();
+      for (int i = 0; i < excludedDates.size(); i++) {
+        jsonExDates.set(i, excludedDates.get(i).format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
+      }
+      js.put("exdate", jsonExDates);
+    }
+    
     return js.toJson();
   }
   

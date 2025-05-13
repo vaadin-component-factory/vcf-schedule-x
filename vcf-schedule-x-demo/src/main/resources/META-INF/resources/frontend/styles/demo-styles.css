@@ -1,3 +1,18 @@
+html {
+	--calendar-work-light-color: #f91c45;
+	--calendar-work-light-container: #ffd2dc;
+	--calendar-work-light-on-container: #59000d;
+	--calendar-work-dark-color: #ffc0cc;
+	--calendar-work-dark-container: #a24258;
+	--calendar-work-dark-on-container: #ffdee6;
+	--calendar-leisure-light-color: #1cf9b0;
+	--calendar-leisure-light-container: #dafff0;
+	--calendar-leisure-light-on-container: #004d3d;
+	--calendar-leisure-dark-color: #c0fff5;
+	--calendar-leisure-dark-container: #42a297;
+	--calendar-leisure-dark-on-container: #e6fff5;
+}
+
 .vcf-schedule-x-demo.demo-view {
 	max-width: 1500px;
 }

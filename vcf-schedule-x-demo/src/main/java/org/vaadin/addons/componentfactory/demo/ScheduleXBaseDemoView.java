@@ -18,6 +18,9 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.demo.DemoView;
+import java.util.Map;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 
 /**
  * Base class for demo creation.
@@ -29,7 +32,7 @@ public abstract class ScheduleXBaseDemoView extends DemoView {
   public ScheduleXBaseDemoView() {
     this.addClassName("vcf-schedule-x-demo");
   }
-  
+
   @Override
   public void initView() {
     createDemo();
@@ -38,10 +41,23 @@ public abstract class ScheduleXBaseDemoView extends DemoView {
 
   protected abstract void createDemo();
 
+  protected Map<String, Calendar> getCalendars() {
+    Calendar work = new Calendar("work");
+    work.setLightColors(new ColorDefinition("var(--calendar-work-light-color)",
+        "var(--calendar-work-light-container)", "var(--calendar-work-light-on-container)"));
+    work.setDarkColors(new ColorDefinition("var(--calendar-work-dark-color)",
+        "var(--calendar-work-dark-container)", "var(--calendar-work-dark-on-container)"));
+    Calendar leisure = new Calendar("leisure");
+    leisure.setLightColors(new ColorDefinition("var(--calendar-leisure-light-color)",
+        "var(--calendar-leisure-light-container)", "var(--calendar-leisure-light-on-container)"));
+    leisure.setDarkColors(new ColorDefinition("var(--calendar-leisure-dark-color)",
+        "var(--calendar-leisure-dark-container)", "var(--calendar-leisure-dark-on-container)"));
+    return Map.of("work", work, "leisure", leisure);
+  }
+
   protected FieldSet createFieldSetLayout(String text, Component component) {
     FieldSet fieldSet = new FieldSet(text, component);
     fieldSet.getStyle().setBorderRadius("var(--lumo-border-radius-s)");
     return fieldSet;
-  }
-  
+  }  
 }

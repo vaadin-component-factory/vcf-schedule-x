@@ -40,20 +40,38 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
 @Getter
 @RequiredArgsConstructor
 public class Event implements Serializable {
-  
+
+  /**
+   * A unique identifier for the event.
+   */
   @NonNull
   private String id;
 
+  /**
+   * The start date time of the event.
+   */
   @NonNull
   private LocalDateTime start;
 
+  /**
+   * The end date time of the event.
+   */
   @NonNull
   private LocalDateTime end;
 
+  /**
+   * The title of the event.
+   */
   private String title;
 
+  /**
+   * A description of the event.
+   */
   private String description;
 
+  /**
+   * The location of the event.
+   */
   private String location;
 
   /**
@@ -67,41 +85,34 @@ public class Event implements Serializable {
    */
   private String calendarId;
 
-  /**
-   * Optional configuration for the event.
-   */
   private EventOptions options;
 
-  /**
-   * Optional custom content to render in different views.
-   */
   private EventCustomContent customContent;
-  
+
   /**
    * Id of the resource, only for {@link ScheduleXResourceView Resource View}
    */
   private String resourceId;
-  
+
   /**
-   * The recurrence rule for the events if applicable. 
+   * The recurrence rule for the events if applicable.
    */
   private RecurrenceRule recurrenceRule;
-  
+
   /**
    * List of date-times to be excluded from the recurrence set.
    */
   private List<LocalDateTime> excludedDates;
 
-  public Event(String id, String start, String end) {
-    this(id, parseDate(start,false),
-        parseDate(end,true));
+   public Event(String id, String start, String end) {
+    this(id, parseDate(start, false), parseDate(end, true));
   }
-  
+
   public Event(JsonValue json) {
     JsonObject js = (JsonObject) json;
     this.id = js.getString("id");
-    this.start = parseDate(js.getString("start"),false);
-    this.end = parseDate(js.getString("end"),true);
+    this.start = parseDate(js.getString("start"), false);
+    this.end = parseDate(js.getString("end"), true);
     this.title = js.hasKey("title") ? js.getString("title") : null;
     this.description = js.hasKey("description") ? js.getString("description") : null;
     this.location = js.hasKey("location") ? js.getString("location") : null;
@@ -137,7 +148,7 @@ public class Event implements Serializable {
       customContent.monthAgenda =
           jsonCustomContent.hasKey("monthAgenda") ? jsonCustomContent.getString("monthAgenda")
               : null;
-    } 
+    }
   }
 
   @Override
@@ -192,11 +203,11 @@ public class Event implements Serializable {
           .ifPresent(v -> jsonCustomContent.put("monthAgenda", v));
       js.put("_customContent", jsonCustomContent);
     }
-    
+
     Optional.ofNullable(resourceId).ifPresent(value -> js.put("resourceId", value));
-    
+
     Optional.ofNullable(recurrenceRule).ifPresent(value -> js.put("rrule", value.getRule()));
-    
+
     if (excludedDates != null && !excludedDates.isEmpty()) {
       JsonArray jsonExDates = Json.createArray();
       for (int i = 0; i < excludedDates.size(); i++) {
@@ -204,10 +215,10 @@ public class Event implements Serializable {
       }
       js.put("exdate", jsonExDates);
     }
-    
+
     return js.toJson();
   }
-  
+
   private static LocalDateTime parseDate(String date, boolean end) {
     LocalDateTime result;
     try {
@@ -221,11 +232,27 @@ public class Event implements Serializable {
     return result;
   }
 
+  /**
+   * Configure the behavior of individual events by adding an _options object to the event. All the
+   * properties are optional.
+   */
   @Setter
   @Getter
   public static class EventOptions implements Serializable {
+    
+    /**
+     * Disables drag and drop for the event.
+     */
     private Boolean disableDND;
+    
+    /**
+     * Disables resizing for the event.
+     */
     private Boolean disableResize;
+    
+    /**
+     * Additional classes to add to the event.
+     */
     private List<String> additionalClasses;
 
     public JsonObject toJson() {
@@ -243,12 +270,31 @@ public class Event implements Serializable {
     }
   }
 
+  /**
+   * Optional custom content to render in different views.
+   */
   @Setter
   @Getter
   public static class EventCustomContent implements Serializable {
+    
+    /**
+     * Custom HTML to display in the time grid of week/day views.
+     */
     private String timeGrid;
+    
+    /**
+     * Custom HTML to display in the date grid of week/day views.
+     */
     private String dateGrid;
+    
+    /**
+     * Custom HTML to display in the month view.
+     */
     private String monthGrid;
+    
+    /**
+     * Custom HTML to display in the month agenda view.
+     */
     private String monthAgenda;
   }
 }

@@ -62,16 +62,21 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const eventsServicePlugin = createEventsServicePlugin();
 	const resizePlugin = createResizePlugin(config.resizeInterval);
 	const dragAndDropPlugin = createDragAndDropPlugin(config.dragAndDropInterval);
-	const currentTimeIndicatorPlugin = createCurrentTimePlugin(config.currentTimeIndicatorConfig);
 	const scrollControllerPlugin = createScrollControllerPlugin(config.scrollControllerConfig);
 	const calendarControlsPlugin = createCalendarControlsPlugin();
     const icalendarPlugin = config.iCal?createIcalendarPlugin({data:config.iCal.iCal}):null;
 	const recurrencePlugin = createEventRecurrencePlugin();
 	
 	let div = document.getElementById(container.id);
-    let plugins = [calendarControlsPlugin, currentTimeIndicatorPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
+    let plugins = [calendarControlsPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
     if (drawPlugin) plugins.push(drawPlugin);
     if (icalendarPlugin) plugins.push(icalendarPlugin);
+    
+    // Add Current Time Indicator plugin if applies
+    if(config.currentTimeIndicatorConfig) {
+		const currentTimeIndicatorPlugin = createCurrentTimePlugin(config.currentTimeIndicatorConfig);
+		plugins.push(currentTimeIndicatorPlugin);	
+	}
 
 	// Add Scheduling Assistant plugin if applies
 	let schedulingAssistantConfigured = false;

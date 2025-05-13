@@ -241,6 +241,9 @@ public class Configuration implements Serializable {
     }
   }
 
+  /**
+   * Optional options for drawing events.
+   */
   @Getter
   @Setter
   public static class DrawOptions implements Serializable {
@@ -250,6 +253,10 @@ public class Configuration implements Serializable {
      * Valid values: 15, 30, 60
      */
     private TimeInterval snapDrawDuration;
+    
+    /**
+     * Default title to use when drawing an event.
+     */
     private String defaultTitle;
 
     public JsonObject toJson() {
@@ -261,10 +268,16 @@ public class Configuration implements Serializable {
     }
   }
 
+  /**
+   * iCalendar data configuration.
+   */
   @Getter
   @Setter
   public static class ICal implements Serializable {
 
+    /**
+     * iCalendar source.
+     */
     private String iCal;
 
     public JsonObject toJson() {

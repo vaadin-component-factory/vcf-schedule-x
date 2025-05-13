@@ -21,17 +21,39 @@ import java.util.stream.Collectors;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceEvaluator;
 
 /**
- * This class provides events from different sources
+ * Provides a flexible mechanism for supplying {@link Event} instances within a given date range.
+ * <p>
+ * This class allows you to define the source of events either as a fixed list or via a dynamic
+ * callback that generates events based on the given time interval. It supports recurring event
+ * evaluation through a {@link RecurrenceEvaluator}.
  */
 public class EventProvider {
 
   SerializableBiFunction<LocalDateTime, LocalDateTime, List<Event>> eventProviderCallback;
 
+
+  /**
+   * Constructs an {@code EventProvider} using the given callback function.
+   *
+   * @param eventProviderCallback a function that returns events within a date range
+   */
   public EventProvider(
       SerializableBiFunction<LocalDateTime, LocalDateTime, List<Event>> eventProviderCallback) {
     this.eventProviderCallback = eventProviderCallback;
   }
 
+  /**
+   * Creates an {@code EventProvider} that serves events from a fixed list.
+   * <p>
+   * The returned provider will filter the events to include only those that:
+   * <ul>
+   *   <li>Start after the requested start time and end before the requested end time</li>
+   *   <li>Or, if recurring, have at least one occurrence within the given time range</li>
+   * </ul>
+   *
+   * @param events the list of events to serve
+   * @return a new {@code EventProvider} instance
+   */
   public static EventProvider of(List<Event> events) {
     EventProvider eventProvider = new EventProvider((startDate, endDate) -> {
       return events.stream().filter(event -> {
@@ -52,12 +74,25 @@ public class EventProvider {
 
   }
 
+  /**
+   * Creates an {@code EventProvider} from the given callback.
+   *
+   * @param eventProviderCallback a function that returns events within a date range
+   * @return a new {@code EventProvider} instance
+   */
   public static EventProvider of(
       SerializableBiFunction<LocalDateTime, LocalDateTime, List<Event>> eventProviderCallback) {
     EventProvider eventProvider = new EventProvider(eventProviderCallback);
     return eventProvider;
   }
 
+  /**
+   * Returns a list of events that occur within the specified date-time range.
+   *
+   * @param start the start of the range (inclusive)
+   * @param end   the end of the range (exclusive)
+   * @return the list of events in the specified time interval
+   */
   public List<Event> getEvents(LocalDateTime start, LocalDateTime end) {
     return eventProviderCallback.apply(start, end);
   }

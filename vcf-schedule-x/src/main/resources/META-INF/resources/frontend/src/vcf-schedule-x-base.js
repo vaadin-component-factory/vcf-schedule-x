@@ -64,8 +64,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const dragAndDropPlugin = createDragAndDropPlugin(config.dragAndDropInterval);
 	const scrollControllerPlugin = createScrollControllerPlugin(config.scrollControllerConfig);
 	const calendarControlsPlugin = createCalendarControlsPlugin();
-    const icalendarPlugin = config.iCal?createIcalendarPlugin({data:config.iCal.iCal}):null;
-	const recurrencePlugin = createEventRecurrencePlugin();
+   	const recurrencePlugin = createEventRecurrencePlugin();
 	
 	let div = document.getElementById(container.id);
     let plugins = [calendarControlsPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
@@ -74,8 +73,12 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
     const drawPlugin = calendarOptions.drawPlugin;    
     if (drawPlugin) plugins.push(drawPlugin);
     
-    if (icalendarPlugin) plugins.push(icalendarPlugin);
-    
+     // Add iCal plugin if applies
+    if(config.iCal){
+		 const icalendarPlugin = createIcalendarPlugin({data:config.iCal.iCal});
+		 plugins.push(icalendarPlugin);
+	}
+	
     // Add Current Time Indicator plugin if applies
     if(config.currentTimeIndicatorConfig) {
 		const currentTimeIndicatorPlugin = createCurrentTimePlugin(config.currentTimeIndicatorConfig);

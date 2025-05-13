@@ -61,15 +61,6 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     // begin-source-example
     // source-example-heading: Basic Use Demo
 
-    // create categories for events
-    Calendar work = new Calendar("work");
-    work.setLightColors(new ColorDefinition("#f91c45", "#ffd2dc", "#59000d"));
-    work.setDarkColors(new ColorDefinition("#ffc0cc", "#a24258", "#ffdee6"));
-    Calendar leisure = new Calendar("leisure");
-    leisure.setLightColors(new ColorDefinition("#1cf9b0", "#dafff0", "#004d3d"));
-    leisure.setDarkColors(new ColorDefinition("#c0fff5", "#42a297", "#e6fff5"));
-    calendars = Map.of("work", work, "leisure", leisure);
-
     // calendar configuration
     configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2024, 05, 06));
@@ -107,6 +98,9 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     resourceSchedulerConfig.setResize(true);
     resourceSchedulerConfig.setDragAndDrop(true);
 
+    // create categories for events
+    calendars = getCalendars();
+    
     // create events
     LocalDate eventsDate = LocalDate.of(2024, 05, 06);
     Event event1 = new Event("1", LocalDateTime.of(eventsDate, LocalTime.of(02, 00)),
@@ -227,7 +221,5 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     header = new CalendarHeaderComponent(resourceView);
     resourceViewCard.add(header, resourceView, resourcesLayout);
   }
-
   // end-source-example
-
 }

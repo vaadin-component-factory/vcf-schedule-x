@@ -33,7 +33,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.CurrentTimeIndicatorConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DrawOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.ICal;
@@ -62,17 +61,17 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     // begin-source-example
     // source-example-heading: Basic Use Demo
 
-    // create categories for events
-    Calendar work = new Calendar("work");
-    work.setLightColors(new ColorDefinition("#f91c45", "#ffd2dc", "#59000d"));
-    work.setDarkColors(new ColorDefinition("#ffc0cc", "#a24258", "#ffdee6"));
-    Calendar leisure = new Calendar("leisure");
-    leisure.setLightColors(new ColorDefinition("#1cf9b0", "#dafff0", "#004d3d"));
-    leisure.setDarkColors(new ColorDefinition("#c0fff5", "#42a297", "#e6fff5"));
-    Map<String, Calendar> calendars = Map.of("work", work, "leisure", leisure);
-
-    // create events
+    // add calendar configuration
     LocalDate today = LocalDate.now();
+    Configuration configuration = new Configuration();
+    configuration.setSelectedDate(today.plusDays(1));
+    configuration.setDefaultView(CalendarView.WEEK);
+    configuration.setDragAndDropInterval(TimeInterval.MIN_30);
+    
+    // create categories for events
+    Map<String, Calendar> calendars = getCalendars();
+
+    // create events   
     Event event1 = new Event("1", LocalDateTime.of(today.minusDays(2), LocalTime.of(10, 05)),
         LocalDateTime.of(today.minusDays(2), LocalTime.of(10, 35)));
     event1.setTitle("Coffee with John");
@@ -90,12 +89,6 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     events = new ArrayList<Event>();
     events.addAll(Arrays.asList(event1, event2, event3));
 
-    // add calendar configuration
-    Configuration configuration = new Configuration();
-    configuration.setSelectedDate(today.plusDays(1));
-    configuration.setDefaultView(CalendarView.WEEK);
-    configuration.setDragAndDropInterval(TimeInterval.MIN_30);
-    
     // current time indicator
     CurrentTimeIndicatorConfig currentTimeIndicator = new CurrentTimeIndicatorConfig();
     currentTimeIndicator.setFullWeekWidth(true);
@@ -106,36 +99,36 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     ScrollControllerConfig scrollControllerConfig = new ScrollControllerConfig();
     scrollControllerConfig.setInitialScroll(LocalTime.of(14, 50));
     configuration.setScrollControllerConfig(scrollControllerConfig);
-    
+
     // Ical
     ICal ical = new ICal();
     ical.setICal("""
-            BEGIN:VCALENDAR
-            VERSION:2.0
-            CALSCALE:GREGORIAN
-            BEGIN:VEVENT
-            SUMMARY:Good morning
-            DTSTART;TZID=America/New_York:20250506T103400
-            DTEND;TZID=America/New_York:20250506T110400
-            LOCATION:1000 Broadway Ave.\\, Brooklyn
-            DESCRIPTION: Access-A-Ride trip to 900 Jay St.\\, Brooklyn
-            STATUS:CONFIRMED
-            SEQUENCE:3
-            END:VEVENT
-            BEGIN:VEVENT
-            RRULE:FREQ=DAILY;COUNT=3
-            SUMMARY:Good night
-            DTSTART;TZID=America/New_York:20250509T200000
-            DTEND;TZID=America/New_York:20250509T203000
-            LOCATION:900 Jay St.\\, Brooklyn
-            DESCRIPTION: Access-A-Ride trip to 1000 Broadway Ave.\\, Brooklyn
-            STATUS:CONFIRMED
-            SEQUENCE:3
-            END:VEVENT
-            END:VCALENDAR
-            """);
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        CALSCALE:GREGORIAN
+        BEGIN:VEVENT
+        SUMMARY:Good morning
+        DTSTART;TZID=America/New_York:20250506T103400
+        DTEND;TZID=America/New_York:20250506T110400
+        LOCATION:1000 Broadway Ave.\\, Brooklyn
+        DESCRIPTION: Access-A-Ride trip to 900 Jay St.\\, Brooklyn
+        STATUS:CONFIRMED
+        SEQUENCE:3
+        END:VEVENT
+        BEGIN:VEVENT
+        RRULE:FREQ=DAILY;COUNT=3
+        SUMMARY:Good night
+        DTSTART;TZID=America/New_York:20250509T200000
+        DTEND;TZID=America/New_York:20250509T203000
+        LOCATION:900 Jay St.\\, Brooklyn
+        DESCRIPTION: Access-A-Ride trip to 1000 Broadway Ave.\\, Brooklyn
+        STATUS:CONFIRMED
+        SEQUENCE:3
+        END:VEVENT
+        END:VCALENDAR
+        """);
     configuration.setICal(ical);
-    
+
     // draw options
     DrawOptions drawOptions = new DrawOptions();
     drawOptions.setDefaultTitle("New event");
@@ -217,10 +210,11 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     });
     removeTestEventButton.setEnabled(false);
     removeTestEventButton.setDisableOnClick(true);
-    
+
     calendar.addCalendarEventDrawnEventListener(e -> events.add(e.getEvent()));
-    
-    calendar.setDrawnEventValidationCallback(e -> e.getStart().getHour()>7 || e.getStart().getHour()<1);
+
+    calendar.setDrawnEventValidationCallback(
+        e -> e.getStart().getHour() > 7 || e.getStart().getHour() < 1);
 
     calendar.addCalendarEventAddedEventListener(
         e -> Notification.show("Calendar event with id '" + e.getEventId() + "' added."));
@@ -304,6 +298,5 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     return createFieldSetLayout("Scrolling testing (only available for week and day views)",
         layout);
   }
-
   // end-source-example
 }

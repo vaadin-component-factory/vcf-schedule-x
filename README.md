@@ -45,7 +45,7 @@ This component is part of the Vaadin Component Factory.
   - Define title, location, description, and attendees
   - Assign events to calendars (calendarId)
   - Assign events to resources (resourceId)
-  - Recurring events using RRULE (RecurrenceRule)
+  - Recurring events using RRULE (RecurrenceRule) and excluded date support
   - Drag & drop events
   - Resize events
   - Draw events (*)

@@ -250,6 +250,8 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     Until until = new Until(untilDate, untilTime);
     recurrenceRule.setUntil(until);
     testEvent.setRecurrenceRule(recurrenceRule);
+    testEvent.setExcludedDates(Arrays.asList(LocalDateTime.of(LocalDate.of(2025, 05, 21), LocalTime.of(10,00)), 
+        LocalDateTime.of(LocalDate.of(2025, 06, 02), LocalTime.of(10,00))));
 
     Button addTestEventButton = new Button("Click to add recurring test event");
     Button updateTestEventButton = new Button("Click to update recurring test event");

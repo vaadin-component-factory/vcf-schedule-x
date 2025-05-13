@@ -71,8 +71,9 @@ window.vcfschedulexcalendar = {
         });
         setTimeout(() =>
             createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
-                viewsJson
-            }, drawPlugin)
+                viewsJson,
+                drawPlugin
+            })
         );
 	},
 

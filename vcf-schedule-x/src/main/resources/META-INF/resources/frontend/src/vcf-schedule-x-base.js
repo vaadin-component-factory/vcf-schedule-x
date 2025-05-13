@@ -52,7 +52,7 @@ import {
  * @param {string} calendarsJson - The calendars as JSON.
  * @param {Object} calendarOptions - Additional options.
  */
-export function createCommonCalendar(container, viewFactories, viewNameMap, configJson, calendarsJson, calendarOptions = {}, drawPlugin) {
+export function createCommonCalendar(container, viewFactories, viewNameMap, configJson, calendarsJson, calendarOptions = {}) {
 	const viewFnNames = JSON.parse(calendarOptions.viewsJson || "[]");
 	const config = processConfiguration(configJson, viewNameMap);
 	const parsedCalendars = JSON.parse(calendarsJson || "[]");
@@ -69,7 +69,11 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	
 	let div = document.getElementById(container.id);
     let plugins = [calendarControlsPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
+    
+    // Add Draw plugin if applies
+    const drawPlugin = calendarOptions.drawPlugin;    
     if (drawPlugin) plugins.push(drawPlugin);
+    
     if (icalendarPlugin) plugins.push(icalendarPlugin);
     
     // Add Current Time Indicator plugin if applies

@@ -13,9 +13,9 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
 @FunctionalInterface
 public interface ViewChangeListener {
-    void onViewChange(View newView);
+    void onViewChange(ViewType newView);
 }

@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
 /**
  * Java representation of the configuration options for the Schedule-X Calendar. This configuration
@@ -40,7 +40,7 @@ public class Configuration implements Serializable {
    * have a "name" property, which helps you identify them. Defaults to the first view in the
    * "views" list.
    */
-  private View defaultView;
+  private ViewType defaultView;
 
   /**
    * The default date to display when the calendar is first rendered. Only accepts YYYY-MM-DD

@@ -46,7 +46,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
 @SuppressWarnings("serial")
 @NpmPackage(value = "@schedule-x/calendar", version = "2.30.0")
@@ -69,7 +69,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Views available to the user.
    */
-  private List<? extends View> views = new ArrayList<>();
+  private List<? extends ViewType> views = new ArrayList<>();
 
   /**
    * Map of calendar IDs to their configuration. The key will be used as the JS object key on the
@@ -82,7 +82,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Current calendar view being shown.
    */
-  private View view;
+  private ViewType view;
 
   /**
    * Optional global calendar configuration settings.
@@ -94,19 +94,19 @@ public abstract class BaseScheduleXCalendar extends Div {
     setClassName("vcf-schedule-x-calendar");
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider) {
+  public BaseScheduleXCalendar(List<? extends ViewType> views, EventProvider eventProvider) {
     this();
     this.views = new ArrayList<>(views);
     this.eventProvider = eventProvider;
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider,
+  public BaseScheduleXCalendar(List<? extends ViewType> views, EventProvider eventProvider,
       Configuration configuration) {
     this(views, eventProvider);
     this.configuration = configuration;
   }
 
-  public BaseScheduleXCalendar(List<? extends View> views, EventProvider eventProvider,
+  public BaseScheduleXCalendar(List<? extends ViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars) {
     this(views, eventProvider, configuration);
     this.calendars = calendars;
@@ -185,7 +185,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * 
    * @param view the view to set
    */
-  public void setView(View view) {
+  public void setView(ViewType view) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setView($0, $1);", this, view.getName());
       this.view = view;
@@ -197,7 +197,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * 
    * @return the current view
    */
-  public View getView() {
+  public ViewType getView() {
     return this.view == null ? this.getViews().get(0) : this.view;
   }
 
@@ -283,7 +283,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * 
    * @param views the views to be shown by the calendar
    */
-  public void setViews(List<? extends View> views) {
+  public void setViews(List<? extends ViewType> views) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setViews($0, $1);", this, viewsToJson());
       this.views = new ArrayList<>(views);

@@ -13,14 +13,19 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-public enum CalendarView implements View {
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
+
+/**
+ * Enum representing the supported view types for {@link ScheduleXCalendar}.
+ */
+public enum CalendarViewType implements ViewType {
 
   DAY("createViewDay"), MONTH_GRID("createViewMonthGrid"), MONTH_AGENDA(
       "createViewMonthAgenda"), WEEK("createViewWeek");
 
   private String name;
 
-  private CalendarView(String name) {
+  private CalendarViewType(String name) {
     this.name = name;
   }
 

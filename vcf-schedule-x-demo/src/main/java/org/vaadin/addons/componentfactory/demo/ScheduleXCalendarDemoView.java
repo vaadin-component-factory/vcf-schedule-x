@@ -31,6 +31,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event.EventOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.CurrentTimeIndicatorConfig;
@@ -250,8 +251,12 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     Until until = new Until(untilDate, untilTime);
     recurrenceRule.setUntil(until);
     testEvent.setRecurrenceRule(recurrenceRule);
-    testEvent.setExcludedDates(Arrays.asList(LocalDateTime.of(LocalDate.of(2025, 05, 21), LocalTime.of(10,00)), 
-        LocalDateTime.of(LocalDate.of(2025, 06, 02), LocalTime.of(10,00))));
+    testEvent.setExcludedDates(Arrays.asList(LocalDateTime.of(LocalDate.of(2025, 06, 04), LocalTime.of(10,00)), 
+        LocalDateTime.of(LocalDate.of(2025, 06, 18), LocalTime.of(10,00))));
+    EventOptions eventOptions = new EventOptions();
+    eventOptions.setDisableDND(true);
+    eventOptions.setDisableResize(true);
+    testEvent.setOptions(eventOptions);
     
     Button addTestEventButton = new Button("Click to add recurring test event");
     Button updateTestEventButton = new Button("Click to update recurring test event");

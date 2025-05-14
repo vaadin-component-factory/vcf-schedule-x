@@ -1,51 +1,94 @@
 /*
  * Copyright 2025 Vaadin Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import com.vaadin.flow.component.UI;
-import net.jcip.annotations.NotThreadSafe;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 
-@NotThreadSafe
-public class ScheduleXCalendarTest {
+class ScheduleXCalendarTest {
 
-    private UI ui;
+  private EventProvider eventProvider;
+  private Configuration configuration;
+  private ScheduleXCalendar calendar;
+  private List<CalendarViewType> views;
 
-    @Before
-    public void setUp() {
-        ui = new UI();
-        UI.setCurrent(ui);
-    }
+  @BeforeEach
+  void setUp() {
+    
+    // Mock event provider to return a fixed list
+    LocalDate date = LocalDate.of(2025, 01, 01);
+    Event event = new Event("event-id", LocalDateTime.of(date, LocalTime.of(10, 00)),
+        LocalDateTime.of(date, LocalTime.of(12, 00)));
+    eventProvider = EventProvider.of((start, end) -> Collections.singletonList(event));
 
-    @After
-    public void tearDown() {
-        UI.setCurrent(null);
-    }
+    // Minimal configuration
+    configuration = new Configuration();
+    configuration.setDefaultView(CalendarViewType.WEEK);
+    configuration.setFirstDayOfWeek(1);
+    configuration.setSelectedDate(date);
 
-    @Test
-    public void paperInput_basicCases() {
-        ScheduleXCalendar calendar = new ScheduleXCalendar();
+    views = List.of(CalendarViewType.WEEK, CalendarViewType.DAY);
+    calendar = new ScheduleXCalendar(views, eventProvider, configuration);
+    CalendarTestUtils.forceCalendarRendered(calendar);
+  }
 
-//        assertEquals(null, pinput.getValue());
-//        assertEquals(null, pinput.getElement().getProperty("value"));
-//
-//        pinput.setValue("test");
-//        assertEquals("test", pinput.getElement().getProperty("value"));
-    }
+  @Test
+  void testGetEventsFromProvider() {
+    LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
+    LocalDateTime end = LocalDateTime.of(2025, 1, 2, 0, 0);
 
+    List<Event> events = eventProvider.getEvents(start, end);
+    assertEquals(1, events.size());
+    assertEquals("event-id", events.get(0).getId());
+  }
+
+  @Test
+  void testInitialViewSetCorrectly() {
+    assertEquals(CalendarViewType.WEEK, calendar.getView());
+    assertEquals(CalendarViewType.WEEK, calendar.getConfiguration().getDefaultView());
+  }
+
+  @Test
+  void testSetDateUpdatesConfiguration() {
+    LocalDate date = LocalDate.of(2025, 1, 5);
+    calendar.setDate(date);
+    assertEquals(date, calendar.getDate());
+    assertEquals(date, calendar.getConfiguration().getSelectedDate());
+  }
+
+  @Test
+  void testSetFirstDayOfWeekUpdatesConfiguration() {
+    calendar.setFirstDayOfWeek(2);
+    assertEquals(2, calendar.getFirstDayOfWeek());
+    assertEquals(2, calendar.getConfiguration().getFirstDayOfWeek());
+  }
+
+  @Test
+  void testSetViewsUpdatesInternalList() {
+    List<CalendarViewType> newViews = List.of(CalendarViewType.WEEK, CalendarViewType.MONTH_GRID);
+    calendar.setViews(newViews);
+    assertEquals(CalendarViewType.WEEK, calendar.getViews().get(0));
+    assertEquals(CalendarViewType.MONTH_GRID, calendar.getViews().get(1));
+  }
 }

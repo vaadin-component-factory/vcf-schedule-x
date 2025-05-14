@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DayBoundaries;
@@ -60,7 +59,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 @NpmPackage(value = "@schedule-x/ical", version = "2.30.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
-@Setter
 @Getter
 public abstract class BaseScheduleXCalendar extends Div {
   

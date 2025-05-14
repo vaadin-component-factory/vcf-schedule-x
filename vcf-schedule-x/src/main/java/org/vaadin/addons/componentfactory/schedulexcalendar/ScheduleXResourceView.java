@@ -24,7 +24,6 @@ import com.vaadin.flow.shared.Registration;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
-import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
@@ -46,7 +45,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewTyp
 @JsModule("./src/vcf-schedule-x-resource-view.js")
 @CssImport("@sx-premium/resource-scheduler/index.css")
 @CssImport("@sx-premium/scheduling-assistant/index.css")
-@Setter
 @Getter
 public class ScheduleXResourceView extends BaseScheduleXCalendar {
 

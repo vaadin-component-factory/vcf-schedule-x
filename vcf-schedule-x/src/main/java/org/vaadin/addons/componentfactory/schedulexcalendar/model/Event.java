@@ -104,10 +104,37 @@ public class Event implements Serializable {
    */
   private List<LocalDateTime> excludedDates;
 
-   public Event(String id, String start, String end) {
+  /**
+   * Constructs an {@code Event} from an ID and string representations of the start and end date-times.
+   * <p>
+   * Supported formats for {@code start} and {@code end}:
+   * <ul>
+   *   <li>{@code YYYY-MM-DD} — treated as midnight (start of day)</li>
+   *   <li>{@code YYYY-MM-DD HH:mm} — treated as the specified date and time</li>
+   * </ul>
+   * If the {@code end} value is given in the {@code YYYY-MM-DD} format, it is internally adjusted to
+   * represent the end of that day (23:59:59).
+   *
+   * @param id    the unique identifier of the event
+   * @param start the start date-time string in one of the supported formats
+   * @param end   the end date-time string in one of the supported formats
+   */
+  public Event(String id, String start, String end) {
     this(id, parseDate(start, false), parseDate(end, true));
   }
 
+  /**
+   * Constructs an {@code Event} from a JSON representation.
+   * <p>
+   * Required fields in the JSON object:
+   * <ul>
+   *   <li>{@code id} – unique event ID</li>
+   *   <li>{@code start} – start date-time string (format: {@code YYYY-MM-DD} or {@code YYYY-MM-DD HH:mm})</li>
+   *   <li>{@code end} – end date-time string (same formats as {@code start})</li>
+   * </ul>
+   *
+   * @param json the {@link JsonValue} representing the event data
+   */
   public Event(JsonValue json) {
     JsonObject js = (JsonObject) json;
     this.id = js.getString("id");
@@ -219,6 +246,17 @@ public class Event implements Serializable {
     return js.toJson();
   }
 
+  /**
+   * Parses a date string into a {@link LocalDateTime}, accepting two formats:
+   * <ul>
+   *   <li>{@code YYYY-MM-DD HH:mm} – parsed as-is</li>
+   *   <li>{@code YYYY-MM-DD} – parsed as start of day (00:00), or end of day (23:59:59) if {@code end} is {@code true}</li>
+   * </ul>
+   *
+   * @param date the date string to parse
+   * @param end  whether to treat a date-only value as the end of the day
+   * @return the parsed {@code LocalDateTime}
+   */
   private static LocalDateTime parseDate(String date, boolean end) {
     LocalDateTime result;
     try {
@@ -239,17 +277,17 @@ public class Event implements Serializable {
   @Setter
   @Getter
   public static class EventOptions implements Serializable {
-    
+
     /**
      * Disables drag and drop for the event.
      */
     private Boolean disableDND;
-    
+
     /**
      * Disables resizing for the event.
      */
     private Boolean disableResize;
-    
+
     /**
      * Additional classes to add to the event.
      */
@@ -276,22 +314,22 @@ public class Event implements Serializable {
   @Setter
   @Getter
   public static class EventCustomContent implements Serializable {
-    
+
     /**
      * Custom HTML to display in the time grid of week/day views.
      */
     private String timeGrid;
-    
+
     /**
      * Custom HTML to display in the date grid of week/day views.
      */
     private String dateGrid;
-    
+
     /**
      * Custom HTML to display in the month view.
      */
     private String monthGrid;
-    
+
     /**
      * Custom HTML to display in the month agenda view.
      */

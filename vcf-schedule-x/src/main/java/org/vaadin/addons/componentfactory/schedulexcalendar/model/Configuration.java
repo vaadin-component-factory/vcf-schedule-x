@@ -176,7 +176,6 @@ public class Configuration implements Serializable {
           .ifPresent(value -> js.put("start", value.format(DateTimeFormatUtils.TIME_FORMATTER)));
       Optional.ofNullable(end)
           .ifPresent(value -> js.put("end", value.format(DateTimeFormatUtils.TIME_FORMATTER)));
-      js.put("dayBoundaries", js);
       return js;
     }
   }

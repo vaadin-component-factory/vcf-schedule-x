@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.vaadin.addons.componentfactory.schedulexcalendar.BaseScheduleXCalendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.View;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
 /**
  * Creates a component to be use as header for {@link ScheduleXCalendarDemoView} and
@@ -50,8 +50,8 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     Configuration calendarConf = calendar.getConfiguration();
     LocalDate selectedDate =
         calendarConf.getSelectedDate() != null ? calendarConf.getSelectedDate() : null;
-    List<? extends View> views = calendar.getViews();
-    View defaultView =
+    List<? extends ViewType> views = calendar.getViews();
+    ViewType defaultView =
         calendarConf.getDefaultView() != null ? calendarConf.getDefaultView() : views.get(0);
 
     DatePicker datePicker = new DatePicker("Date");
@@ -66,11 +66,11 @@ public class CalendarHeaderComponent extends HorizontalLayout {
       datePicker.setValue(e.getSelectedDate());
     });
 
-    ComboBox<View> viewsComboBox = new ComboBox<View>("View");
-    viewsComboBox.setItems(new ArrayList<View>(views));
+    ComboBox<ViewType> viewsComboBox = new ComboBox<ViewType>("View");
+    viewsComboBox.setItems(new ArrayList<ViewType>(views));
     viewsComboBox.setItemLabelGenerator((item) -> {
-      if (item instanceof CalendarView) {
-        switch ((CalendarView) item) {
+      if (item instanceof CalendarViewType) {
+        switch ((CalendarViewType) item) {
           case DAY:
             return "Day";
           case WEEK:
@@ -82,8 +82,8 @@ public class CalendarHeaderComponent extends HorizontalLayout {
           default:
             break;
         }
-      } else if (item instanceof ResourceView) {
-        switch ((ResourceView) item) {
+      } else if (item instanceof ResourceViewType) {
+        switch ((ResourceViewType) item) {
           case DAILY:
             return "Daily";
           case HOURLY:

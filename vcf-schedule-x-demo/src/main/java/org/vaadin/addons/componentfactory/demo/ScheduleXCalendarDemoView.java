@@ -40,7 +40,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule.Day;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule.Frequency;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule.Until;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 
 /**
@@ -65,7 +65,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     LocalDate today = LocalDate.now();
     Configuration configuration = new Configuration();
     configuration.setSelectedDate(today.plusDays(1));
-    configuration.setDefaultView(CalendarView.WEEK);
+    configuration.setDefaultView(CalendarViewType.WEEK);
     configuration.setDragAndDropInterval(TimeInterval.MIN_30);
     
     // create categories for events
@@ -136,8 +136,8 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     configuration.setDrawOptions(drawOptions);
 
     // create calendar
-    calendar = new ScheduleXCalendar(Arrays.asList(CalendarView.DAY, CalendarView.WEEK,
-        CalendarView.MONTH_GRID, CalendarView.MONTH_AGENDA), EventProvider.of(events),
+    calendar = new ScheduleXCalendar(Arrays.asList(CalendarViewType.DAY, CalendarViewType.WEEK,
+        CalendarViewType.MONTH_GRID, CalendarViewType.MONTH_AGENDA), EventProvider.of(events),
         configuration, calendars);
 
     // add event click listener
@@ -252,7 +252,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     testEvent.setRecurrenceRule(recurrenceRule);
     testEvent.setExcludedDates(Arrays.asList(LocalDateTime.of(LocalDate.of(2025, 05, 21), LocalTime.of(10,00)), 
         LocalDateTime.of(LocalDate.of(2025, 06, 02), LocalTime.of(10,00))));
-
+    
     Button addTestEventButton = new Button("Click to add recurring test event");
     Button updateTestEventButton = new Button("Click to update recurring test event");
     Button removeTestEventButton = new Button("Click to remove recurring test event");

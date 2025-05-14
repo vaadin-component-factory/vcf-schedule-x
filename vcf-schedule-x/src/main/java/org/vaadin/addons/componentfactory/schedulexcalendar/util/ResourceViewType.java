@@ -13,13 +13,18 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-public enum ResourceView implements View {
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
+
+/**
+ * Enum representing the supported view types for {@link ScheduleXResourceView}
+ */
+public enum ResourceViewType implements ViewType {
 
   HOURLY("createHourlyView"), DAILY("createDailyView");
 
   private String name;
 
-  private ResourceView(String name) {
+  private ResourceViewType(String name) {
     this.name = name;
   }
 

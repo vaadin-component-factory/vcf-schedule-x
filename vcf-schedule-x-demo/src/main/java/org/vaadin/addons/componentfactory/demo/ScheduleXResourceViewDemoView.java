@@ -35,7 +35,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 /**
  * View for {@link ScheduleXResourceView} demo.
@@ -64,7 +64,7 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     // calendar configuration
     configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2024, 05, 06));
-    configuration.setDefaultView(ResourceView.HOURLY);
+    configuration.setDefaultView(ResourceViewType.HOURLY);
 
     // create resources
     Resource resource1 = new Resource("conveyor-belt-a");
@@ -166,7 +166,7 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
   }
 
   private ScheduleXResourceView getScheduleXResourceView() {
-    return new ScheduleXResourceView(Arrays.asList(ResourceView.HOURLY, ResourceView.DAILY),
+    return new ScheduleXResourceView(Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY),
         EventProvider.of(events), configuration, calendars, resourceSchedulerConfig);
   }
  

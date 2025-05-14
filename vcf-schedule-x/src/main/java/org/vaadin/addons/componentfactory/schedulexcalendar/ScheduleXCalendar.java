@@ -20,7 +20,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.ComponentEvent;
@@ -46,16 +46,16 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     super();
   }
 
-  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider) {
+  public ScheduleXCalendar(List<CalendarViewType> views, EventProvider eventProvider) {
     super(views, eventProvider);
   }
 
-  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider,
+  public ScheduleXCalendar(List<CalendarViewType> views, EventProvider eventProvider,
       Configuration configuration) {
     super(views, eventProvider, configuration);
   }
 
-  public ScheduleXCalendar(List<CalendarView> views, EventProvider eventProvider,
+  public ScheduleXCalendar(List<CalendarViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars) {
     super(views, eventProvider, configuration, calendars);
   }

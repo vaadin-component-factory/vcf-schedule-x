@@ -30,7 +30,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 /**
  * A view for displaying resources (people, rooms, equipment etc.) in a time grid.
@@ -59,28 +59,28 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
     setClassName("vcf-schedule-x-resource-view");
   }
 
-  public ScheduleXResourceView(List<ResourceView> views, EventProvider eventProvider) {
+  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider) {
     super(views, eventProvider);
   }
 
-  public ScheduleXResourceView(List<ResourceView> views, EventProvider eventProvider,
+  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration) {
     super(views, eventProvider, configuration);
   }
 
-  public ScheduleXResourceView(List<ResourceView> views, EventProvider eventProvider,
+  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars) {
     super(views, eventProvider, configuration, calendars);
   }
 
-  public ScheduleXResourceView(List<ResourceView> views, EventProvider eventProvider,
+  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars,
       ResourceSchedulerConfig resourceSchedulerConfig) {
     super(views, eventProvider, configuration, calendars);
     this.resourceSchedulerConfig = resourceSchedulerConfig;
   }
 
-  public ScheduleXResourceView(List<ResourceView> views, EventProvider eventProvider,
+  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars,
       ResourceSchedulerConfig resourceSchedulerConfig,
       SchedulingAssistantConfig schedulingAssistantConfig) {

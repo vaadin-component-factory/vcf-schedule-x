@@ -160,19 +160,27 @@ public abstract class BaseScheduleXCalendar extends Div {
   void updateRange(String start, String end) {
     String events = eventsToJson(LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
         LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER));
-    this.getElement().executeJs(
-        "if (this.calendar.$app.config.plugins.ICalendarPlugin) "
-        + "{"
-        + " this.calendar.$app.config.plugins.ICalendarPlugin.between($1, $2);"
-        + " JSON.parse($0).forEach(event => this.calendar.eventsService.add(event));"
-        + "}"
-        + " else "
-        + "{"
-        + " this.calendar.eventsService.set(JSON.parse($0))"
-        + "}"
-        + " if(this.calendar.$app.config.plugins.eventRecurrence){"
-        + " this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})"
-        + "}",
+    this.getElement().executeJs("""
+  if (this.calendar.$app.config.plugins.ICalendarPlugin) 
+  {
+   this.calendar.$app.config.plugins.ICalendarPlugin.between($1, $2);
+   let events = this.calendar.eventsService.getAll();
+   events.forEach(event => {
+     event._options = {};
+     event._options.disableDND = true;
+     event._options.disableResize = true;
+     this.calendar.eventsService.update(event);
+   });
+   JSON.parse($0).forEach(event => this.calendar.eventsService.add(event));
+  }
+   else 
+  {
+   this.calendar.eventsService.set(JSON.parse($0))
+  }
+   if(this.calendar.$app.config.plugins.eventRecurrence){
+   this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})
+  }
+            """,
         events, start, end);
   }
 

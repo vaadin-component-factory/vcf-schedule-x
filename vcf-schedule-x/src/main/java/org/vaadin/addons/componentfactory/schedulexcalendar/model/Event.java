@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
@@ -90,7 +90,7 @@ public class Event implements Serializable {
   private EventCustomContent customContent;
 
   /**
-   * Id of the resource, only for {@link ScheduleXResourceView Resource View}
+   * Id of the resource, only for {@link ScheduleXResourceScheduler Resource View}
    */
   private String resourceId;
 

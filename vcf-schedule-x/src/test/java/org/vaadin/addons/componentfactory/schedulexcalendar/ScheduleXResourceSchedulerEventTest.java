@@ -19,21 +19,21 @@ import com.vaadin.flow.component.ComponentUtil;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView.SchedulingAssistantUpdateEvent;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler.SchedulingAssistantUpdateEvent;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
-class ScheduleXResourceViewEventTest {
+class ScheduleXResourceSchedulerEventTest {
 
   @Test
   void testSchedulingAssistantUpdateEventIsFiredAndHandled() {
     // Setup component
-    ScheduleXResourceView resourceView = new ScheduleXResourceView(List.of(ResourceViewType.HOURLY),
+    ScheduleXResourceScheduler resourceScheduler = new ScheduleXResourceScheduler(List.of(ResourceViewType.HOURLY),
         EventProvider.of((s, e) -> List.of()), new Configuration(), null,
         new ResourceSchedulerConfig());
-    CalendarTestUtils.forceCalendarRendered(resourceView);
+    CalendarTestUtils.forceCalendarRendered(resourceScheduler);
 
     // Prepare container for values received
     AtomicReference<String> receivedStart = new AtomicReference<>();
@@ -41,15 +41,15 @@ class ScheduleXResourceViewEventTest {
     AtomicReference<Boolean> receivedCollision = new AtomicReference<>();
 
     // Register listener
-    resourceView.addSchedulingAssistantUpdateListener(event -> {
+    resourceScheduler.addSchedulingAssistantUpdateListener(event -> {
       receivedStart.set(event.getCurrentStart());
       receivedEnd.set(event.getCurrentEnd());
       receivedCollision.set(event.isHasCollision());
     });
 
     // Simulate client-side event firing
-    ComponentUtil.fireEvent(resourceView,
-        new SchedulingAssistantUpdateEvent(resourceView, true, "2025-06-01 09:00", "2025-06-01 10:00", true // hasCollision
+    ComponentUtil.fireEvent(resourceScheduler,
+        new SchedulingAssistantUpdateEvent(resourceScheduler, true, "2025-06-01 09:00", "2025-06-01 10:00", true // hasCollision
         ));
 
     // Assertions

@@ -25,11 +25,13 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
- * Java representation of the ResourceViewConfig for the Schedule-X Resource Scheduler. This
- * configuration is used to customize the behavior and appearance of resource views.
+ * Java representation of the configuration options for the {@link ScheduleXResourceScheduler
+ * Schedule-X Resource Scheduler}. This configuration is used to customize the behavior and
+ * appearance of resource scheduler.
  * 
  * @see <a href=
  *      "https://schedule-x.dev/docs/calendar/resource-scheduler#resourceschedulerconfig">ResourceSchedulerConfig

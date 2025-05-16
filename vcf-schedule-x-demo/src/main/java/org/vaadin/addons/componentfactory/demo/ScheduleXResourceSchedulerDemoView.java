@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
@@ -38,22 +38,22 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.Color
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 /**
- * View for {@link ScheduleXResourceView} demo.
+ * View for {@link ScheduleXResourceScheduler} demo.
  *
  * @author Vaadin Ltd
  */
 @SuppressWarnings("serial")
 @Route(value = "resource", layout = DemoMainLayout.class)
-public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
+public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
   private List<Resource> resources;
   private Configuration configuration;
   private Map<String, Calendar> calendars;
   private ResourceSchedulerConfig resourceSchedulerConfig;
-  private ScheduleXResourceView resourceView;
+  private ScheduleXResourceScheduler resourceScheduler;
   private CalendarHeaderComponent header;
-  private Card resourceViewCard;
+  private Card resourceSchedulerCard;
   private FieldSet resourcesLayout;
  
   @Override
@@ -123,17 +123,17 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     events.addAll(Arrays.asList(event1, event2, event3));
 
     // create resource view
-    resourceView = getScheduleXResourceView();
+    resourceScheduler = getScheduleXResourceScheduler();
 
     // create header component
-    header = new CalendarHeaderComponent(resourceView);
+    header = new CalendarHeaderComponent(resourceScheduler);
 
     // add event click listener
-    resourceView.addCalendarEventClickEventListener(
+    resourceScheduler.addCalendarEventClickEventListener(
         e -> Notification.show("Event with id " + e.getEventId() + " clicked"));
 
     // add listener on event resizing or dnd
-    resourceView.addEventUpdateEventListener(e -> {
+    resourceScheduler.addEventUpdateEventListener(e -> {
       String updatedEventId = e.getEventId();
       Optional<Event> optionalEvent =
           events.stream().filter(ev -> ev.getId().equals(updatedEventId)).findFirst();
@@ -144,13 +144,13 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
     });
 
     // create demo card containing resource view
-    createResourceViewDemoCard();
+    createResourceSchedulerDemoCard();
 
     // end-source-example
 
-    resourceView.setId("basic-use-demo");
+    resourceScheduler.setId("basic-use-demo");
 
-    addCard("Basic Use Demo", resourceViewCard);
+    addCard("Basic Use Demo", resourceSchedulerCard);
   }
 
   // begin-source-example
@@ -159,14 +159,14 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
    * Additional code used in the demo
    */
 
-  private void createResourceViewDemoCard() {
-    resourceViewCard = new Card();
+  private void createResourceSchedulerDemoCard() {
+    resourceSchedulerCard = new Card();
     resourcesLayout = getResourceHandlingLayout();
-    resourceViewCard.add(header, resourceView, resourcesLayout);
+    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout);
   }
 
-  private ScheduleXResourceView getScheduleXResourceView() {
-    return new ScheduleXResourceView(Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY),
+  private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
+    return new ScheduleXResourceScheduler(Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY),
         EventProvider.of(events), configuration, calendars, resourceSchedulerConfig);
   }
  
@@ -216,10 +216,10 @@ public class ScheduleXResourceViewDemoView extends ScheduleXBaseDemoView {
 
   private void refreshViewOnResourceUpdate() {
     resourceSchedulerConfig.setResources(resources);
-    resourceViewCard.removeAll();
-    resourceView = getScheduleXResourceView();
-    header = new CalendarHeaderComponent(resourceView);
-    resourceViewCard.add(header, resourceView, resourcesLayout);
+    resourceSchedulerCard.removeAll();
+    resourceScheduler = getScheduleXResourceScheduler();
+    header = new CalendarHeaderComponent(resourceScheduler);
+    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout);
   }
   // end-source-example
 }

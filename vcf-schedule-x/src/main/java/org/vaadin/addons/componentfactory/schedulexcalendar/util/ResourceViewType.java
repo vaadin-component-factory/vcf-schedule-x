@@ -13,10 +13,10 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 
 /**
- * Enum representing the supported view types for {@link ScheduleXResourceView}
+ * Enum representing the supported view types for {@link ScheduleXResourceScheduler}
  */
 public enum ResourceViewType implements ViewType {
 

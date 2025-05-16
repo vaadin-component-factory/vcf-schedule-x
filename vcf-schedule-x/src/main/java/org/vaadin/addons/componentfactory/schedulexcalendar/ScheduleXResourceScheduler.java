@@ -42,43 +42,43 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewTyp
 @NpmPackage(value = "@preact/signals", version = "2.0.2")
 @NpmPackage(value = "@sx-premium/resource-scheduler", version = "3.16.1")
 @NpmPackage(value = "@sx-premium/scheduling-assistant", version = "3.16.1")
-@JsModule("./src/vcf-schedule-x-resource-view.js")
+@JsModule("./src/vcf-schedule-x-resource-scheduler.js")
 @CssImport("@sx-premium/resource-scheduler/index.css")
 @CssImport("@sx-premium/scheduling-assistant/index.css")
 @Getter
-public class ScheduleXResourceView extends BaseScheduleXCalendar {
+public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
 
   private ResourceSchedulerConfig resourceSchedulerConfig;
 
   private SchedulingAssistantConfig schedulingAssistantConfig;
 
-  public ScheduleXResourceView() {
+  public ScheduleXResourceScheduler() {
     super();
-    setClassName("vcf-schedule-x-resource-view");
+    setClassName("vcf-schedule-x-resource-scheduler");
   }
 
-  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider) {
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider) {
     super(views, eventProvider);
   }
 
-  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration) {
     super(views, eventProvider, configuration);
   }
 
-  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars) {
     super(views, eventProvider, configuration, calendars);
   }
 
-  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars,
       ResourceSchedulerConfig resourceSchedulerConfig) {
     super(views, eventProvider, configuration, calendars);
     this.resourceSchedulerConfig = resourceSchedulerConfig;
   }
 
-  public ScheduleXResourceView(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
       Configuration configuration, Map<String, Calendar> calendars,
       ResourceSchedulerConfig resourceSchedulerConfig,
       SchedulingAssistantConfig schedulingAssistantConfig) {
@@ -88,7 +88,7 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
 
   @Override
   protected void initCalendar() {
-    this.getElement().executeJs("vcfschedulexresourceview.create($0, $1, $2, $3, $4, $5)", this,
+    this.getElement().executeJs("vcfschedulexresourcescheduler.create($0, $1, $2, $3, $4, $5)", this,
         viewsToJson(), configurationToJson(), calendarsToJson(), resourceSchedulerConfigToJson(),
         schedulingAssistantConfigToJson());
   }
@@ -103,7 +103,7 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
 
   @Override
   protected String getJsConnector() {
-    return "vcfschedulexresourceview";
+    return "vcfschedulexresourcescheduler";
   }
 
   /**
@@ -111,13 +111,13 @@ public class ScheduleXResourceView extends BaseScheduleXCalendar {
    */
   @Getter
   @DomEvent("scheduling-assistant-update")
-  public static class SchedulingAssistantUpdateEvent extends ComponentEvent<ScheduleXResourceView> {
+  public static class SchedulingAssistantUpdateEvent extends ComponentEvent<ScheduleXResourceScheduler> {
 
     private final String currentStart;
     private final String currentEnd;
     private final boolean hasCollision;
 
-    public SchedulingAssistantUpdateEvent(ScheduleXResourceView source, boolean fromClient,
+    public SchedulingAssistantUpdateEvent(ScheduleXResourceScheduler source, boolean fromClient,
         @EventData("event.detail.currentStart") String currentStart,
         @EventData("event.detail.currentEnd") String currentEnd,
         @EventData("event.detail.hasCollision") boolean hasCollision) {

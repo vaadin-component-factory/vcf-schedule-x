@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceView;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
@@ -39,7 +39,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.Color
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 /**
- * View for {@link ScheduleXResourceView} demo with {@code SchedulingAssistantConfig}.
+ * View for {@link ScheduleXResourceScheduler} demo with {@code SchedulingAssistantConfig}.
  *
  * @author Vaadin Ltd
  */
@@ -53,8 +53,8 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
   private Map<String, Calendar> calendars;
   private ResourceSchedulerConfig resourceSchedulerConfig;
   private SchedulingAssistantConfig schedulingAssistantConfig;
-  private ScheduleXResourceView resourceView;
-  private Card resourceViewCard;
+  private ScheduleXResourceScheduler resourceScheduler;
+  private Card resourceSchedulerCard;
   private FieldSet schedulingAssistantLayout;
   private Button scheduleEventDummyButton;
   
@@ -133,10 +133,10 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
     events.addAll(Arrays.asList(event1, event2, event3));
 
     // create resource view
-    resourceView = getScheduleXResourceView();
+    resourceScheduler = getScheduleXResourceScheduler();
 
     // add listener on event resizing or dnd
-    resourceView.addEventUpdateEventListener(e -> {
+    resourceScheduler.addEventUpdateEventListener(e -> {
       String updatedEventId = e.getEventId();
       Optional<Event> optionalEvent =
           events.stream().filter(ev -> ev.getId().equals(updatedEventId)).findFirst();
@@ -152,10 +152,10 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
       Event scheduledEvent = new Event(UUID.randomUUID().toString(), proposedStart, proposedEnd);
       scheduledEvent.setTitle("Scheduled Event");
       scheduledEvent.setResourceId("conveyor-belt-a-1");
-      resourceView.addEvent(scheduledEvent);
+      resourceScheduler.addEvent(scheduledEvent);
       events.add(scheduledEvent);
     });
-    resourceView.addSchedulingAssistantUpdateListener(e -> {
+    resourceScheduler.addSchedulingAssistantUpdateListener(e -> {
       String currentStart = e.getCurrentStart();
       String currentEnd = e.getCurrentEnd();
       boolean hasCollision = e.isHasCollision();
@@ -169,13 +169,13 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
     });
 
     // create demo card containing resource view
-    createResourceViewDemoCard();
+    createResourceSchedulerDemoCard();
 
     // end-source-example
 
-    resourceView.setId("scheduling-assistant-demo");
+    resourceScheduler.setId("scheduling-assistant-demo");
 
-    addCard("Scheduling Assistant Demo", resourceViewCard);
+    addCard("Scheduling Assistant Demo", resourceSchedulerCard);
   }
 
   // begin-source-example
@@ -184,14 +184,14 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
    * Additional code used in the demo
    */
 
-  private void createResourceViewDemoCard() {
-    resourceViewCard = new Card();
+  private void createResourceSchedulerDemoCard() {
+    resourceSchedulerCard = new Card();
     schedulingAssistantLayout = getSchedulingEventHandlingLayout();
-    resourceViewCard.add(resourceView, schedulingAssistantLayout);
+    resourceSchedulerCard.add(resourceScheduler, schedulingAssistantLayout);
   }
 
-  private ScheduleXResourceView getScheduleXResourceView() {
-    return new ScheduleXResourceView(Arrays.asList(ResourceViewType.HOURLY),
+  private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
+    return new ScheduleXResourceScheduler(Arrays.asList(ResourceViewType.HOURLY),
         EventProvider.of(events), configuration, calendars, resourceSchedulerConfig,
         schedulingAssistantConfig);
   }

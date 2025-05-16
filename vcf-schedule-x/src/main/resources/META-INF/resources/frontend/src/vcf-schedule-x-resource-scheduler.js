@@ -50,7 +50,7 @@ const resourceViewNameMap = {
 	createDailyView: createDailyView().name
 };
 
-window.vcfschedulexresourceview = {
+window.vcfschedulexresourcescheduler = {
 	create(container, viewsJson, configJson, calendarsJson, resourceConfigJson, schedulingAssistantJson) {
 		setTimeout(() => {
 			const resourceConfig = createConfig();

@@ -30,7 +30,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
 /**
  * Creates a component to be use as header for {@link ScheduleXCalendarDemoView} and
- * {@link ScheduleXResourceViewDemoView}.
+ * {@link ScheduleXResourceSchedulerDemoView}.
  */
 @SuppressWarnings("serial")
 public class CalendarHeaderComponent extends HorizontalLayout {

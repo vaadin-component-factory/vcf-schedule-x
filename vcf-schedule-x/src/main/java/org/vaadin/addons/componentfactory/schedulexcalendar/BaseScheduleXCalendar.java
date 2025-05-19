@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
@@ -44,6 +45,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
 @SuppressWarnings("serial")
@@ -280,24 +282,24 @@ public abstract class BaseScheduleXCalendar extends Div {
    * 
    * @param locale locale for the calendar
    */
-  public void setCalendarLocale(String locale) {
+  public void setLocale(Locale locale) {
+    LocaleUtils.validateLocale(locale);
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setLocale($0, $1);", this, locale);
+      this.getElement().executeJs(getJsConnector() + ".setLocale($0, $1);", this,
+          LocaleUtils.toScheduleXLocale(locale));
       if (configuration == null) {
         configuration = new Configuration();
       }
       configuration.setLocale(locale);
     });
   }
-  
-  
 
   /**
    * Returns the current language/locale of the calendar.
    * 
    * @return the locale use by the calendar
    */
-  public String getCalendarLocale() {
+  public Locale getLocale() {
     return configuration.getLocale();
   }
 

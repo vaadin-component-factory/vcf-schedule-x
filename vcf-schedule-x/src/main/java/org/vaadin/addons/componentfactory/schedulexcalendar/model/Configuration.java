@@ -18,9 +18,11 @@ import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
@@ -48,7 +50,7 @@ public class Configuration implements Serializable {
    * Set the language. List of supported languages: https://schedule-x.dev/docs/calendar/language
    * Defaults to 'en-US'.
    */
-  private String locale;
+  private Locale locale;
 
   /**
    * Set which day is to be considered the starting day of the week. 0 = Sunday, 1 = Monday,
@@ -134,11 +136,11 @@ public class Configuration implements Serializable {
     this.selectedDate = selectedDate;
   }
 
-  public String getLocale() {
+  public Locale getLocale() {
     return locale;
   }
 
-  public void setLocale(String locale) {
+  public void setLocale(Locale locale) {
     this.locale = locale;
   }
 
@@ -275,7 +277,7 @@ public class Configuration implements Serializable {
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));
     Optional.ofNullable(selectedDate).ifPresent(
         value -> js.put("selectedDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
-    Optional.ofNullable(locale).ifPresent(value -> js.put("locale", value));
+    Optional.ofNullable(locale).ifPresent(value -> js.put("locale", LocaleUtils.toScheduleXLocale(value)));
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);
     Optional.ofNullable(dayBoundaries).ifPresent(value -> js.put("dayBoundaries", value.toJson()));

@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.Getter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DayBoundaries;
@@ -59,7 +58,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 @NpmPackage(value = "@schedule-x/ical", version = "2.30.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
-@Getter
 public abstract class BaseScheduleXCalendar extends Div {
   
   private boolean calendarRendered;
@@ -148,6 +146,24 @@ public abstract class BaseScheduleXCalendar extends Div {
     JsonObject calendarJson = Json.createObject();
     calendars.forEach((id, calendar) -> calendarJson.put(id, calendar.toJsonObject()));
     return calendarJson.toJson();
+  }
+  
+  /**
+   * Returns the calendar's defined event provider. 
+   * 
+   * @return the eventProvider used by the calendar
+   */
+  public EventProvider getEventProvider() {
+    return eventProvider;
+  }
+
+  /**
+   * Returns current calendar configuration.
+   * 
+   * @return the configuration of the calendar
+   */
+  public Configuration getConfiguration() {
+    return configuration;
   }
 
   @Override
@@ -273,6 +289,8 @@ public abstract class BaseScheduleXCalendar extends Div {
       configuration.setLocale(locale);
     });
   }
+  
+  
 
   /**
    * Returns the current language/locale of the calendar.
@@ -294,6 +312,15 @@ public abstract class BaseScheduleXCalendar extends Div {
       this.getElement().executeJs(getJsConnector() + ".setViews($0, $1);", this, viewsToJson());
       this.views = new ArrayList<>(views);
     });
+  }
+  
+  /**
+   * Returns the current views in the calendar.
+   * 
+   * @return the views currently displayed in the calendar
+   */
+  public List<? extends ViewType> getViews() {
+    return views;
   }
 
   /**
@@ -357,6 +384,15 @@ public abstract class BaseScheduleXCalendar extends Div {
           calendarsToJson());
       this.calendars = calendars;
     });
+  }
+
+  /**
+   * Returns the available calendars displayed in the calendar.
+   * 
+   * @return the calendars displayed in the calendar
+   */
+  public Map<String, Calendar> getCalendars() {
+    return calendars;
   }
 
   /**
@@ -476,16 +512,23 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Event fired when a calendar event is clicked.
    */
-  @Getter
   public class CalendarEventClickEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
-    private String eventId;
+    private final String eventId;
 
     public CalendarEventClickEvent(BaseScheduleXCalendar source, String eventId,
         boolean fromClient) {
       super(source, fromClient);
       this.eventId = eventId;
     }
+
+    /**
+     * @return the eventId
+     */
+    public String getEventId() {
+      return eventId;
+    }
+    
   }
 
   /**
@@ -513,16 +556,19 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Event fired when the selected date is updated on client side.
    */
-  @Getter
   public class SelectedDateUpdateEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
-    private LocalDate selectedDate;
+    private final LocalDate selectedDate;
 
     public SelectedDateUpdateEvent(BaseScheduleXCalendar source, LocalDate selectedDate,
         boolean fromClient) {
       super(source, fromClient);
       this.selectedDate = selectedDate;
     }
+
+    public LocalDate getSelectedDate() {
+      return selectedDate;
+    }    
   }
 
   /**
@@ -566,7 +612,6 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Event fired when a calendar event is added to the calendar.
    */
-  @Getter
   @DomEvent("calendar-event-added")
   public static class CalendarEventAddedEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
@@ -577,6 +622,10 @@ public abstract class BaseScheduleXCalendar extends Div {
       super(source, fromClient);
       this.eventId = eventId;
     }
+
+    public String getEventId() {
+      return eventId;
+    }    
   }
 
   /**
@@ -593,7 +642,6 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Event fired when a calendar event is removed from the calendar.
    */
-  @Getter
   @DomEvent("calendar-event-removed")
   public static class CalendarEventRemovedEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
@@ -603,6 +651,10 @@ public abstract class BaseScheduleXCalendar extends Div {
         @EventData(value = "event.detail.eventId") String eventId) {
       super(source, fromClient);
       this.eventId = eventId;
+    }
+
+    public String getEventId() {
+      return eventId;
     }
   }
 
@@ -620,7 +672,6 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Event fired when a calendar event is updated.
    */
-  @Getter
   @DomEvent("calendar-event-updated")
   public static class CalendarEventUpdatedEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
@@ -631,6 +682,10 @@ public abstract class BaseScheduleXCalendar extends Div {
       super(source, fromClient);
       this.eventId = eventId;
     }
+    
+    public String getEventId() {
+      return eventId;
+    }    
   }
 
   /**
@@ -661,12 +716,11 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Event fired when an event is updated on resize or drag and drop on client side.
    */
-  @Getter
   public class EventUpdateEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
-    private String eventId;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private final String eventId;
+    private final LocalDateTime startDate;
+    private final LocalDateTime endDate;
 
     public EventUpdateEvent(BaseScheduleXCalendar source, String eventId, LocalDateTime startDate,
         LocalDateTime endDate, boolean fromClient) {
@@ -674,6 +728,18 @@ public abstract class BaseScheduleXCalendar extends Div {
       this.eventId = eventId;
       this.startDate = startDate;
       this.endDate = endDate;
+    }
+
+    public String getEventId() {
+      return eventId;
+    }
+
+    public LocalDateTime getStartDate() {
+      return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+      return endDate;
     }
   }
 

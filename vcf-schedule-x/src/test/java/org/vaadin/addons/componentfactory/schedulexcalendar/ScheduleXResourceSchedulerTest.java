@@ -54,7 +54,7 @@ class ScheduleXResourceSchedulerTest {
     assertEquals(30, view.getResourceSchedulerConfig().getEventHeight());
     assertEquals("rA", view.getResourceSchedulerConfig().getResources().get(0).getId());
     assertEquals(start, view.getSchedulingAssistantConfig().getInitialStart());
-    assertEquals(end, view.getSchedulingAssistantConfig().getInitalEnd());
+    assertEquals(end, view.getSchedulingAssistantConfig().getInitialEnd());
   }
 
 }

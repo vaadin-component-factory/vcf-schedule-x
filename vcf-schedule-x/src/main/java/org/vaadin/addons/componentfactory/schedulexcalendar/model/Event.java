@@ -23,10 +23,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
@@ -36,27 +32,21 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
  * @see <a href="https://schedule-x.dev/docs/calendar/events">Events documentation</a>
  */
 @SuppressWarnings("serial")
-@Setter
-@Getter
-@RequiredArgsConstructor
 public class Event implements Serializable {
 
   /**
    * A unique identifier for the event.
    */
-  @NonNull
   private String id;
 
   /**
    * The start date time of the event.
    */
-  @NonNull
   private LocalDateTime start;
 
   /**
    * The end date time of the event.
    */
-  @NonNull
   private LocalDateTime end;
 
   /**
@@ -105,19 +95,33 @@ public class Event implements Serializable {
   private List<LocalDateTime> excludedDates;
 
   /**
-   * Constructs an {@code Event} from an ID and string representations of the start and end date-times.
+   * Constructs an {@code Event} with the specified ID, start, and end date-times.
+   *
+   * @param id the unique identifier of the event
+   * @param start the start date and time of the event
+   * @param end the end date and time of the event
+   */
+  public Event(String id, LocalDateTime start, LocalDateTime end) {
+    this.id = id;
+    this.start = start;
+    this.end = end;
+  }
+
+  /**
+   * Constructs an {@code Event} from an ID and string representations of the start and end
+   * date-times.
    * <p>
    * Supported formats for {@code start} and {@code end}:
    * <ul>
-   *   <li>{@code YYYY-MM-DD} — treated as midnight (start of day)</li>
-   *   <li>{@code YYYY-MM-DD HH:mm} — treated as the specified date and time</li>
+   * <li>{@code YYYY-MM-DD} — treated as midnight (start of day)</li>
+   * <li>{@code YYYY-MM-DD HH:mm} — treated as the specified date and time</li>
    * </ul>
-   * If the {@code end} value is given in the {@code YYYY-MM-DD} format, it is internally adjusted to
-   * represent the end of that day (23:59:59).
+   * If the {@code end} value is given in the {@code YYYY-MM-DD} format, it is internally adjusted
+   * to represent the end of that day (23:59:59).
    *
-   * @param id    the unique identifier of the event
+   * @param id the unique identifier of the event
    * @param start the start date-time string in one of the supported formats
-   * @param end   the end date-time string in one of the supported formats
+   * @param end the end date-time string in one of the supported formats
    */
   public Event(String id, String start, String end) {
     this(id, parseDate(start, false), parseDate(end, true));
@@ -128,9 +132,10 @@ public class Event implements Serializable {
    * <p>
    * Required fields in the JSON object:
    * <ul>
-   *   <li>{@code id} – unique event ID</li>
-   *   <li>{@code start} – start date-time string (format: {@code YYYY-MM-DD} or {@code YYYY-MM-DD HH:mm})</li>
-   *   <li>{@code end} – end date-time string (same formats as {@code start})</li>
+   * <li>{@code id} – unique event ID</li>
+   * <li>{@code start} – start date-time string (format: {@code YYYY-MM-DD} or
+   * {@code YYYY-MM-DD HH:mm})</li>
+   * <li>{@code end} – end date-time string (same formats as {@code start})</li>
    * </ul>
    *
    * @param json the {@link JsonValue} representing the event data
@@ -195,6 +200,110 @@ public class Event implements Serializable {
     return Objects.equals(id, other.id);
   }
 
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public LocalDateTime getStart() {
+    return start;
+  }
+
+  public void setStart(LocalDateTime start) {
+    this.start = start;
+  }
+
+  public LocalDateTime getEnd() {
+    return end;
+  }
+
+  public void setEnd(LocalDateTime end) {
+    this.end = end;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  public List<String> getPeople() {
+    return people;
+  }
+
+  public void setPeople(List<String> people) {
+    this.people = people;
+  }
+
+  public String getCalendarId() {
+    return calendarId;
+  }
+
+  public void setCalendarId(String calendarId) {
+    this.calendarId = calendarId;
+  }
+
+  public EventOptions getOptions() {
+    return options;
+  }
+
+  public void setOptions(EventOptions options) {
+    this.options = options;
+  }
+
+  public EventCustomContent getCustomContent() {
+    return customContent;
+  }
+
+  public void setCustomContent(EventCustomContent customContent) {
+    this.customContent = customContent;
+  }
+
+  public String getResourceId() {
+    return resourceId;
+  }
+
+  public void setResourceId(String resourceId) {
+    this.resourceId = resourceId;
+  }
+
+  public RecurrenceRule getRecurrenceRule() {
+    return recurrenceRule;
+  }
+
+  public void setRecurrenceRule(RecurrenceRule recurrenceRule) {
+    this.recurrenceRule = recurrenceRule;
+  }
+
+  public List<LocalDateTime> getExcludedDates() {
+    return excludedDates;
+  }
+
+  public void setExcludedDates(List<LocalDateTime> excludedDates) {
+    this.excludedDates = excludedDates;
+  }
+
   public String getJson() {
     JsonObject js = Json.createObject();
     js.put("id", id);
@@ -249,12 +358,13 @@ public class Event implements Serializable {
   /**
    * Parses a date string into a {@link LocalDateTime}, accepting two formats:
    * <ul>
-   *   <li>{@code YYYY-MM-DD HH:mm} – parsed as-is</li>
-   *   <li>{@code YYYY-MM-DD} – parsed as start of day (00:00), or end of day (23:59:59) if {@code end} is {@code true}</li>
+   * <li>{@code YYYY-MM-DD HH:mm} – parsed as-is</li>
+   * <li>{@code YYYY-MM-DD} – parsed as start of day (00:00), or end of day (23:59:59) if
+   * {@code end} is {@code true}</li>
    * </ul>
    *
    * @param date the date string to parse
-   * @param end  whether to treat a date-only value as the end of the day
+   * @param end whether to treat a date-only value as the end of the day
    * @return the parsed {@code LocalDateTime}
    */
   private static LocalDateTime parseDate(String date, boolean end) {
@@ -274,8 +384,6 @@ public class Event implements Serializable {
    * Configure the behavior of individual events by adding an _options object to the event. All the
    * properties are optional.
    */
-  @Setter
-  @Getter
   public static class EventOptions implements Serializable {
 
     /**
@@ -292,6 +400,30 @@ public class Event implements Serializable {
      * Additional classes to add to the event.
      */
     private List<String> additionalClasses;
+
+    public Boolean getDisableDND() {
+      return disableDND;
+    }
+
+    public void setDisableDND(Boolean disableDND) {
+      this.disableDND = disableDND;
+    }
+
+    public Boolean getDisableResize() {
+      return disableResize;
+    }
+
+    public void setDisableResize(Boolean disableResize) {
+      this.disableResize = disableResize;
+    }
+
+    public List<String> getAdditionalClasses() {
+      return additionalClasses;
+    }
+
+    public void setAdditionalClasses(List<String> additionalClasses) {
+      this.additionalClasses = additionalClasses;
+    }
 
     public JsonObject toJson() {
       JsonObject json = Json.createObject();
@@ -311,8 +443,6 @@ public class Event implements Serializable {
   /**
    * Optional custom content to render in different views.
    */
-  @Setter
-  @Getter
   public static class EventCustomContent implements Serializable {
 
     /**
@@ -334,5 +464,38 @@ public class Event implements Serializable {
      * Custom HTML to display in the month agenda view.
      */
     private String monthAgenda;
+
+    public String getTimeGrid() {
+      return timeGrid;
+    }
+
+    public void setTimeGrid(String timeGrid) {
+      this.timeGrid = timeGrid;
+    }
+
+    public String getDateGrid() {
+      return dateGrid;
+    }
+
+    public void setDateGrid(String dateGrid) {
+      this.dateGrid = dateGrid;
+    }
+
+    public String getMonthGrid() {
+      return monthGrid;
+    }
+
+    public void setMonthGrid(String monthGrid) {
+      this.monthGrid = monthGrid;
+    }
+
+    public String getMonthAgenda() {
+      return monthAgenda;
+    }
+
+    public void setMonthAgenda(String monthAgenda) {
+      this.monthAgenda = monthAgenda;
+    }
   }
+
 }

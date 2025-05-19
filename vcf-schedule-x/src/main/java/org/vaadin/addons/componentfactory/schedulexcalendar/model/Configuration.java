@@ -20,8 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
@@ -31,8 +29,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
  * is used to customize the behavior and appearance of the calendar views.
  */
 @SuppressWarnings("serial")
-@Getter
-@Setter
 public class Configuration implements Serializable {
 
   /**
@@ -121,6 +117,158 @@ public class Configuration implements Serializable {
   private CurrentTimeIndicatorConfig currentTimeIndicatorConfig;
 
   private ScrollControllerConfig scrollControllerConfig;
+  
+  public ViewType getDefaultView() {
+    return defaultView;
+  }
+
+  public void setDefaultView(ViewType defaultView) {
+    this.defaultView = defaultView;
+  }
+
+  public LocalDate getSelectedDate() {
+    return selectedDate;
+  }
+
+  public void setSelectedDate(LocalDate selectedDate) {
+    this.selectedDate = selectedDate;
+  }
+
+  public String getLocale() {
+    return locale;
+  }
+
+  public void setLocale(String locale) {
+    this.locale = locale;
+  }
+
+  public Integer getFirstDayOfWeek() {
+    return firstDayOfWeek;
+  }
+
+  public void setFirstDayOfWeek(Integer firstDayOfWeek) {
+    this.firstDayOfWeek = firstDayOfWeek;
+  }
+
+  public boolean isDark() {
+    return isDark;
+  }
+
+  public void setDark(boolean isDark) {
+    this.isDark = isDark;
+  }
+
+  public DayBoundaries getDayBoundaries() {
+    return dayBoundaries;
+  }
+
+  public void setDayBoundaries(DayBoundaries dayBoundaries) {
+    this.dayBoundaries = dayBoundaries;
+  }
+
+  public LocalDate getMinDate() {
+    return minDate;
+  }
+
+  public void setMinDate(LocalDate minDate) {
+    this.minDate = minDate;
+  }
+
+  public LocalDate getMaxDate() {
+    return maxDate;
+  }
+
+  public void setMaxDate(LocalDate maxDate) {
+    this.maxDate = maxDate;
+  }
+
+  public WeekOptions getWeekOptions() {
+    return weekOptions;
+  }
+
+  public void setWeekOptions(WeekOptions weekOptions) {
+    this.weekOptions = weekOptions;
+  }
+
+  public MonthGridOptions getMonthGridOptions() {
+    return monthGridOptions;
+  }
+
+  public void setMonthGridOptions(MonthGridOptions monthGridOptions) {
+    this.monthGridOptions = monthGridOptions;
+  }
+
+  public DrawOptions getDrawOptions() {
+    return drawOptions;
+  }
+
+  public void setDrawOptions(DrawOptions drawOptions) {
+    this.drawOptions = drawOptions;
+  }
+
+  public ICal getiCal() {
+    return iCal;
+  }
+
+  public void setiCal(ICal iCal) {
+    this.iCal = iCal;
+  }
+
+  public boolean isShowWeekNumbers() {
+    return showWeekNumbers;
+  }
+
+  public void setShowWeekNumbers(boolean showWeekNumbers) {
+    this.showWeekNumbers = showWeekNumbers;
+  }
+
+  public boolean isResponsive() {
+    return isResponsive;
+  }
+
+  public void setResponsive(boolean isResponsive) {
+    this.isResponsive = isResponsive;
+  }
+
+  public boolean isSkipValidation() {
+    return skipValidation;
+  }
+
+  public void setSkipValidation(boolean skipValidation) {
+    this.skipValidation = skipValidation;
+  }
+
+  public TimeInterval getResizeInterval() {
+    return resizeInterval;
+  }
+
+  public void setResizeInterval(TimeInterval resizeInterval) {
+    this.resizeInterval = resizeInterval;
+  }
+
+  public TimeInterval getDragAndDropInterval() {
+    return dragAndDropInterval;
+  }
+
+  public void setDragAndDropInterval(TimeInterval dragAndDropInterval) {
+    this.dragAndDropInterval = dragAndDropInterval;
+  }
+
+  public CurrentTimeIndicatorConfig getCurrentTimeIndicatorConfig() {
+    return currentTimeIndicatorConfig;
+  }
+
+  public void setCurrentTimeIndicatorConfig(CurrentTimeIndicatorConfig currentTimeIndicatorConfig) {
+    this.currentTimeIndicatorConfig = currentTimeIndicatorConfig;
+  }
+
+  public ScrollControllerConfig getScrollControllerConfig() {
+    return scrollControllerConfig;
+  }
+
+  public void setScrollControllerConfig(ScrollControllerConfig scrollControllerConfig) {
+    this.scrollControllerConfig = scrollControllerConfig;
+  }
 
   public String getJson() {
     JsonObject js = Json.createObject();
@@ -164,11 +312,26 @@ public class Configuration implements Serializable {
    * Can also be set to a "hybrid" day, such as { start: '06:00', end: '03:00' }, meaning each day
    * starts at 6am but extends into the next day until 3am.
    */
-  @Getter
-  @Setter
   public static class DayBoundaries implements Serializable {
+    
     private LocalTime start;
     private LocalTime end;
+    
+    public LocalTime getStart() {
+      return start;
+    }
+
+    public void setStart(LocalTime start) {
+      this.start = start;
+    }
+
+    public LocalTime getEnd() {
+      return end;
+    }
+
+    public void setEnd(LocalTime end) {
+      this.end = end;
+    }
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
@@ -180,8 +343,6 @@ public class Configuration implements Serializable {
     }
   }
 
-  @Getter
-  @Setter
   public static class WeekOptions implements Serializable {
     /**
      * The total height in px of the week grid (week and day views).
@@ -209,6 +370,46 @@ public class Configuration implements Serializable {
      * overlapping.
      */
     private boolean eventOverlap = true;
+    
+    public Integer getGridHeight() {
+      return gridHeight;
+    }
+
+    public void setGridHeight(Integer gridHeight) {
+      this.gridHeight = gridHeight;
+    }
+
+    public Integer getnDays() {
+      return nDays;
+    }
+
+    public void setnDays(Integer nDays) {
+      this.nDays = nDays;
+    }
+
+    public Integer getEventWidth() {
+      return eventWidth;
+    }
+
+    public void setEventWidth(Integer eventWidth) {
+      this.eventWidth = eventWidth;
+    }
+
+    public Map<String, String> getTimeAxisFormatOptions() {
+      return timeAxisFormatOptions;
+    }
+
+    public void setTimeAxisFormatOptions(Map<String, String> timeAxisFormatOptions) {
+      this.timeAxisFormatOptions = timeAxisFormatOptions;
+    }
+
+    public boolean isEventOverlap() {
+      return eventOverlap;
+    }
+
+    public void setEventOverlap(boolean eventOverlap) {
+      this.eventOverlap = eventOverlap;
+    }
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
@@ -225,13 +426,19 @@ public class Configuration implements Serializable {
     }
   }
 
-  @Getter
-  @Setter
   public static class MonthGridOptions implements Serializable {
     /**
      * Number of events to display in a day cell before the "+ N events" button is shown.
      */
     private Integer nEventsPerDay;
+
+    public Integer getnEventsPerDay() {
+      return nEventsPerDay;
+    }
+
+    public void setnEventsPerDay(Integer nEventsPerDay) {
+      this.nEventsPerDay = nEventsPerDay;
+    }
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
@@ -243,8 +450,6 @@ public class Configuration implements Serializable {
   /**
    * Optional options for drawing events.
    */
-  @Getter
-  @Setter
   public static class DrawOptions implements Serializable {
 
     /**
@@ -257,7 +462,23 @@ public class Configuration implements Serializable {
      * Default title to use when drawing an event.
      */
     private String defaultTitle;
+    
+    public TimeInterval getSnapDrawDuration() {
+      return snapDrawDuration;
+    }
 
+    public void setSnapDrawDuration(TimeInterval snapDrawDuration) {
+      this.snapDrawDuration = snapDrawDuration;
+    }
+
+    public String getDefaultTitle() {
+      return defaultTitle;
+    }
+
+    public void setDefaultTitle(String defaultTitle) {
+      this.defaultTitle = defaultTitle;
+    }
+    
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
       Optional.ofNullable(snapDrawDuration)
@@ -270,14 +491,20 @@ public class Configuration implements Serializable {
   /**
    * iCalendar data configuration.
    */
-  @Getter
-  @Setter
   public static class ICal implements Serializable {
 
     /**
      * iCalendar source.
      */
     private String iCal;
+    
+    public String getiCal() {
+      return iCal;
+    }
+
+    public void setiCal(String iCal) {
+      this.iCal = iCal;
+    }
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
@@ -290,8 +517,6 @@ public class Configuration implements Serializable {
    * Configuration to add a current time indicator to the calendar. It will automatically update
    * every minute.
    */
-  @Getter
-  @Setter
   public static class CurrentTimeIndicatorConfig implements Serializable {
 
     /**
@@ -303,6 +528,22 @@ public class Configuration implements Serializable {
      * Time zone offset in minutes. Can be any offset valid according to UTC (-720 to 840).
      */
     private Integer timeZoneOffset;
+    
+    public Boolean getFullWeekWidth() {
+      return fullWeekWidth;
+    }
+
+    public void setFullWeekWidth(Boolean fullWeekWidth) {
+      this.fullWeekWidth = fullWeekWidth;
+    }
+
+    public Integer getTimeZoneOffset() {
+      return timeZoneOffset;
+    }
+
+    public void setTimeZoneOffset(Integer timeZoneOffset) {
+      this.timeZoneOffset = timeZoneOffset;
+    }
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
@@ -315,14 +556,20 @@ public class Configuration implements Serializable {
   /**
    * Configuration to control the scrolling in the week and day view grids.
    */
-  @Getter
-  @Setter
   public static class ScrollControllerConfig implements Serializable {
 
     /**
      * Initial scroll value.
      */
     private LocalTime initialScroll;
+
+    public LocalTime getInitialScroll() {
+      return initialScroll;
+    }
+
+    public void setInitialScroll(LocalTime initialScroll) {
+      this.initialScroll = initialScroll;
+    }
 
     public JsonObject toJson() {
       JsonObject js = Json.createObject();

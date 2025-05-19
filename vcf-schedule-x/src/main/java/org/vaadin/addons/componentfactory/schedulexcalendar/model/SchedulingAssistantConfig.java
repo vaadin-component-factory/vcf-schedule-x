@@ -18,32 +18,47 @@ import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
  * Java model representing the SchedulingAssistant plugin config.
  */
 @SuppressWarnings("serial")
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class SchedulingAssistantConfig implements Serializable {
-  
-  @NonNull
+
   private LocalDateTime initialStart;
-  
-  @NonNull
-  private LocalDateTime initalEnd;
-  
+
+  private LocalDateTime initialEnd;
+
+  public SchedulingAssistantConfig(LocalDateTime initialStart, LocalDateTime initialEnd) {
+    this.initialStart = initialStart;
+    this.initialEnd = initialEnd;
+  }
+
+  public LocalDateTime getInitialStart() {
+    return initialStart;
+  }
+
+  public void setInitialStart(LocalDateTime initialStart) {
+    this.initialStart = initialStart;
+  }
+
+  public LocalDateTime getInitialEnd() {
+    return initialEnd;
+  }
+
+  public void setInitialEnd(LocalDateTime initialEnd) {
+    this.initialEnd = initialEnd;
+  }
+
   public String getJson() {
     JsonObject js = Json.createObject();
-    Optional.ofNullable(initialStart).ifPresent(value -> js.put("initialStart", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
-    Optional.ofNullable(initalEnd).ifPresent(value -> js.put("initialEnd", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
+    Optional.ofNullable(initialStart).ifPresent(
+        value -> js.put("initialStart", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
+    Optional.ofNullable(initialEnd).ifPresent(
+        value -> js.put("initialEnd", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
     return js.toJson();
   }
+
 }
 

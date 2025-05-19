@@ -19,10 +19,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
@@ -33,9 +29,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
  * 
  */
 @SuppressWarnings("serial")
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class RecurrenceRule implements Serializable {
 
   /**
@@ -56,7 +49,6 @@ public class RecurrenceRule implements Serializable {
    * The FREQ rule part identifies the type of recurrence rule. This rule part MUST be specified in
    * the recurrence rule.
    */
-  @NonNull
   private Frequency freq;
 
   /**
@@ -97,6 +89,71 @@ public class RecurrenceRule implements Serializable {
    * TH, FR, SA, and SU.
    */
   private Day wkst;
+  
+  /**
+   * Constructs a {@code RecurrenceRule} with the specified frequency value.
+   * 
+   * @param freq the frequency of the recurrence rule
+   */
+  public RecurrenceRule(Frequency freq) {
+    this.freq = freq;
+  }
+  
+  public Frequency getFreq() {
+    return freq;
+  }
+
+  public void setFreq(Frequency freq) {
+    this.freq = freq;
+  }
+
+  public Integer getCount() {
+    return count;
+  }
+
+  public void setCount(Integer count) {
+    this.count = count;
+  }
+
+  public Integer getInterval() {
+    return interval;
+  }
+
+  public void setInterval(Integer interval) {
+    this.interval = interval;
+  }
+
+  public List<Day> getByDay() {
+    return byDay;
+  }
+
+  public void setByDay(List<Day> byDay) {
+    this.byDay = byDay;
+  }
+
+  public List<Integer> getByMonthDay() {
+    return byMonthDay;
+  }
+
+  public void setByMonthDay(List<Integer> byMonthDay) {
+    this.byMonthDay = byMonthDay;
+  }
+
+  public Until getUntil() {
+    return until;
+  }
+
+  public void setUntil(Until until) {
+    this.until = until;
+  }
+
+  public Day getWkst() {
+    return wkst;
+  }
+
+  public void setWkst(Day wkst) {
+    this.wkst = wkst;
+  }
 
   protected String getRule() {
     StringBuilder sb = new StringBuilder("FREQ=" + this.getFreq());
@@ -130,13 +187,11 @@ public class RecurrenceRule implements Serializable {
    * The UNTIL rule part defines a DATE or DATE-TIME value that bounds the recurrence rule in an
    * inclusive manner. (Floating date, for example 20240101 or date-time 20240101T120000)
    */
-  @Getter
-  @Setter
   public static class Until implements Serializable {
 
     private final LocalDate date;
-    private final LocalTime time; // Optional
-
+    private final LocalTime time; 
+    
     public Until(LocalDate date) {
       this.date = date;
       this.time = null;
@@ -145,6 +200,14 @@ public class RecurrenceRule implements Serializable {
     public Until(LocalDate date, LocalTime time) {
       this.date = date;
       this.time = time;
+    }
+    
+    public LocalDate getDate() {
+      return date;
+    }
+
+    public LocalTime getTime() {
+      return time;
     }
 
     /**

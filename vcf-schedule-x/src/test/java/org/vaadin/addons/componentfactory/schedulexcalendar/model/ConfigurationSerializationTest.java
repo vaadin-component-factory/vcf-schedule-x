@@ -66,7 +66,7 @@ class ConfigurationSerializationTest {
     Configuration config = new Configuration();
     WeekOptions wo = new WeekOptions();
     wo.setGridHeight(800);
-    wo.setNDays(5);
+    wo.setnDays(5);
     wo.setEventWidth(90);
     wo.setTimeAxisFormatOptions(Map.of("hour", "2-digit", "minute", "2-digit"));
     wo.setEventOverlap(false);
@@ -86,7 +86,7 @@ class ConfigurationSerializationTest {
   void testMonthGridOptionsSerialization() {
     Configuration config = new Configuration();
     MonthGridOptions mo = new MonthGridOptions();
-    mo.setNEventsPerDay(3);
+    mo.setnEventsPerDay(3);
     config.setMonthGridOptions(mo);
 
     JsonObject json = Json.parse(config.getJson());
@@ -113,8 +113,8 @@ class ConfigurationSerializationTest {
   void testICalSerialization() {
     Configuration config = new Configuration();
     ICal iCal = new ICal();
-    iCal.setICal("BEGIN:VCALENDAR...");
-    config.setICal(iCal);
+    iCal.setiCal("BEGIN:VCALENDAR...");
+    config.setiCal(iCal);
 
     JsonObject json = Json.parse(config.getJson());
     assertEquals("BEGIN:VCALENDAR...", json.getObject("iCal").getString("iCal"));

@@ -23,8 +23,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
@@ -38,8 +36,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
  *      documentation</a>
  */
 @SuppressWarnings("serial")
-@Getter
-@Setter
 public class ResourceSchedulerConfig implements Serializable {
 
   /**
@@ -91,6 +87,86 @@ public class ResourceSchedulerConfig implements Serializable {
    * Optionally sets the initially displayed days in the daily view.
    */
   private Pair<LocalDate, LocalDate> initialDays;
+
+  public Integer getHourWidth() {
+    return hourWidth;
+  }
+
+  public void setHourWidth(Integer hourWidth) {
+    this.hourWidth = hourWidth;
+  }
+
+  public Integer getDayWidth() {
+    return dayWidth;
+  }
+
+  public void setDayWidth(Integer dayWidth) {
+    this.dayWidth = dayWidth;
+  }
+
+  public List<Resource> getResources() {
+    return resources;
+  }
+
+  public void setResources(List<Resource> resources) {
+    this.resources = resources;
+  }
+
+  public Integer getResourceHeight() {
+    return resourceHeight;
+  }
+
+  public void setResourceHeight(Integer resourceHeight) {
+    this.resourceHeight = resourceHeight;
+  }
+
+  public Integer getEventHeight() {
+    return eventHeight;
+  }
+
+  public void setEventHeight(Integer eventHeight) {
+    this.eventHeight = eventHeight;
+  }
+
+  public boolean isDragAndDrop() {
+    return dragAndDrop;
+  }
+
+  public void setDragAndDrop(boolean dragAndDrop) {
+    this.dragAndDrop = dragAndDrop;
+  }
+
+  public boolean isResize() {
+    return resize;
+  }
+
+  public void setResize(boolean resize) {
+    this.resize = resize;
+  }
+
+  public boolean isInfiniteScroll() {
+    return infiniteScroll;
+  }
+
+  public void setInfiniteScroll(boolean infiniteScroll) {
+    this.infiniteScroll = infiniteScroll;
+  }
+
+  public Pair<LocalDateTime, LocalDateTime> getInitialHours() {
+    return initialHours;
+  }
+
+  public void setInitialHours(Pair<LocalDateTime, LocalDateTime> initialHours) {
+    this.initialHours = initialHours;
+  }
+
+  public Pair<LocalDate, LocalDate> getInitialDays() {
+    return initialDays;
+  }
+
+  public void setInitialDays(Pair<LocalDate, LocalDate> initialDays) {
+    this.initialDays = initialDays;
+  }
 
   public String getJson() {
     JsonObject js = Json.createObject();

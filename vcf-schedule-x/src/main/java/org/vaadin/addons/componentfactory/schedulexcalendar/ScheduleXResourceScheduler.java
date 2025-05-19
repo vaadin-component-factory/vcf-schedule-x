@@ -22,7 +22,6 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.shared.Registration;
 import java.util.List;
 import java.util.Map;
-import lombok.Getter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
@@ -42,7 +41,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewTyp
 @NpmPackage(value = "@sx-premium/resource-scheduler", version = "3.16.1")
 @NpmPackage(value = "@sx-premium/scheduling-assistant", version = "3.16.1")
 @JsModule("./src/vcf-schedule-x-resource-scheduler.js")
-@Getter
 public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
 
   private ResourceSchedulerConfig resourceSchedulerConfig;
@@ -97,6 +95,14 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
   protected String schedulingAssistantConfigToJson() {
     return schedulingAssistantConfig != null ? schedulingAssistantConfig.getJson() : "{}";
   }
+  
+  public ResourceSchedulerConfig getResourceSchedulerConfig() {
+    return resourceSchedulerConfig;
+  }
+
+  public SchedulingAssistantConfig getSchedulingAssistantConfig() {
+    return schedulingAssistantConfig;
+  }
 
   @Override
   protected String getJsConnector() {
@@ -106,7 +112,6 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
   /**
    * Event fired when Scheduling Assistant is updated.
    */
-  @Getter
   @DomEvent("scheduling-assistant-update")
   public static class SchedulingAssistantUpdateEvent extends ComponentEvent<ScheduleXResourceScheduler> {
 
@@ -123,6 +128,18 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
       this.currentEnd = currentEnd;
       this.hasCollision = hasCollision;
     }
+
+    public String getCurrentStart() {
+      return currentStart;
+    }
+
+    public String getCurrentEnd() {
+      return currentEnd;
+    }
+
+    public boolean isHasCollision() {
+      return hasCollision;
+    }    
   }
 
   /**

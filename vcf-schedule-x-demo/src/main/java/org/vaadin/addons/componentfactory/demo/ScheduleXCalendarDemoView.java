@@ -103,7 +103,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
     // Ical
     ICal ical = new ICal();
-    ical.setICal("""
+    ical.setiCal("""
         BEGIN:VCALENDAR
         VERSION:2.0
         CALSCALE:GREGORIAN
@@ -128,7 +128,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
         END:VEVENT
         END:VCALENDAR
         """);
-    configuration.setICal(ical);
+    configuration.setiCal(ical);
 
     // draw options
     DrawOptions drawOptions = new DrawOptions();

@@ -21,6 +21,7 @@ import { createResizePlugin } from '@schedule-x/resize';
 import { createScrollControllerPlugin } from '@schedule-x/scroll-controller';
 import { createSchedulingAssistant } from '@sx-premium/scheduling-assistant';
 import { createIcalendarPlugin } from '@schedule-x/ical';
+import { addDays } from '@schedule-x/shared';
 import {
 	handleOnEventClick,
 	handleOnSelectedDateUpdate,
@@ -320,10 +321,16 @@ export function updateEvent(container, calendarEvent) {
  */
 export function navigateCalendar(calendar, direction) {
 	const $app = calendar.$app;
-	const selectedView = $app.config.views.value.find(
+	const views = $app.config.views.value;
+	const selectedView = views.find(
 		view => view.name === $app.calendarState.view.value
 	);
+	
 	if (!selectedView) return;
+				
+	if(selectedView.name === "hourly"){
+		selectedView.backwardForwardFn = addDays;
+	}	
 
 	const unitCount = direction === 'forwards'
 		? selectedView.backwardForwardUnits

@@ -20,6 +20,7 @@ import elemental.json.Json;
 import elemental.json.JsonObject;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.CurrentTimeIndicatorConfig;
@@ -35,13 +36,13 @@ class ConfigurationSerializationTest {
   @Test
   void testBasicConfigurationSerialization() {
     Configuration config = new Configuration();
-    config.setLocale("es");
+    config.setLocale(Locale.US);
     config.setSelectedDate(LocalDate.of(2025, 5, 20));
     config.setFirstDayOfWeek(1);
 
     JsonObject json = Json.parse(config.getJson());
 
-    assertEquals("es", json.getString("locale"));
+    assertEquals("en-US", json.getString("locale"));
     assertEquals("2025-05-20", json.getString("selectedDate"));
     assertEquals(1, json.getNumber("firstDayOfWeek"));
   }

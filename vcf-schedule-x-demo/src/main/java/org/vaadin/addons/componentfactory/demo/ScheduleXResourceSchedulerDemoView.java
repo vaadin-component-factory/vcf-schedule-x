@@ -25,6 +25,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
@@ -55,7 +56,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private CalendarHeaderComponent header;
   private Card resourceSchedulerCard;
   private FieldSet resourcesLayout;
- 
+
   @Override
   protected void createDemo() {
     // begin-source-example
@@ -65,6 +66,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2024, 05, 06));
     configuration.setDefaultView(ResourceViewType.HOURLY);
+    configuration.setLocale(Locale.GERMANY);
 
     // create resources
     Resource resource1 = new Resource("conveyor-belt-a");
@@ -100,7 +102,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
 
     // create categories for events
     calendars = getCalendars();
-    
+
     // create events
     LocalDate eventsDate = LocalDate.of(2024, 05, 06);
     Event event1 = new Event("1", LocalDateTime.of(eventsDate, LocalTime.of(02, 00)),
@@ -162,14 +164,15 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private void createResourceSchedulerDemoCard() {
     resourceSchedulerCard = new Card();
     resourcesLayout = getResourceHandlingLayout();
-    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout);
+    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, getLocaleTestingLayout());
   }
 
   private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
-    return new ScheduleXResourceScheduler(Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY),
-        EventProvider.of(events), configuration, calendars, resourceSchedulerConfig);
+    return new ScheduleXResourceScheduler(
+        Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY), EventProvider.of(events),
+        configuration, calendars, resourceSchedulerConfig);
   }
- 
+
   private FieldSet getResourceHandlingLayout() {
     HorizontalLayout layout = new HorizontalLayout();
     layout.setWidthFull();
@@ -221,5 +224,32 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     header = new CalendarHeaderComponent(resourceScheduler);
     resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout);
   }
+  
+  private FieldSet getLocaleTestingLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidthFull();
+
+    Button setGermany = new Button("Back to Germany Locale");
+    setGermany.setDisableOnClick(true);
+    setGermany.setEnabled(false);
+
+    Button setSpanish = new Button("Change to Spanish Locale");
+    setSpanish.setDisableOnClick(true);
+
+    setSpanish.addClickListener(e -> {
+      resourceScheduler.setLocale(Locale.forLanguageTag("es-ES"));
+      setGermany.setEnabled(true);
+    });
+
+    setGermany.addClickListener(e -> {
+      resourceScheduler.setLocale(Locale.GERMANY);
+      setSpanish.setEnabled(true);
+    });
+
+
+    layout.add(setSpanish, setGermany);
+    return createFieldSetLayout("Calendar Locale testing", layout);
+  }
+
   // end-source-example
 }

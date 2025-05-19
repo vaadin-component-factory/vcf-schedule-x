@@ -40,6 +40,9 @@ import {
 
 import { signal } from "@preact/signals";
 
+import '@sx-premium/resource-scheduler/index.css';
+import '@sx-premium/scheduling-assistant/index.css';
+
 const resourceViewFactoryMap = {
 	createHourlyView,
 	createDailyView

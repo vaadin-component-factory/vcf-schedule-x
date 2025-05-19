@@ -17,7 +17,6 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DomEvent;
 import com.vaadin.flow.component.EventData;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.shared.Registration;
@@ -43,8 +42,6 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewTyp
 @NpmPackage(value = "@sx-premium/resource-scheduler", version = "3.16.1")
 @NpmPackage(value = "@sx-premium/scheduling-assistant", version = "3.16.1")
 @JsModule("./src/vcf-schedule-x-resource-scheduler.js")
-@CssImport("@sx-premium/resource-scheduler/index.css")
-@CssImport("@sx-premium/scheduling-assistant/index.css")
 @Getter
 public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
 

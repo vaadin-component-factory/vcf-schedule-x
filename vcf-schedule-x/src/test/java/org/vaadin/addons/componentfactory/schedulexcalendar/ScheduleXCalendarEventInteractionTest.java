@@ -59,7 +59,7 @@ class ScheduleXCalendarEventInteractionTest {
 
     spy.addEvent(event);
 
-    verify(mockElement, times(1)).executeJs(contains(".addEvent"), eq(spy), eq(event.getJson()));
+    verify(mockElement, times(1)).executeJs(contains(".addEvent"), eq(spy.container), eq(event.getJson()));
   }
 
   @Test
@@ -70,7 +70,7 @@ class ScheduleXCalendarEventInteractionTest {
     
     spy.removeEvent("e1");
 
-    verify(spy.getElement(), times(1)).executeJs(contains(".removeEvent"), eq(spy), eq("e1"));
+    verify(spy.getElement(), times(1)).executeJs(contains(".removeEvent"), eq(spy.container), eq("e1"));
   }
 
   @Test
@@ -84,7 +84,8 @@ class ScheduleXCalendarEventInteractionTest {
 
     spy.updateEvent(event);
 
-    verify(spy.getElement(), times(1)).executeJs(contains(".updateEvent"), eq(spy),
+    // Modified verification: target spy.container
+    verify(spy.getElement(), times(1)).executeJs(contains(".updateEvent"), eq(spy.container),
         eq(event.getJson()));
   }
 

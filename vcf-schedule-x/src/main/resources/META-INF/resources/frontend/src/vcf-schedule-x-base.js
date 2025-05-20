@@ -67,7 +67,8 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	const calendarControlsPlugin = createCalendarControlsPlugin();
    	const recurrencePlugin = createEventRecurrencePlugin();
 	
-	let div = document.getElementById(container.id);
+	let div = container;
+	
     let plugins = [calendarControlsPlugin, dragAndDropPlugin, eventsServicePlugin, recurrencePlugin, resizePlugin, scrollControllerPlugin];
     
     // Add Draw plugin if applies
@@ -147,7 +148,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 	container.calendar = calendar;
 	
 	// Dispatch event to know calendar was rendered
-	container.dispatchEvent(new CustomEvent('calendar-rendered'));
+	container.parentElement.dispatchEvent(new CustomEvent('calendar-rendered'));
 	
 	// Subscribe to Scheduling Assistant updates if applies
 	if(schedulingAssistantConfigured){
@@ -290,7 +291,7 @@ export function addEvent(container, calendarEvent) {
 	const eventJson = JSON.parse(calendarEvent);
 	const eventId = eventJson.id;
 	container.calendar.eventsService.add(eventJson);
-	container.dispatchEvent(new CustomEvent('calendar-event-added', { detail: { eventId: eventId } }));
+	container.parentElement.dispatchEvent(new CustomEvent('calendar-event-added', { detail: { eventId: eventId } }));
 }
 
 /**
@@ -298,7 +299,7 @@ export function addEvent(container, calendarEvent) {
  */
 export function removeEvent(container, calendarEventId) {
 	container.calendar.eventsService.remove(calendarEventId);
-	container.dispatchEvent(new CustomEvent('calendar-event-removed', { detail: { eventId: calendarEventId } }));
+	container.parentElement.dispatchEvent(new CustomEvent('calendar-event-removed', { detail: { eventId: calendarEventId } }));
 }
 
 /**
@@ -308,7 +309,7 @@ export function updateEvent(container, calendarEvent) {
 	const eventJson = JSON.parse(calendarEvent);
 	const eventId = eventJson.id;
 	container.calendar.eventsService.update(eventJson);
-	container.dispatchEvent(new CustomEvent('calendar-event-updated', { detail: { eventId: eventId } }));
+	container.parentElement.dispatchEvent(new CustomEvent('calendar-event-updated', { detail: { eventId: eventId } }));
 }
 
 /**

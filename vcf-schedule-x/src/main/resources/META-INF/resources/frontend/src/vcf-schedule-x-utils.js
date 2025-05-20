@@ -32,7 +32,7 @@ export function processViews(viewFnNames, viewFactories, resourceConfig) {
 }
 
 export function updateEvents(div, range){
-	div.$server.updateRange(range.start, range.end);
+	div.parentElement.$server.updateRange(range.start, range.end);
 }
 
 export function setSelectedView(calendar, viewName) {
@@ -44,18 +44,18 @@ export function setSelectedDate(calendar, selectedDate) {
 }
 
 export function handleOnEventClick(div, calendarEvent) {
-	div.$server.onCalendarEventClick(calendarEvent.id);
+	div.parentElement.$server.onCalendarEventClick(calendarEvent.id);
 }
 
 export function handleOnSelectedDateUpdate(div, date) {
-	div.$server.onSelectedDateUpdate(date);
+	div.parentElement.$server.onSelectedDateUpdate(date);
 }
 
 /**
  * This handles event updates on resize or dnd
  */
 export function handleEventUpdate(div, updatedEvent) {
-	div.$server.onEventUpdate(updatedEvent.id, updatedEvent.start, updatedEvent.end);
+	div.parentElement.$server.onEventUpdate(updatedEvent.id, updatedEvent.start, updatedEvent.end);
 }
 
 export function updateFirstDayOfWeek(calendar, firstDayOfWeek) {
@@ -103,7 +103,7 @@ export function subscribeToSchedulingAssistantUpdates(container) {
 	const plugin = container.calendar.$app.config.plugins["scheduling-assistant"];
 
 	const emitCombinedUpdate = () => {
-		container.dispatchEvent(new CustomEvent('scheduling-assistant-update', {
+		container.parentElement.dispatchEvent(new CustomEvent('scheduling-assistant-update', {
 			detail: {
 				currentStart: plugin.currentStart.value,
 				currentEnd: plugin.currentEnd.value,

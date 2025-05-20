@@ -82,10 +82,15 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
   }
 
   @Override
+  protected String getJsConnector() {
+    return "vcfschedulexresourcescheduler";
+  }
+
+  @Override
   protected void initCalendar() {
-    this.getElement().executeJs("vcfschedulexresourcescheduler.create($0, $1, $2, $3, $4, $5)", this,
-        viewsToJson(), configurationToJson(), calendarsToJson(), resourceSchedulerConfigToJson(),
-        schedulingAssistantConfigToJson());
+    this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3, $4, $5)",
+        this.container, viewsToJson(), configurationToJson(), calendarsToJson(),
+        resourceSchedulerConfigToJson(), schedulingAssistantConfigToJson());
   }
 
   protected String resourceSchedulerConfigToJson() {
@@ -95,25 +100,31 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
   protected String schedulingAssistantConfigToJson() {
     return schedulingAssistantConfig != null ? schedulingAssistantConfig.getJson() : "{}";
   }
-  
+
   public ResourceSchedulerConfig getResourceSchedulerConfig() {
     return resourceSchedulerConfig;
+  }
+  
+  public void setResourceSchedulerConfig(ResourceSchedulerConfig resourceSchedulerConfig) {
+    this.resourceSchedulerConfig = resourceSchedulerConfig;
+    this.refreshCalendar();
   }
 
   public SchedulingAssistantConfig getSchedulingAssistantConfig() {
     return schedulingAssistantConfig;
   }
-
-  @Override
-  protected String getJsConnector() {
-    return "vcfschedulexresourcescheduler";
+  
+  public void setSchedulingAssistantConfig(SchedulingAssistantConfig schedulingAssistantConfig) {
+    this.schedulingAssistantConfig = schedulingAssistantConfig;
+    this.refreshCalendar();
   }
 
   /**
    * Event fired when Scheduling Assistant is updated.
    */
   @DomEvent("scheduling-assistant-update")
-  public static class SchedulingAssistantUpdateEvent extends ComponentEvent<ScheduleXResourceScheduler> {
+  public static class SchedulingAssistantUpdateEvent
+      extends ComponentEvent<ScheduleXResourceScheduler> {
 
     private final String currentStart;
     private final String currentEnd;
@@ -139,7 +150,7 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
 
     public boolean isHasCollision() {
       return hasCollision;
-    }    
+    }
   }
 
   /**

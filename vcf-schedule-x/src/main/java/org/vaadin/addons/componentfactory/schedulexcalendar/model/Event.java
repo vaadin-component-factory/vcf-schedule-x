@@ -18,7 +18,6 @@ import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -124,7 +123,7 @@ public class Event implements Serializable {
    * @param end the end date-time string in one of the supported formats
    */
   public Event(String id, String start, String end) {
-    this(id, parseDate(start, false), parseDate(end, true));
+    this(id, DateTimeFormatUtils.parseDate(start, false), DateTimeFormatUtils.parseDate(end, true));
   }
 
   /**
@@ -143,8 +142,8 @@ public class Event implements Serializable {
   public Event(JsonValue json) {
     JsonObject js = (JsonObject) json;
     this.id = js.getString("id");
-    this.start = parseDate(js.getString("start"), false);
-    this.end = parseDate(js.getString("end"), true);
+    this.start = DateTimeFormatUtils.parseDate(js.getString("start"), false);
+    this.end = DateTimeFormatUtils.parseDate(js.getString("end"), true);
     this.title = js.hasKey("title") ? js.getString("title") : null;
     this.description = js.hasKey("description") ? js.getString("description") : null;
     this.location = js.hasKey("location") ? js.getString("location") : null;
@@ -353,31 +352,6 @@ public class Event implements Serializable {
     }
 
     return js.toJson();
-  }
-
-  /**
-   * Parses a date string into a {@link LocalDateTime}, accepting two formats:
-   * <ul>
-   * <li>{@code YYYY-MM-DD HH:mm} – parsed as-is</li>
-   * <li>{@code YYYY-MM-DD} – parsed as start of day (00:00), or end of day (23:59:59) if
-   * {@code end} is {@code true}</li>
-   * </ul>
-   *
-   * @param date the date string to parse
-   * @param end whether to treat a date-only value as the end of the day
-   * @return the parsed {@code LocalDateTime}
-   */
-  private static LocalDateTime parseDate(String date, boolean end) {
-    LocalDateTime result;
-    try {
-      result = LocalDateTime.parse(date, DateTimeFormatUtils.DATE_TIME_FORMATTER);
-    } catch (Exception e) {
-      result = LocalDate.parse(date, DateTimeFormatUtils.DATE_FORMATTER).atStartOfDay();
-      if (end) {
-        result = result.withHour(23).withMinute(59).withSecond(59);
-      }
-    }
-    return result;
   }
 
   /**

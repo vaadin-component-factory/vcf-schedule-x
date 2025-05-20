@@ -13,6 +13,8 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -51,4 +53,29 @@ public final class DateTimeFormatUtils {
    */
   public static final DateTimeFormatter COMPACT_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("HHmmss");
+  
+  /**
+   * Parses a date string into a {@link LocalDateTime}, accepting two formats:
+   * <ul>
+   * <li>{@code YYYY-MM-DD HH:mm} – parsed as-is</li>
+   * <li>{@code YYYY-MM-DD} – parsed as start of day (00:00), or end of day (23:59:59) if
+   * {@code end} is {@code true}</li>
+   * </ul>
+   *
+   * @param date the date string to parse
+   * @param end whether to treat a date-only value as the end of the day
+   * @return the parsed {@code LocalDateTime}
+   */
+  public static LocalDateTime parseDate(String date, boolean end) {
+    LocalDateTime result;
+    try {
+      result = LocalDateTime.parse(date, DATE_TIME_FORMATTER);
+    } catch (Exception e) {
+      result = LocalDate.parse(date, DATE_FORMATTER).atStartOfDay();
+      if (end) {
+        result = result.withHour(23).withMinute(59).withSecond(59);
+      }
+    }
+    return result;
+  }
 }

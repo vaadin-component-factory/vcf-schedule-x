@@ -30,12 +30,12 @@ import java.util.Map;
 import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 /**
@@ -56,6 +56,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private CalendarHeaderComponent header;
   private Card resourceSchedulerCard;
   private FieldSet resourcesLayout;
+  private FieldSet localeTestingLayout;
 
   @Override
   protected void createDemo() {
@@ -164,7 +165,8 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private void createResourceSchedulerDemoCard() {
     resourceSchedulerCard = new Card();
     resourcesLayout = getResourceHandlingLayout();
-    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, getLocaleTestingLayout());
+    localeTestingLayout = getLocaleTestingLayout();
+    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout);
   }
 
   private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
@@ -222,9 +224,9 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourceSchedulerCard.removeAll();
     resourceScheduler = getScheduleXResourceScheduler();
     header = new CalendarHeaderComponent(resourceScheduler);
-    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout);
+    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout);
   }
-  
+
   private FieldSet getLocaleTestingLayout() {
     HorizontalLayout layout = new HorizontalLayout();
     layout.setWidthFull();

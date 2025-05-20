@@ -61,7 +61,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 public abstract class BaseScheduleXCalendar extends Div {
-  
+
   private boolean calendarRendered;
 
   /**
@@ -87,9 +87,15 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   private Configuration configuration;
 
+  /**
+   * Div containing the calendar.
+   * 
+   */
+  protected Div container;
+
   public BaseScheduleXCalendar() {
-    this.setId(String.valueOf(this.hashCode()));
-    setClassName("vcf-schedule-x-calendar");
+    this.initCalendarContainer();
+    this.add(container);
   }
 
   public BaseScheduleXCalendar(List<? extends ViewType> views, EventProvider eventProvider) {
@@ -110,15 +116,39 @@ public abstract class BaseScheduleXCalendar extends Div {
     this.calendars = calendars;
   }
 
+  private void initCalendarContainer() {
+    container = new Div();
+    container.setId("calendar-container-" + String.valueOf(this.hashCode()));
+    container.setClassName("vcf-schedule-x-calendar");
+    container.setSizeFull();
+  }
+
   @Override
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
     this.initCalendar();
     addCalendarRenderedListener(() -> {
+      // This listener ensures that `calendarRendered` is true after initial render
+      // and subsequent calls to executeOnCalendarRendered will run immediately.
     });
   }
 
+  /**
+   * Initializes calendar with the initial configuration.
+   */
   protected abstract void initCalendar();
+
+  /**
+   * Refreshes the calendar by re-initializing it with the most current configuration. This triggers
+   * a rebuild of the calendar component on the client side.
+   */
+  public void refreshCalendar() {
+    this.calendarRendered = false;
+    this.remove(container);
+    this.initCalendarContainer();
+    this.add(container);
+    this.initCalendar();
+  }
 
   protected String viewsToJson() {
     JsonArray jsonArray = Json.createArray();
@@ -149,9 +179,9 @@ public abstract class BaseScheduleXCalendar extends Div {
     calendars.forEach((id, calendar) -> calendarJson.put(id, calendar.toJsonObject()));
     return calendarJson.toJson();
   }
-  
+
   /**
-   * Returns the calendar's defined event provider. 
+   * Returns the calendar's defined event provider.
    * 
    * @return the eventProvider used by the calendar
    */
@@ -168,6 +198,16 @@ public abstract class BaseScheduleXCalendar extends Div {
     return configuration;
   }
 
+  /**
+   * Sets current calendar configuration.
+   * 
+   * @param configuration the configuration of the calendar
+   */
+  public void setConfiguration(Configuration configuration) {
+    this.configuration = configuration;
+    this.refreshCalendar();
+  }
+
   @Override
   protected void onDetach(DetachEvent detachEvent) {
     super.onDetach(detachEvent);
@@ -176,30 +216,30 @@ public abstract class BaseScheduleXCalendar extends Div {
 
   @ClientCallable
   void updateRange(String start, String end) {
-    String events = eventsToJson(LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
-        LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER));
-    this.getElement().executeJs("""
-  if (this.calendar.$app.config.plugins.ICalendarPlugin) 
-  {
-   this.calendar.$app.config.plugins.ICalendarPlugin.between($1, $2);
-   let events = this.calendar.eventsService.getAll();
-   events.forEach(event => {
-     event._options = {};
-     event._options.disableDND = true;
-     event._options.disableResize = true;
-     this.calendar.eventsService.update(event);
-   });
-   JSON.parse($0).forEach(event => this.calendar.eventsService.add(event));
-  }
-   else 
-  {
-   this.calendar.eventsService.set(JSON.parse($0))
-  }
-   if(this.calendar.$app.config.plugins.eventRecurrence){
-   this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})
-  }
-            """,
-        events, start, end);
+    String events =
+        eventsToJson(LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
+            LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER));
+    this.container.getElement().executeJs("""
+        if (this.calendar.$app.config.plugins.ICalendarPlugin)
+        {
+         this.calendar.$app.config.plugins.ICalendarPlugin.between($1, $2);
+         let events = this.calendar.eventsService.getAll();
+         events.forEach(event => {
+           event._options = {};
+           event._options.disableDND = true;
+           event._options.disableResize = true;
+           this.calendar.eventsService.update(event);
+         });
+         JSON.parse($0).forEach(event => this.calendar.eventsService.add(event));
+        }
+         else
+        {
+         this.calendar.eventsService.set(JSON.parse($0))
+        }
+         if(this.calendar.$app.config.plugins.eventRecurrence){
+         this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})
+        }
+                  """, events, start, end);
   }
 
   protected abstract String getJsConnector();
@@ -211,7 +251,8 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setView(ViewType view) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setView($0, $1);", this, view.getName());
+      this.getElement().executeJs(getJsConnector() + ".setView($0, $1);", this.container,
+          view.getName());
       this.view = view;
     });
   }
@@ -232,7 +273,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setDate(LocalDate selectedDate) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setDate($0, $1);", this,
+      this.getElement().executeJs(getJsConnector() + ".setDate($0, $1);", this.container,
           selectedDate.format(DateTimeFormatUtils.DATE_FORMATTER));
       if (configuration == null) {
         configuration = new Configuration();
@@ -258,7 +299,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setFirstDayOfWeek(Integer firstDayOfWeek) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setFirstDayOfWeek($0, $1);", this,
+      this.getElement().executeJs(getJsConnector() + ".setFirstDayOfWeek($0, $1);", this.container,
           firstDayOfWeek);
       if (configuration == null) {
         configuration = new Configuration();
@@ -285,7 +326,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   public void setLocale(Locale locale) {
     LocaleUtils.validateLocale(locale);
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setLocale($0, $1);", this,
+      this.getElement().executeJs(getJsConnector() + ".setLocale($0, $1);", this.container,
           LocaleUtils.toScheduleXLocale(locale));
       if (configuration == null) {
         configuration = new Configuration();
@@ -311,11 +352,12 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setViews(List<? extends ViewType> views) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setViews($0, $1);", this, viewsToJson());
+      this.getElement().executeJs(getJsConnector() + ".setViews($0, $1);", this.container,
+          viewsToJson());
       this.views = new ArrayList<>(views);
     });
   }
-  
+
   /**
    * Returns the current views in the calendar.
    * 
@@ -332,7 +374,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setDayBoundaries(DayBoundaries dayBoundaries) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setDayBoundaries($0, $1);", this,
+      this.getElement().executeJs(getJsConnector() + ".setDayBoundaries($0, $1);", this.container,
           dayBoundaries.toJson());
       if (configuration == null) {
         configuration = new Configuration();
@@ -357,7 +399,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setWeekOptions(WeekOptions weekOptions) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setWeekOptions($0, $1);", this,
+      this.getElement().executeJs(getJsConnector() + ".setWeekOptions($0, $1);", this.container,
           weekOptions.toJson());
       if (configuration == null) {
         configuration = new Configuration();
@@ -382,7 +424,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setCalendars(Map<String, Calendar> calendars) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setCalendars($0, $1);", this,
+      this.getElement().executeJs(getJsConnector() + ".setCalendars($0, $1);", this.container,
           calendarsToJson());
       this.calendars = calendars;
     });
@@ -403,7 +445,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @param minDate the min date for the calendar navigation
    */
   public void setMinDate(LocalDate minDate) {
-    this.getElement().executeJs(getJsConnector() + ".setMinDate($0, $1);", this,
+    this.getElement().executeJs(getJsConnector() + ".setMinDate($0, $1);", this.container,
         minDate.format(DateTimeFormatUtils.DATE_FORMATTER));
     if (configuration == null) {
       configuration = new Configuration();
@@ -427,7 +469,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setMaxDate(LocalDate maxDate) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setMaxDate($0, $1);", this,
+      this.getElement().executeJs(getJsConnector() + ".setMaxDate($0, $1);", this.container,
           maxDate.format(DateTimeFormatUtils.DATE_FORMATTER));
       if (configuration == null) {
         configuration = new Configuration();
@@ -452,8 +494,8 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void setMonthGridOptions(MonthGridOptions monthGridOptions) {
     this.executeOnCalendarRendered(() -> {
-      this.getElement().executeJs(getJsConnector() + ".setMonthGridOptions($0, $1);", this,
-          monthGridOptions.toJson());
+      this.getElement().executeJs(getJsConnector() + ".setMonthGridOptions($0, $1);",
+          this.container, monthGridOptions.toJson());
       if (configuration == null) {
         configuration = new Configuration();
       }
@@ -490,15 +532,15 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Allows to navigate calendar forwards.
    */
-  public void navigateForwards() { 
-    this.getElement().executeJs(getJsConnector() + ".navigateForwards($0)", this);
+  public void navigateForwards() {
+    this.getElement().executeJs(getJsConnector() + ".navigateForwards($0)", this.container);
   }
 
   /**
    * Allows to navigate calendar backwards.
    */
   public void navigateBackwards() {
-    this.getElement().executeJs(getJsConnector() + ".navigateBackwards($0)", this);
+    this.getElement().executeJs(getJsConnector() + ".navigateBackwards($0)", this.container);
   }
 
   /**
@@ -524,13 +566,9 @@ public abstract class BaseScheduleXCalendar extends Div {
       this.eventId = eventId;
     }
 
-    /**
-     * @return the eventId
-     */
     public String getEventId() {
       return eventId;
     }
-    
   }
 
   /**
@@ -570,7 +608,7 @@ public abstract class BaseScheduleXCalendar extends Div {
 
     public LocalDate getSelectedDate() {
       return selectedDate;
-    }    
+    }
   }
 
   /**
@@ -590,7 +628,8 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @param event calendar event to be added
    */
   public void addEvent(Event event) {
-    this.getElement().executeJs(getJsConnector() + ".addEvent($0, $1);", this, event.getJson());
+    this.getElement().executeJs(getJsConnector() + ".addEvent($0, $1);", this.container,
+        event.getJson());
   }
 
   /**
@@ -599,7 +638,8 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @param eventId id of the event to be removed
    */
   public void removeEvent(String eventId) {
-    this.getElement().executeJs(getJsConnector() + ".removeEvent($0, $1);", this, eventId);
+    this.getElement().executeJs(getJsConnector() + ".removeEvent($0, $1);",
+        this.container, eventId);
   }
 
   /**
@@ -608,7 +648,8 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @param event the event to be updated
    */
   public void updateEvent(Event event) {
-    this.getElement().executeJs(getJsConnector() + ".updateEvent($0, $1);", this, event.getJson());
+    this.getElement().executeJs(getJsConnector() + ".updateEvent($0, $1);",
+        this.container, event.getJson());
   }
 
   /**
@@ -627,7 +668,7 @@ public abstract class BaseScheduleXCalendar extends Div {
 
     public String getEventId() {
       return eventId;
-    }    
+    }
   }
 
   /**
@@ -684,10 +725,10 @@ public abstract class BaseScheduleXCalendar extends Div {
       super(source, fromClient);
       this.eventId = eventId;
     }
-    
+
     public String getEventId() {
       return eventId;
-    }    
+    }
   }
 
   /**
@@ -711,7 +752,8 @@ public abstract class BaseScheduleXCalendar extends Div {
   @ClientCallable
   private void onEventUpdate(String eventId, String start, String end) {
     ComponentUtil.fireEvent(this,
-        new EventUpdateEvent(this, eventId, LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
+        new EventUpdateEvent(this, eventId,
+            LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
             LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER), false));
   }
 

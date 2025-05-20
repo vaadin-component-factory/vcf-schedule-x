@@ -61,16 +61,16 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   }
 
   @Override
-  protected void initCalendar() {
-    this.getElement().executeJs("vcfschedulexcalendar.create($0, $1, $2, $3)", this, viewsToJson(),
-        configurationToJson(), calendarsToJson());
-  }
-
-  @Override
   protected String getJsConnector() {
     return "vcfschedulexcalendar";
   }
-   
+
+  @Override
+  protected void initCalendar() {
+    this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3)", this.container,
+        viewsToJson(), configurationToJson(), calendarsToJson());
+  }
+
   @ClientCallable
   void addEvent(JsonValue jsonValue) {
     Event event = new Event(jsonValue);
@@ -83,10 +83,10 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
    * @param time the time to scroll to in the view
    */
   public void scrollTo(LocalTime time) {
-    this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this,
+    this.getElement().executeJs("vcfschedulexcalendar.scrollTo($0, $1);", this.container,
         time.format(DateTimeFormatUtils.TIME_FORMATTER));
   }
-  
+
   /**
    * Sets the drawn event validation callback.
    * 
@@ -116,9 +116,10 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
    * Callback interface for validating drawn events.
    */
   @FunctionalInterface
-  public static interface DrawnEventValidationCallback extends SerializableFunction<Event, Boolean> {
+  public static interface DrawnEventValidationCallback
+      extends SerializableFunction<Event, Boolean> {
   }
-  
+
   public static class CalendarEventDrawnEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
     private final Event event;
@@ -132,7 +133,7 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
       return event;
     }
   }
-  
+
   public Registration addCalendarEventDrawnEventListener(
       ComponentEventListener<CalendarEventDrawnEvent> listener) {
     return addListener(CalendarEventDrawnEvent.class, listener);

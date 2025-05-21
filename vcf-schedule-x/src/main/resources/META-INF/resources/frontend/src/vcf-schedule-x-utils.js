@@ -44,7 +44,7 @@ export function setSelectedDate(calendar, selectedDate) {
 }
 
 export function handleOnEventClick(div, calendarEvent) {
-	div.parentElement.$server.onCalendarEventClick(calendarEvent.id);
+	div.parentElement.$server.onCalendarEventClick(calendarEvent.id, calendarEvent.start, calendarEvent.end);
 }
 
 export function handleOnSelectedDateUpdate(div, date) {

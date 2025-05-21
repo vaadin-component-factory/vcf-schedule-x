@@ -547,10 +547,14 @@ public abstract class BaseScheduleXCalendar extends Div {
    * Handles calendar event click.
    * 
    * @param eventId id of the event being clicked
+   * @param start the start date of the event
+   * @param end the end date of the event
    */
   @ClientCallable
-  private void onCalendarEventClick(String eventId) {
-    ComponentUtil.fireEvent(this, new CalendarEventClickEvent(this, eventId, false));
+  private void onCalendarEventClick(String eventId, String start, String end) {
+    ComponentUtil.fireEvent(this,
+        new CalendarEventClickEvent(this, eventId, DateTimeFormatUtils.parseDate(start, false),
+            DateTimeFormatUtils.parseDate(end, true), false));
   }
 
   /**
@@ -559,15 +563,27 @@ public abstract class BaseScheduleXCalendar extends Div {
   public class CalendarEventClickEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
     private final String eventId;
+    private final LocalDateTime start;
+    private final LocalDateTime end;
 
     public CalendarEventClickEvent(BaseScheduleXCalendar source, String eventId,
-        boolean fromClient) {
+        LocalDateTime start, LocalDateTime end, boolean fromClient) {
       super(source, fromClient);
       this.eventId = eventId;
+      this.start = start;
+      this.end = end;
     }
 
     public String getEventId() {
       return eventId;
+    }
+
+    public LocalDateTime getStart() {
+      return start;
+    }
+
+    public LocalDateTime getEnd() {
+      return end;
     }
   }
 

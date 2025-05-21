@@ -814,4 +814,17 @@ public abstract class BaseScheduleXCalendar extends Div {
     return addListener(EventUpdateEvent.class, listener);
   }
 
+  /**
+   * Programmatically sets the theme of the calendar to either dark or light mode.
+   * <p>
+   * For more details, see the <a href="https://schedule-x.dev/docs/calendar#theme">Schedule-X theme
+   * documentation</a>.
+   *
+   * @param dark {@code true} to set the theme to dark mode, {@code false} for light mode
+   */
+  public void setDarkMode(boolean dark) {
+    this.executeOnCalendarRendered(() -> {
+      this.container.getElement().executeJs("this.calendar.setTheme($0)", dark ? "dark" : "light");
+    });
+  }
 }

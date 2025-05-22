@@ -53,28 +53,35 @@ const viewNameMap = {
 
 window.vcfschedulexcalendar = {
 	create(container, viewsJson, configJson, calendarsJson) {
-        const parsedConfig = JSON.parse(configJson);
-        let drawSnapDuration = parsedConfig.drawOptions.snapDrawDuration;
-        const drawPlugin = createDrawPlugin({
-          // (Optional) callback that runs on mouseup after drawing an event, before calling onFinishDrawing
-          onFinishDrawing: (async event => {
-            let result = await container.$server.validateDrawnEvent(event.id, event.start, event.end);
-            if (result) {
-                await container.$server.addEvent(event);
-            } else {
-                container.calendar.eventsService.remove(event.id);
-            }
-          }),
-          
-          // (Optional) configure the intervals, in minutes, at which a time grid-event can be drawn. Valid values: 15, 30, 60
-          snapDuration: drawSnapDuration
-        });
-        setTimeout(() =>
-            createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
-                viewsJson,
-                drawPlugin
-            })
-        );
+        const parsedConfig = JSON.parse(configJson);        
+        if(parsedConfig.drawOptions){
+	 		let drawSnapDuration = parsedConfig.drawOptions.snapDrawDuration;
+	        const drawPlugin = createDrawPlugin({
+	          // (Optional) callback that runs on mouseup after drawing an event, before calling onFinishDrawing
+	          onFinishDrawing: (async event => {
+	            let result = await container.parentElement.$server.validateDrawnEvent(event.id, event.start, event.end);
+	            if (result) {
+	                await container.parentElement.$server.addEvent(event);
+	            } else {
+	                container.calendar.eventsService.remove(event.id);
+	            }
+	          }),	          
+	          // (Optional) configure the intervals, in minutes, at which a time grid-event can be drawn. Valid values: 15, 30, 60
+	          snapDuration: drawSnapDuration
+	        });	
+	        setTimeout(() =>
+	            createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
+	                viewsJson,
+	                drawPlugin
+	            })
+        	);		
+		} else {
+			 setTimeout(() =>
+	            createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
+	                viewsJson
+	            })
+	        );
+		}       
 	},
 
 	setView(container, view) {

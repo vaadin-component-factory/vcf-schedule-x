@@ -19,7 +19,7 @@ import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import com.vaadin.flow.component.ClientCallable;
@@ -27,6 +27,7 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 import elemental.json.JsonValue;
@@ -46,18 +47,18 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
     super();
   }
 
-  public ScheduleXCalendar(List<CalendarViewType> views, EventProvider eventProvider) {
-    super(views, eventProvider);
+  public ScheduleXCalendar(List<CalendarViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider) {
+    super(views, dataProvider);
   }
 
-  public ScheduleXCalendar(List<CalendarViewType> views, EventProvider eventProvider,
+  public ScheduleXCalendar(List<CalendarViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration) {
-    super(views, eventProvider, configuration);
+    super(views, dataProvider, configuration);
   }
 
-  public ScheduleXCalendar(List<CalendarViewType> views, EventProvider eventProvider,
+  public ScheduleXCalendar(List<CalendarViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration, Map<String, Calendar> calendars) {
-    super(views, eventProvider, configuration, calendars);
+    super(views, dataProvider, configuration, calendars);
   }
 
   @Override

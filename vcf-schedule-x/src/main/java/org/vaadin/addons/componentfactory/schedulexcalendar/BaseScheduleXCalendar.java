@@ -13,22 +13,6 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.ClientCallable;
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.DomEvent;
-import com.vaadin.flow.component.EventData;
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.function.SerializableRunnable;
-import com.vaadin.flow.shared.Registration;
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,12 +28,30 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.MonthGridOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.WeekOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.DomEvent;
+import com.vaadin.flow.component.EventData;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
+import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.function.SerializableRunnable;
+import com.vaadin.flow.shared.Registration;
+import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
 
 @SuppressWarnings("serial")
 @NpmPackage(value = "@schedule-x/calendar", version = "2.31.0")
@@ -78,7 +80,7 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   private Map<String, Calendar> calendars = new HashMap<String, Calendar>();
 
-  private EventProvider eventProvider;
+  private CallbackDataProvider<Event, EventQueryFilter> dataProvider;
 
   /**
    * Current calendar view being shown.
@@ -101,21 +103,21 @@ public abstract class BaseScheduleXCalendar extends Div {
     this.add(container);
   }
 
-  public BaseScheduleXCalendar(List<? extends ViewType> views, EventProvider eventProvider) {
+  public BaseScheduleXCalendar(List<? extends ViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider) {
     this();
     this.views = new ArrayList<>(views);
-    this.eventProvider = eventProvider;
+    this.dataProvider = dataProvider;
   }
 
-  public BaseScheduleXCalendar(List<? extends ViewType> views, EventProvider eventProvider,
+  public BaseScheduleXCalendar(List<? extends ViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration) {
-    this(views, eventProvider);
+    this(views, dataProvider);
     this.configuration = configuration;
   }
 
-  public BaseScheduleXCalendar(List<? extends ViewType> views, EventProvider eventProvider,
+  public BaseScheduleXCalendar(List<? extends ViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration, Map<String, Calendar> calendars) {
-    this(views, eventProvider, configuration);
+    this(views, dataProvider, configuration);
     this.calendars = calendars;
   }
 
@@ -136,23 +138,6 @@ public abstract class BaseScheduleXCalendar extends Div {
     });
   }
 
-  /**
-   * Initializes calendar with the initial configuration.
-   */
-  protected abstract void initCalendar();
-
-  /**
-   * Refreshes the calendar by re-initializing it with the most current configuration. This triggers
-   * a rebuild of the calendar component on the client side.
-   */
-  public void refreshCalendar() {
-    this.calendarRendered = false;
-    this.remove(container);
-    this.initCalendarContainer();
-    this.add(container);
-    this.initCalendar();
-  }
-
   protected String viewsToJson() {
     JsonArray jsonArray = Json.createArray();
     for (int i = 0; i < views.size(); i++) {
@@ -162,7 +147,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   }
 
   protected String eventsToJson(LocalDateTime start, LocalDateTime end) {
-    List<Event> events = eventProvider.getEvents(start, end);
+    List<Event> events = dataProvider.fetch(new Query<>(0, Integer.MAX_VALUE, null, null, new EventQueryFilter(start, end))).toList();
     return events != null ? String.format("[%s]",
         events.stream().map(event -> event.getJson()).collect(Collectors.joining(","))) : "";
   }
@@ -183,13 +168,29 @@ public abstract class BaseScheduleXCalendar extends Div {
     return calendarJson.toJson();
   }
 
+  public CallbackDataProvider<Event, EventQueryFilter> getDataProvider() {
+    return dataProvider;
+  }
+
+  public void setDataProvider(CallbackDataProvider<Event, EventQueryFilter> dataProvider) {
+    this.dataProvider = dataProvider;
+  }
+
   /**
-   * Returns the calendar's defined event provider.
-   * 
-   * @return the eventProvider used by the calendar
+   * Initializes calendar with the initial configuration.
    */
-  public EventProvider getEventProvider() {
-    return eventProvider;
+  protected abstract void initCalendar();
+
+  /**
+   * Refreshes the calendar by re-initializing it with the most current configuration. This triggers
+   * a rebuild of the calendar component on the client side.
+   */
+  public void refreshCalendar() {
+    this.calendarRendered = false;
+    this.remove(container);
+    this.initCalendarContainer();
+    this.add(container);
+    this.initCalendar();
   }
 
   /**

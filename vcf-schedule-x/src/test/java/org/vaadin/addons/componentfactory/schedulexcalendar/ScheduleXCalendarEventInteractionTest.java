@@ -21,6 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 
 class ScheduleXCalendarEventInteractionTest {
@@ -42,9 +43,11 @@ class ScheduleXCalendarEventInteractionTest {
     List<CalendarViewType> views = List.of(CalendarViewType.WEEK);
     Event event =
         new Event("e1", LocalDateTime.of(2025, 6, 2, 10, 00), LocalDateTime.of(2025, 6, 2, 12, 00));
-    EventProvider eventProvider =
-        EventProvider.of((start, end) -> Collections.singletonList(event));
-    calendar = new ScheduleXCalendar(views, eventProvider, new Configuration());
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
+        query -> Collections.singletonList(event).stream(),
+        query -> 1
+    );
+    calendar = new ScheduleXCalendar(views, dataProvider, new Configuration());
     CalendarTestUtils.forceCalendarRendered(calendar);
   }
 
@@ -119,4 +122,3 @@ class ScheduleXCalendarEventInteractionTest {
     assertEquals("abc123", updatedEventId.get());
   }
 }
-

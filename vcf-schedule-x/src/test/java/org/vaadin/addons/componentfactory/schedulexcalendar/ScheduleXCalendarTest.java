@@ -19,28 +19,32 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
+import com.vaadin.flow.data.provider.Query;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 
 class ScheduleXCalendarTest {
 
-  private EventProvider eventProvider;
   private Configuration configuration;
   private ScheduleXCalendar calendar;
   private List<CalendarViewType> views;
 
   @BeforeEach
   void setUp() {
-    
-    // Mock event provider to return a fixed list
+    // Mock event provider replaced with CallbackDataProvider
     LocalDate date = LocalDate.of(2025, 01, 01);
     Event event = new Event("event-id", LocalDateTime.of(date, LocalTime.of(10, 00)),
         LocalDateTime.of(date, LocalTime.of(12, 00)));
-    eventProvider = EventProvider.of((start, end) -> Collections.singletonList(event));
+
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
+        query -> Collections.singletonList(event).stream(),
+        query -> 1
+    );
 
     // Minimal configuration
     configuration = new Configuration();
@@ -49,7 +53,7 @@ class ScheduleXCalendarTest {
     configuration.setSelectedDate(date);
 
     views = List.of(CalendarViewType.WEEK, CalendarViewType.DAY);
-    calendar = new ScheduleXCalendar(views, eventProvider, configuration);
+    calendar = new ScheduleXCalendar(views, dataProvider, configuration);
     CalendarTestUtils.forceCalendarRendered(calendar);
   }
 
@@ -58,7 +62,7 @@ class ScheduleXCalendarTest {
     LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
     LocalDateTime end = LocalDateTime.of(2025, 1, 2, 0, 0);
 
-    List<Event> events = eventProvider.getEvents(start, end);
+    List<Event> events = calendar.getDataProvider().fetch(new Query<>(0, Integer.MAX_VALUE, null, null, new EventQueryFilter(start, end))).toList();
     assertEquals(1, events.size());
     assertEquals("event-id", events.get(0).getId());
   }

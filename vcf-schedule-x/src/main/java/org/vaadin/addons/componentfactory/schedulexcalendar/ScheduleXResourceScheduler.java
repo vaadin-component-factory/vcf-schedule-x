@@ -13,21 +13,23 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
+import java.util.List;
+import java.util.Map;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DomEvent;
 import com.vaadin.flow.component.EventData;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.shared.Registration;
-import java.util.List;
-import java.util.Map;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 /**
  * A view for displaying resources (people, rooms, equipment etc.) in a time grid.
@@ -52,32 +54,35 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
     setClassName("vcf-schedule-x-resource-scheduler");
   }
 
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider) {
-    super(views, eventProvider);
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider) {
+    super(views, dataProvider);
+    setClassName("vcf-schedule-x-resource-scheduler");
   }
 
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration) {
-    super(views, eventProvider, configuration);
+    super(views, dataProvider, configuration);
+    setClassName("vcf-schedule-x-resource-scheduler");
   }
 
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration, Map<String, Calendar> calendars) {
-    super(views, eventProvider, configuration, calendars);
+    super(views, dataProvider, configuration, calendars);
+    setClassName("vcf-schedule-x-resource-scheduler");
   }
 
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration, Map<String, Calendar> calendars,
       ResourceSchedulerConfig resourceSchedulerConfig) {
-    super(views, eventProvider, configuration, calendars);
+    super(views, dataProvider, configuration, calendars);
     this.resourceSchedulerConfig = resourceSchedulerConfig;
   }
 
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, EventProvider eventProvider,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration, Map<String, Calendar> calendars,
       ResourceSchedulerConfig resourceSchedulerConfig,
       SchedulingAssistantConfig schedulingAssistantConfig) {
-    this(views, eventProvider, configuration, calendars, resourceSchedulerConfig);
+    this(views, dataProvider, configuration, calendars, resourceSchedulerConfig);
     this.schedulingAssistantConfig = schedulingAssistantConfig;
   }
 

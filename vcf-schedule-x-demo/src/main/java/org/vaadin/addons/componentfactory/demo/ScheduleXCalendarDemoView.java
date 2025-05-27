@@ -18,6 +18,7 @@ import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event.EventOptions;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.CurrentTimeIndicatorConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DrawOptions;
@@ -136,9 +137,29 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     drawOptions.setSnapDrawDuration(TimeInterval.MIN_15);
     configuration.setDrawOptions(drawOptions);
 
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
+        query -> {
+          EventQueryFilter filter = query.getFilter().orElse(null);
+          if (filter != null) {
+            return events.stream()
+                .filter(event -> !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate()));
+          }
+          return events.stream();
+        },
+        query -> {
+          EventQueryFilter filter = query.getFilter().orElse(null);
+          if (filter != null) {
+            return (int) events.stream()
+                .filter(event -> !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate()))
+                .count();
+          }
+          return events.size();
+        }
+    );
+
     // create calendar
     calendar = new ScheduleXCalendar(Arrays.asList(CalendarViewType.DAY, CalendarViewType.WEEK,
-        CalendarViewType.MONTH_GRID, CalendarViewType.MONTH_AGENDA), EventProvider.of(events),
+        CalendarViewType.MONTH_GRID, CalendarViewType.MONTH_AGENDA), dataProvider,
         configuration, calendars);
 
     // add event click listener

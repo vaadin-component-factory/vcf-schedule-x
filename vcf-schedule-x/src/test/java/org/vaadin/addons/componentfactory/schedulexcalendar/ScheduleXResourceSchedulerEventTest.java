@@ -16,12 +16,14 @@ package org.vaadin.addons.componentfactory.schedulexcalendar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler.SchedulingAssistantUpdateEvent;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
@@ -30,8 +32,12 @@ class ScheduleXResourceSchedulerEventTest {
   @Test
   void testSchedulingAssistantUpdateEventIsFiredAndHandled() {
     // Setup component
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
+        query -> List.<Event>of().stream(),
+        query -> 0
+    );
     ScheduleXResourceScheduler resourceScheduler = new ScheduleXResourceScheduler(List.of(ResourceViewType.HOURLY),
-        EventProvider.of((s, e) -> List.of()), new Configuration(), null,
+        dataProvider, new Configuration(), null,
         new ResourceSchedulerConfig());
     CalendarTestUtils.forceCalendarRendered(resourceScheduler);
 
@@ -58,4 +64,3 @@ class ScheduleXResourceSchedulerEventTest {
     assertTrue(receivedCollision.get());
   }
 }
-

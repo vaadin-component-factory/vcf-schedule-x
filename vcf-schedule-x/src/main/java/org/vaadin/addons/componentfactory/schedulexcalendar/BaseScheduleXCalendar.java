@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
@@ -44,8 +45,10 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.WeekOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
 
 @SuppressWarnings("serial")
@@ -827,4 +830,65 @@ public abstract class BaseScheduleXCalendar extends Div {
       this.container.getElement().executeJs("this.calendar.setTheme($0)", dark ? "dark" : "light");
     });
   }
+   
+  /**
+   * Event fired when the calendar view and selected date are updated on the client side.
+   *
+   * <p>
+   * This event is dispatched from the client whenever the internal calendar state changes,
+   * including both the selected view and the selected date (e.g., due to screen resize).
+   * </p>
+   */
+  @DomEvent("calendar-state-view-updated")
+  public static class CalendarViewUpdateEvent extends ComponentEvent<BaseScheduleXCalendar> {
+
+    private final ViewType viewType;
+    private final LocalDate selectedDate;
+
+    public CalendarViewUpdateEvent(BaseScheduleXCalendar source, boolean fromClient,
+        @EventData(value = "event.detail.viewName") String viewName,
+        @EventData(value = "event.detail.selectedDate") String selectedDate) {
+      super(source, fromClient);
+      this.viewType = parseViewType(viewName);
+      this.selectedDate = LocalDate.parse(selectedDate);
+    }
+
+    public ViewType getViewType() {
+      return viewType;
+    }
+
+    public LocalDate getSelectedDate() {
+      return selectedDate;
+    }
+  }
+
+  /**
+   * Adds a {@code CalendarViewUpdateEvent} listener.
+   * 
+   * @param listener the listener to be added
+   * @return a handle that can be used for removing the listener
+   */
+  public Registration addCalendarViewUpdateEventListener(
+      ComponentEventListener<CalendarViewUpdateEvent> listener) {
+    return addListener(CalendarViewUpdateEvent.class, listener);
+  }
+
+  /**
+   * Parses a view name string to its corresponding {@link ViewType}.
+   *
+   * <p>It first attempts to match it as a {@link CalendarViewType}. If not found, it
+   * then attempts {@link ResourceViewType}. If still not found, an exception is thrown.</p>
+   *
+   * @param viewName the view name string from the client
+   * @return a matching {@link ViewType} instance
+   * @throws IllegalArgumentException if the view name does not match any known type
+   */
+  private static ViewType parseViewType(String viewName) {
+    return Optional.ofNullable(CalendarViewType.fromViewName(viewName))
+        .map(ViewType.class::cast)
+        .orElseGet(() -> Optional.ofNullable(ResourceViewType.fromViewName(viewName))
+            .map(ViewType.class::cast)
+            .orElseThrow(() -> new IllegalArgumentException("Unknown view type: " + viewName)));
+   }
+ 
 }

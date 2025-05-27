@@ -54,8 +54,8 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
-
-  private ScheduleXCalendar calendar;
+  private ScheduleXCalendar calendar;  
+  private CalendarHeaderComponent header;
 
   @Override
   protected void createDemo() {
@@ -156,9 +156,16 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
         Notification.show("Event with id " + updatedEventId + " updated");
       });
     });
+    
+    // add listener to capture when view and selected date are updated on client side
+    // (for example, on screen resize)
+    calendar.addCalendarViewUpdateEventListener(e -> {
+      header.getViewsComboBox().setValue(e.getViewType());
+      header.getDatePicker().setValue(e.getSelectedDate());
+    });
 
-    // add header component
-    CalendarHeaderComponent header = new CalendarHeaderComponent(calendar);
+    // create header component
+    header = new CalendarHeaderComponent(calendar);
 
     calendar.setHeight("500px");
     // end-source-example

@@ -17,4 +17,6 @@ public interface ViewType {
 
   public String getName();
   
+  public String getViewName();
+ 
 }

@@ -37,6 +37,9 @@ public class CalendarHeaderComponent extends HorizontalLayout {
   
   private final ViewChangeListener viewChangeListener;
   
+  private DatePicker datePicker;
+  private ComboBox<ViewType> viewsComboBox;
+  
   public CalendarHeaderComponent(BaseScheduleXCalendar calendar) {
     this(calendar, null);
   }
@@ -54,7 +57,7 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     ViewType defaultView =
         calendarConf.getDefaultView() != null ? calendarConf.getDefaultView() : views.get(0);
 
-    DatePicker datePicker = new DatePicker("Date");
+    datePicker = new DatePicker("Date");
     if (selectedDate != null) {
       datePicker.setValue(selectedDate);
     }
@@ -66,7 +69,7 @@ public class CalendarHeaderComponent extends HorizontalLayout {
       datePicker.setValue(e.getSelectedDate());
     });
 
-    ComboBox<ViewType> viewsComboBox = new ComboBox<ViewType>("View");
+    viewsComboBox = new ComboBox<ViewType>("View");
     viewsComboBox.setItems(new ArrayList<ViewType>(views));
     viewsComboBox.setItemLabelGenerator((item) -> {
       if (item instanceof CalendarViewType) {
@@ -124,4 +127,12 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     this.setAlignItems(Alignment.BASELINE);
   }
 
+  public DatePicker getDatePicker() {
+    return datePicker;
+  }
+
+  public ComboBox<ViewType> getViewsComboBox() {
+    return viewsComboBox;
+  }
+  
 }

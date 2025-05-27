@@ -20,18 +20,35 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
  */
 public enum CalendarViewType implements ViewType {
 
-  DAY("createViewDay"), MONTH_GRID("createViewMonthGrid"), MONTH_AGENDA(
-      "createViewMonthAgenda"), WEEK("createViewWeek");
+  DAY("createViewDay", "day"), MONTH_GRID("createViewMonthGrid",
+      "month-grid"), MONTH_AGENDA("createViewMonthAgenda", "month-agenda"), WEEK("createViewWeek", "week");
 
   private String name;
 
-  private CalendarViewType(String name) {
+  private String viewName;
+
+  private CalendarViewType(String name, String viewName) {
     this.name = name;
+    this.viewName = viewName;
   }
 
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public String getViewName() {
+    return viewName;
+  }
+
+  public static CalendarViewType fromViewName(String viewName) {
+    for (CalendarViewType type : values()) {
+      if (type.getViewName().equalsIgnoreCase(viewName)) {
+        return type;
+      }
+    }
+    return null;
   }
 
 }

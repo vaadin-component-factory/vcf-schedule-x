@@ -103,6 +103,24 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 				updateEvents(div, range);
 			},
 			beforeRender($app) {
+				
+				// Wrap the original setView to be able to notify server-side when view or date changes on client-side
+                const originalSetView = $app.calendarState.setView;
+                $app.calendarState.setView = function(viewName, selectedDate) {
+                    const result = originalSetView.call(this, viewName, selectedDate);
+            
+                    // Dispatch event so server side can listen
+                    container.parentElement.dispatchEvent(new CustomEvent('calendar-state-view-updated', {
+                        detail: {
+                            viewName,
+                            selectedDate
+                        }
+                    }));
+                    
+                    return result;
+                };
+                
+                // Update events
 				const range = $app.calendarState.range.value;
 				updateEvents(div, range);
 			},

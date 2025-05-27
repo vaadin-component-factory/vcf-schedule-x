@@ -20,17 +20,33 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceSch
  */
 public enum ResourceViewType implements ViewType {
 
-  HOURLY("createHourlyView"), DAILY("createDailyView");
+  HOURLY("createHourlyView", "hourly"), DAILY("createDailyView", "daily");
 
   private String name;
 
-  private ResourceViewType(String name) {
+  private String viewName;
+
+  private ResourceViewType(String name, String viewName) {
     this.name = name;
   }
 
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public String getViewName() {
+    return viewName;
+  }
+
+  public static ResourceViewType fromViewName(String viewName) {
+    for (ResourceViewType type : values()) {
+      if (type.getViewName().equalsIgnoreCase(viewName)) {
+        return type;
+      }
+    }
+    return null;
   }
 
 }

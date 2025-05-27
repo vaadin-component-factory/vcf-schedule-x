@@ -16,6 +16,7 @@ package org.vaadin.addons.componentfactory.demo;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.demo.Card;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceSch
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
@@ -191,8 +192,12 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
   }
 
   private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
+        query -> events.stream(),
+        query -> events.size()
+    );
     return new ScheduleXResourceScheduler(Arrays.asList(ResourceViewType.HOURLY),
-        EventProvider.of(events), configuration, calendars, resourceSchedulerConfig,
+        dataProvider, configuration, calendars, resourceSchedulerConfig,
         schedulingAssistantConfig);
   }
   

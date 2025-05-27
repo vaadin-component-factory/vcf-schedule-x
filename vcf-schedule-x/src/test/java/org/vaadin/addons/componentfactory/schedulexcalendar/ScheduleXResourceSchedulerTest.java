@@ -20,22 +20,27 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 
 class ScheduleXResourceSchedulerTest {
 
   private ScheduleXResourceScheduler createView(ResourceSchedulerConfig schedulerConfig,
       SchedulingAssistantConfig assistantConfig) {
     List<ResourceViewType> views = List.of(ResourceViewType.HOURLY);
-    EventProvider provider = EventProvider.of((start, end) -> Collections.emptyList());
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
+        query -> Collections.<Event>emptyList().stream(),
+        query -> 0
+    );
     Configuration configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2024, 05, 06));
     configuration.setDefaultView(ResourceViewType.HOURLY);
-    return new ScheduleXResourceScheduler(views, provider, new Configuration(), null, schedulerConfig,
+    return new ScheduleXResourceScheduler(views, dataProvider, configuration, null, schedulerConfig,
         assistantConfig);
   }
 
@@ -58,4 +63,3 @@ class ScheduleXResourceSchedulerTest {
   }
 
 }
-

@@ -14,7 +14,9 @@
 package org.vaadin.addons.componentfactory.demo;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.FieldSet;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.demo.Card;
@@ -38,6 +40,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
+
 /**
  * View for {@link ScheduleXResourceScheduler} demo.
  *
@@ -57,6 +60,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private Card resourceSchedulerCard;
   private FieldSet resourcesLayout;
   private FieldSet localeTestingLayout;
+  private FieldSet infiniteScrollTestingLayout;
 
   @Override
   protected void createDemo() {
@@ -121,9 +125,14 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     event3.setTitle("Jane");
     event3.setCalendarId("work");
     event3.setResourceId("conveyor-belt-a-2");
+    Event event4 = new Event("3", LocalDateTime.of(eventsDate.plusDays(10), LocalTime.of(10, 00)),
+        LocalDateTime.of(eventsDate.plusDays(10), LocalTime.of(14, 00)));
+    event4.setTitle("Adam");
+    event4.setCalendarId("work");
+    event4.setResourceId("conveyor-belt-a-2");
 
     events = new ArrayList<Event>();
-    events.addAll(Arrays.asList(event1, event2, event3));
+    events.addAll(Arrays.asList(event1, event2, event3, event4));
 
     // create resource view
     resourceScheduler = getScheduleXResourceScheduler();
@@ -166,7 +175,9 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourceSchedulerCard = new Card();
     resourcesLayout = getResourceHandlingLayout();
     localeTestingLayout = getLocaleTestingLayout();
-    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout);
+    infiniteScrollTestingLayout = getInfiniteScrollTestingLayout();
+    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout,
+        infiniteScrollTestingLayout);
   }
 
   private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
@@ -224,7 +235,8 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourceSchedulerCard.removeAll();
     resourceScheduler = getScheduleXResourceScheduler();
     header = new CalendarHeaderComponent(resourceScheduler);
-    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout);
+    resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout,
+        infiniteScrollTestingLayout);
   }
 
   private FieldSet getLocaleTestingLayout() {
@@ -248,9 +260,29 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
       setSpanish.setEnabled(true);
     });
 
-
     layout.add(setSpanish, setGermany);
     return createFieldSetLayout("Calendar Locale testing", layout);
+  }
+
+  private FieldSet getInfiniteScrollTestingLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidthFull();
+    
+    Span notification = new Span("Infinite Scroll DISABLED");
+    notification.getElement().getStyle().set("font-weight", "bold");
+
+    Checkbox enableInfiniteScrolling = new Checkbox(false);
+    enableInfiniteScrolling.setLabel("Check to enable/disable infinite scroll");
+    enableInfiniteScrolling.addValueChangeListener(e -> {
+      boolean enabled = e.getValue();
+      resourceSchedulerConfig.setInfiniteScroll(enabled);
+      resourceScheduler.setResourceSchedulerConfig(resourceSchedulerConfig);
+      String notificationText = String.format("Infinite Scroll %s", enabled ? "ENABLED" : "DISABLED");
+      notification.setText(notificationText);
+    });
+
+    layout.add(enableInfiniteScrolling, notification);
+    return createFieldSetLayout("Infinite Scroll testing", layout);
   }
 
   // end-source-example

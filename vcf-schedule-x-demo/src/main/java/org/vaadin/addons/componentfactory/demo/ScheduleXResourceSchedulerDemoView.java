@@ -18,6 +18,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.demo.Card;
 import com.vaadin.flow.router.Route;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
@@ -38,6 +40,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventProvider;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 
@@ -61,6 +64,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private FieldSet resourcesLayout;
   private FieldSet localeTestingLayout;
   private FieldSet infiniteScrollTestingLayout;
+  private FieldSet scheduleAssistantTestingLayout;
 
   @Override
   protected void createDemo() {
@@ -176,8 +180,9 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourcesLayout = getResourceHandlingLayout();
     localeTestingLayout = getLocaleTestingLayout();
     infiniteScrollTestingLayout = getInfiniteScrollTestingLayout();
+    scheduleAssistantTestingLayout = getSchedulingAssistantTestingLayout();
     resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout,
-        infiniteScrollTestingLayout);
+        infiniteScrollTestingLayout, scheduleAssistantTestingLayout);
   }
 
   private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
@@ -236,7 +241,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourceScheduler = getScheduleXResourceScheduler();
     header = new CalendarHeaderComponent(resourceScheduler);
     resourceSchedulerCard.add(header, resourceScheduler, resourcesLayout, localeTestingLayout,
-        infiniteScrollTestingLayout);
+        infiniteScrollTestingLayout, scheduleAssistantTestingLayout);
   }
 
   private FieldSet getLocaleTestingLayout() {
@@ -283,6 +288,59 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
 
     layout.add(enableInfiniteScrolling, notification);
     return createFieldSetLayout("Infinite Scroll testing", layout);
+  }
+  
+  private String proposedStart;
+  private String proposedEnd;
+  
+  private FieldSet getSchedulingAssistantTestingLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidthFull();
+    
+    Span notification = new Span();
+    notification.setVisible(false);
+    
+    Button scheduleEventButton = new Button("Add event on proposed time");
+    scheduleEventButton.setVisible(false);
+    scheduleEventButton.addClickListener(e -> {
+      Event scheduledEvent = new Event(UUID.randomUUID().toString(), proposedStart, proposedEnd);
+      scheduledEvent.setTitle("Scheduled Event");
+      scheduledEvent.setResourceId("conveyor-belt-a-1");
+      resourceScheduler.addEvent(scheduledEvent);
+      events.add(scheduledEvent);
+    });
+        
+    Checkbox addAssistant = new Checkbox("Show Scheduler Assistant", e -> {
+      scheduleEventButton.setVisible(e.getValue());
+      if(e.getValue()) {
+        LocalDate configDate = resourceScheduler.getDate(); // current selected date
+        LocalDateTime dateStart = LocalDateTime.of(configDate, LocalTime.of(10, 00));
+        LocalDateTime dateEnd = LocalDateTime.of(configDate, LocalTime.of(12, 00));
+        SchedulingAssistantConfig schedulingAssistantConfig = new SchedulingAssistantConfig(dateStart, dateEnd);
+        
+        resourceScheduler.addSchedulingAssistantUpdateListener(ev -> {
+          String currentStart = ev.getCurrentStart();
+          String currentEnd = ev.getCurrentEnd();
+          boolean hasCollision = ev.isHasCollision();
+
+          proposedStart = currentStart;
+          proposedEnd = currentEnd;
+          
+          notification.setVisible(!hasCollision);        
+          notification.setText("Available range between " + currentStart + " and " + currentEnd);
+          scheduleEventButton.setEnabled(!hasCollision);
+        });
+        resourceScheduler.setSchedulingAssistantConfig(schedulingAssistantConfig); 
+      } else {
+        notification.setVisible(false);
+        resourceScheduler.setSchedulingAssistantConfig(null);
+      }          
+          
+    });
+    
+    layout.add(addAssistant, scheduleEventButton, notification);
+    layout.setAlignItems(Alignment.BASELINE);
+    return createFieldSetLayout("Schedule Assistant testing", layout);
   }
 
   // end-source-example

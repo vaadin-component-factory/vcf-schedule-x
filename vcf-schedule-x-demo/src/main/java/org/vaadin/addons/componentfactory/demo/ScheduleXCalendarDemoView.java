@@ -44,6 +44,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule.Until;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceEvaluator;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -142,7 +143,13 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
           EventQueryFilter filter = query.getFilter().orElse(null);
           if (filter != null) {
             return events.stream()
-                .filter(event -> !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate()));
+                .filter(event -> {
+                  boolean isWithinRange = !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate());
+                  boolean isRecurringInRange = event.getRecurrenceRule() != null && RecurrenceEvaluator.occursInRange(
+                      event.getRecurrenceRule(), event.getStart().toLocalDate(),
+                      filter.getStartDate().toLocalDate(), filter.getEndDate().toLocalDate());
+                  return isWithinRange || isRecurringInRange;
+                });
           }
           return events.stream();
         },
@@ -150,7 +157,13 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
           EventQueryFilter filter = query.getFilter().orElse(null);
           if (filter != null) {
             return (int) events.stream()
-                .filter(event -> !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate()))
+                .filter(event -> {
+                  boolean isWithinRange = !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate());
+                  boolean isRecurringInRange = event.getRecurrenceRule() != null && RecurrenceEvaluator.occursInRange(
+                      event.getRecurrenceRule(), event.getStart().toLocalDate(),
+                      filter.getStartDate().toLocalDate(), filter.getEndDate().toLocalDate());
+                  return isWithinRange || isRecurringInRange;
+                })
                 .count();
           }
           return events.size();

@@ -45,7 +45,7 @@ public class DemoMainLayout extends AppLayout {
     SideNav sideNav = new SideNav();
     sideNav.addItem(
             new SideNavItem("Calendar", "/calendar"),
-            new SideNavItem("Resource View", "/resource"),
+            new SideNavItem("Resource Scheduler", "/resource"),
             new SideNavItem("Scheduling Assistant", "/scheduling"));
     return sideNav;
 }

@@ -110,7 +110,7 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
                     const result = originalSetView.call(this, viewName, selectedDate);
             
                     // Dispatch event so server side can listen
-                    container.parentElement.dispatchEvent(new CustomEvent('calendar-state-view-updated', {
+                    container.parentElement.dispatchEvent(new CustomEvent('calendar-state-view-date-updated', {
                         detail: {
                             viewName,
                             selectedDate

@@ -381,7 +381,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   public void setDayBoundaries(DayBoundaries dayBoundaries) {
     configuration.setDayBoundaries(dayBoundaries);
   }
-  
+
   protected void updateDayBoundaries(DayBoundaries dayBoundaries) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setDayBoundaries($0, $1);", this.container,
@@ -406,7 +406,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   public void setWeekOptions(WeekOptions weekOptions) {
     configuration.setWeekOptions(weekOptions);
   }
-  
+
   protected void updateWeekOptions(WeekOptions weekOptions) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setWeekOptions($0, $1);", this.container,
@@ -453,7 +453,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   public void setMinDate(LocalDate minDate) {
     configuration.setMaxDate(minDate);
   }
-  
+
   protected void updateMinDate(LocalDate minDate) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setMinDate($0, $1);", this.container,
@@ -478,7 +478,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   public void setMaxDate(LocalDate maxDate) {
     configuration.setMaxDate(maxDate);
   }
-  
+
   protected void updateMaxDate(LocalDate maxDate) {
     this.executeOnCalendarRendered(() -> {
       this.getElement().executeJs(getJsConnector() + ".setMaxDate($0, $1);", this.container,
@@ -844,13 +844,13 @@ public abstract class BaseScheduleXCalendar extends Div {
    * including both the selected view and the selected date (e.g., due to screen resize).
    * </p>
    */
-  @DomEvent("calendar-state-view-updated")
-  public static class CalendarViewUpdateEvent extends ComponentEvent<BaseScheduleXCalendar> {
+  @DomEvent("calendar-state-view-date-updated")
+  public static class CalendarViewAndDateChangeEvent extends ComponentEvent<BaseScheduleXCalendar> {
 
     private final ViewType viewType;
     private final LocalDate selectedDate;
 
-    public CalendarViewUpdateEvent(BaseScheduleXCalendar source, boolean fromClient,
+    public CalendarViewAndDateChangeEvent(BaseScheduleXCalendar source, boolean fromClient,
         @EventData(value = "event.detail.viewName") String viewName,
         @EventData(value = "event.detail.selectedDate") String selectedDate) {
       super(source, fromClient);
@@ -868,14 +868,19 @@ public abstract class BaseScheduleXCalendar extends Div {
   }
 
   /**
-   * Adds a {@code CalendarViewUpdateEvent} listener.
+   * Adds a {@code CalendarViewAndDateChangeEvent} listener.
+   * 
+   * <p>
+   * This event is dispatched from the client whenever the internal calendar state changes,
+   * including both the selected view and the selected date (e.g., due to screen resize).
+   * </p>
    * 
    * @param listener the listener to be added
    * @return a handle that can be used for removing the listener
    */
-  public Registration addCalendarViewUpdateEventListener(
-      ComponentEventListener<CalendarViewUpdateEvent> listener) {
-    return addListener(CalendarViewUpdateEvent.class, listener);
+  public Registration addCalendarViewAndDateChangeEvent(
+      ComponentEventListener<CalendarViewAndDateChangeEvent> listener) {
+    return addListener(CalendarViewAndDateChangeEvent.class, listener);
   }
 
   /**

@@ -192,7 +192,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
     // add listener to capture when view and selected date are updated on client side
     // (for example, on screen resize)
-    calendar.addCalendarViewUpdateEventListener(e -> {
+    calendar.addCalendarViewAndDateChangeEvent(e -> {
       header.getViewsComboBox().setValue(e.getViewType());
       header.getDatePicker().setValue(e.getSelectedDate());
     });

@@ -17,8 +17,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.shared.Tooltip;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +125,7 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     nextButton.addClickListener(e -> calendar.navigateForwards());
 
     this.addToStart(todayButton, previousButton, nextButton);
-    this.addToEnd(viewsComboBox, datePicker);
+    this.addToEnd(viewsComboBox, datePicker, headerComponentDisclaimer());
     this.setAlignItems(Alignment.BASELINE);
   }
 
@@ -133,6 +135,16 @@ public class CalendarHeaderComponent extends HorizontalLayout {
 
   public ComboBox<ViewType> getViewsComboBox() {
     return viewsComboBox;
+  } 
+  
+  private Button headerComponentDisclaimer() {
+    Button headerInfoButton = new Button(new Icon(VaadinIcon.INFO_CIRCLE_O));
+    headerInfoButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY_INLINE);
+    headerInfoButton.setTooltipText("The header section is not part of the vcf-schedule-x component. This component is responsible only for rendering the calendar. The header layout shown here was created exclusively for demonstration purposes in the demo module.");
+    Tooltip tooltip = headerInfoButton.getTooltip().withManual(true);
+    headerInfoButton.addClickListener(event -> {
+      tooltip.setOpened(!tooltip.isOpened());
+    });
+    return headerInfoButton;
   }
- 
 }

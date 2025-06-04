@@ -23,7 +23,6 @@ import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;

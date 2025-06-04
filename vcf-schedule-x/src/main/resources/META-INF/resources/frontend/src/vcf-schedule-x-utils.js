@@ -69,7 +69,7 @@ export function updateLocale(calendar, locale) {
 export function updateViews(calendar, viewFnNames, viewFactories) {
 	const $app = calendar.$app;
 	const views = processViews(viewFnNames, viewFactories, $app.resourceViewConfig)
-	calendar.$app.config.plugins.calendarControls.setviews(views);
+	calendar.$app.config.plugins.calendarControls.setViews(views);
 }
 
 export function updateDayBoundaries(calendar, dayBoundaries) {

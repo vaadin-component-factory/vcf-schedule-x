@@ -14,9 +14,15 @@
 package org.vaadin.addons.componentfactory.demo;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.demo.DemoView;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
@@ -60,4 +66,16 @@ public abstract class ScheduleXBaseDemoView extends DemoView {
     fieldSet.getStyle().setBorderRadius("var(--lumo-border-radius-s)");
     return fieldSet;
   }  
+  
+  protected VerticalLayout createLayoutWithHelperText(String text, Component component) {
+    Span helperSpan = new Span(text);
+    helperSpan.getStyle().set("font-size", "small");
+    helperSpan.getStyle().set("padding-bottom", "5px");
+    VerticalLayout helperLayout = new VerticalLayout();
+    helperLayout.setSpacing(false);
+    helperLayout.setPadding(false);
+    helperLayout.add(helperSpan, component);
+    return helperLayout;
+  }
+    
 }

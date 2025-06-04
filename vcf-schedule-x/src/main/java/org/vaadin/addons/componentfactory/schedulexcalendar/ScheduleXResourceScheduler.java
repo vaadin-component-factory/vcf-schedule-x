@@ -16,11 +16,8 @@ package org.vaadin.addons.componentfactory.schedulexcalendar;
 import java.util.List;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -49,41 +46,29 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
 
   private SchedulingAssistantConfig schedulingAssistantConfig;
 
-  public ScheduleXResourceScheduler() {
-    super();
-    setClassName("vcf-schedule-x-resource-scheduler");
-  }
-
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider) {
-    super(views, dataProvider);
-    setClassName("vcf-schedule-x-resource-scheduler");
-  }
-
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
-      Configuration configuration) {
-    super(views, dataProvider, configuration);
-    setClassName("vcf-schedule-x-resource-scheduler");
-  }
-
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
-      Configuration configuration, Map<String, Calendar> calendars) {
-    super(views, dataProvider, configuration, calendars);
-    setClassName("vcf-schedule-x-resource-scheduler");
-  }
-
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
-      Configuration configuration, Map<String, Calendar> calendars,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views,
+      CallbackDataProvider<Event, EventQueryFilter> dataProvider, Configuration configuration,
       ResourceSchedulerConfig resourceSchedulerConfig) {
+    super(views, dataProvider, configuration);
+    this.resourceSchedulerConfig = resourceSchedulerConfig;
+    this.resourceSchedulerConfig.setCalendar(this);
+  }
+
+  public ScheduleXResourceScheduler(List<ResourceViewType> views,
+      CallbackDataProvider<Event, EventQueryFilter> dataProvider, Configuration configuration,
+      Map<String, Calendar> calendars, ResourceSchedulerConfig resourceSchedulerConfig) {
     super(views, dataProvider, configuration, calendars);
     this.resourceSchedulerConfig = resourceSchedulerConfig;
+    this.resourceSchedulerConfig.setCalendar(this);
   }
 
-  public ScheduleXResourceScheduler(List<ResourceViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
-      Configuration configuration, Map<String, Calendar> calendars,
-      ResourceSchedulerConfig resourceSchedulerConfig,
+  public ScheduleXResourceScheduler(List<ResourceViewType> views,
+      CallbackDataProvider<Event, EventQueryFilter> dataProvider, Configuration configuration,
+      Map<String, Calendar> calendars, ResourceSchedulerConfig resourceSchedulerConfig,
       SchedulingAssistantConfig schedulingAssistantConfig) {
     this(views, dataProvider, configuration, calendars, resourceSchedulerConfig);
     this.schedulingAssistantConfig = schedulingAssistantConfig;
+    this.schedulingAssistantConfig.setCalendar(this);
   }
 
   @Override
@@ -109,18 +94,16 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
   public ResourceSchedulerConfig getResourceSchedulerConfig() {
     return resourceSchedulerConfig;
   }
-  
-  public void setResourceSchedulerConfig(ResourceSchedulerConfig resourceSchedulerConfig) {
-    this.resourceSchedulerConfig = resourceSchedulerConfig;
-    this.refreshCalendar();
-  }
 
   public SchedulingAssistantConfig getSchedulingAssistantConfig() {
     return schedulingAssistantConfig;
   }
-  
+
   public void setSchedulingAssistantConfig(SchedulingAssistantConfig schedulingAssistantConfig) {
     this.schedulingAssistantConfig = schedulingAssistantConfig;
+    if (this.schedulingAssistantConfig != null) {
+      this.schedulingAssistantConfig.setCalendar(this);
+    }
     this.refreshCalendar();
   }
 

@@ -20,6 +20,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.demo.Card;
 import com.vaadin.flow.router.Route;
@@ -33,15 +34,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
+import org.vaadin.addons.componentfactory.schedulexcalendar.SchedulingAssistantConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 
@@ -70,7 +71,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   @Override
   protected void createDemo() {
     // begin-source-example
-    // source-example-heading: Basic Use Demo
+    // source-example-heading: Resource Scheduler Demo
 
     // calendar configuration
     configuration = new Configuration();
@@ -165,9 +166,9 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
 
     // end-source-example
 
-    resourceScheduler.setId("basic-use-demo");
+    resourceScheduler.setId("resource-scheduler-demo");
 
-    addCard("Basic Use Demo", resourceSchedulerCard);
+    addCard("Resource Scheduler Demo", resourceSchedulerCard);
   }
 
   // begin-source-example
@@ -187,13 +188,11 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   }
 
   private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
-    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
-        query -> events.stream(),
-        query -> events.size()
-    );
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider =
+        new CallbackDataProvider<>(query -> events.stream(), query -> events.size());
     return new ScheduleXResourceScheduler(
-        Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY), dataProvider,
-        configuration, calendars, resourceSchedulerConfig);
+        Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY), dataProvider, configuration,
+        calendars, resourceSchedulerConfig);
   }
 
   private FieldSet getResourceHandlingLayout() {
@@ -271,13 +270,15 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     });
 
     layout.add(setSpanish, setGermany);
-    return createFieldSetLayout("Calendar Locale testing", layout);
+    VerticalLayout helperLayout =
+        createLayoutWithHelperText("Set locale using Calendar Controls", layout);
+    return createFieldSetLayout("Calendar Locale testing", helperLayout);
   }
 
   private FieldSet getInfiniteScrollTestingLayout() {
     HorizontalLayout layout = new HorizontalLayout();
     layout.setWidthFull();
-    
+
     Span notification = new Span("Infinite Scroll DISABLED");
     notification.getElement().getStyle().set("font-weight", "bold");
 
@@ -286,25 +287,25 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     enableInfiniteScrolling.addValueChangeListener(e -> {
       boolean enabled = e.getValue();
       resourceSchedulerConfig.setInfiniteScroll(enabled);
-      resourceScheduler.setResourceSchedulerConfig(resourceSchedulerConfig);
-      String notificationText = String.format("Infinite Scroll %s", enabled ? "ENABLED" : "DISABLED");
+      String notificationText =
+          String.format("Infinite Scroll %s", enabled ? "ENABLED" : "DISABLED");
       notification.setText(notificationText);
     });
 
     layout.add(enableInfiniteScrolling, notification);
     return createFieldSetLayout("Infinite Scroll testing", layout);
   }
-  
+
   private String proposedStart;
   private String proposedEnd;
-  
+
   private FieldSet getSchedulingAssistantTestingLayout() {
     HorizontalLayout layout = new HorizontalLayout();
     layout.setWidthFull();
-    
+
     Span notification = new Span();
     notification.setVisible(false);
-    
+
     Button scheduleEventButton = new Button("Add event on proposed time");
     scheduleEventButton.setVisible(false);
     scheduleEventButton.addClickListener(e -> {
@@ -314,15 +315,16 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
       resourceScheduler.addEvent(scheduledEvent);
       events.add(scheduledEvent);
     });
-        
+
     Checkbox addAssistant = new Checkbox("Show Scheduler Assistant", e -> {
       scheduleEventButton.setVisible(e.getValue());
-      if(e.getValue()) {
+      if (e.getValue()) {
         LocalDate configDate = resourceScheduler.getDate(); // current selected date
         LocalDateTime dateStart = LocalDateTime.of(configDate, LocalTime.of(10, 00));
         LocalDateTime dateEnd = LocalDateTime.of(configDate, LocalTime.of(12, 00));
-        SchedulingAssistantConfig schedulingAssistantConfig = new SchedulingAssistantConfig(dateStart, dateEnd);
-        
+        SchedulingAssistantConfig schedulingAssistantConfig =
+            new SchedulingAssistantConfig(dateStart, dateEnd);
+
         resourceScheduler.addSchedulingAssistantUpdateListener(ev -> {
           String currentStart = ev.getCurrentStart();
           String currentEnd = ev.getCurrentEnd();
@@ -330,19 +332,19 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
 
           proposedStart = currentStart;
           proposedEnd = currentEnd;
-          
-          notification.setVisible(!hasCollision);        
+
+          notification.setVisible(!hasCollision);
           notification.setText("Available range between " + currentStart + " and " + currentEnd);
           scheduleEventButton.setEnabled(!hasCollision);
         });
-        resourceScheduler.setSchedulingAssistantConfig(schedulingAssistantConfig); 
+        resourceScheduler.setSchedulingAssistantConfig(schedulingAssistantConfig);
       } else {
         notification.setVisible(false);
         resourceScheduler.setSchedulingAssistantConfig(null);
-      }          
-          
+      }
+
     });
-    
+
     layout.add(addAssistant, scheduleEventButton, notification);
     layout.setAlignItems(Alignment.BASELINE);
     return createFieldSetLayout("Schedule Assistant testing", layout);

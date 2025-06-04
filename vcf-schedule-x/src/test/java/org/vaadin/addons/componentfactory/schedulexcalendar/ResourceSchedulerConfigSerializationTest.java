@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.schedulexcalendar.model;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 
 class ResourceSchedulerConfigSerializationTest {
 

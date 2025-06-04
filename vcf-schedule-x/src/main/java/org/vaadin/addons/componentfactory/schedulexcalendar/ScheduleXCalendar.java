@@ -17,7 +17,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
@@ -42,14 +41,6 @@ import elemental.json.JsonValue;
 public class ScheduleXCalendar extends BaseScheduleXCalendar {
 
   private DrawnEventValidationCallback drawnEventValidationCallback;
-
-  public ScheduleXCalendar() {
-    super();
-  }
-
-  public ScheduleXCalendar(List<CalendarViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider) {
-    super(views, dataProvider);
-  }
 
   public ScheduleXCalendar(List<CalendarViewType> views, CallbackDataProvider<Event, EventQueryFilter> dataProvider,
       Configuration configuration) {

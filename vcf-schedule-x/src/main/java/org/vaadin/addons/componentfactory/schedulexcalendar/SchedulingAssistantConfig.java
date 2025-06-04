@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.schedulexcalendar.model;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import elemental.json.Json;
 import elemental.json.JsonObject;
@@ -24,7 +24,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
  * Java model representing the SchedulingAssistant plugin config.
  */
 @SuppressWarnings("serial")
-public class SchedulingAssistantConfig implements Serializable {
+public class SchedulingAssistantConfig extends BaseConfiguration implements Serializable {
 
   private LocalDateTime initialStart;
 
@@ -41,6 +41,7 @@ public class SchedulingAssistantConfig implements Serializable {
 
   public void setInitialStart(LocalDateTime initialStart) {
     this.initialStart = initialStart;
+    this.runRefresh();
   }
 
   public LocalDateTime getInitialEnd() {
@@ -49,6 +50,7 @@ public class SchedulingAssistantConfig implements Serializable {
 
   public void setInitialEnd(LocalDateTime initialEnd) {
     this.initialEnd = initialEnd;
+    this.runRefresh();
   }
 
   public String getJson() {

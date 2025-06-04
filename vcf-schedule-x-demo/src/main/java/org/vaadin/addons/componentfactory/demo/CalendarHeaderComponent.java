@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.vaadin.addons.componentfactory.schedulexcalendar.BaseScheduleXCalendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
@@ -134,5 +134,5 @@ public class CalendarHeaderComponent extends HorizontalLayout {
   public ComboBox<ViewType> getViewsComboBox() {
     return viewsComboBox;
   }
-  
+ 
 }

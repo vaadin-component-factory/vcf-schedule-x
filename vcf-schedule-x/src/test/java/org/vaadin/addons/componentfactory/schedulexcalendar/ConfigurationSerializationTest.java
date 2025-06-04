@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.schedulexcalendar.model;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,13 +23,14 @@ import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.CurrentTimeIndicatorConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DayBoundaries;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DrawOptions;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.ICal;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.MonthGridOptions;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.ScrollControllerConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.WeekOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.CurrentTimeIndicatorConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.DayBoundaries;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.DrawOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.ICal;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.MonthGridOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.ScrollControllerConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.WeekOptions;
 
 class ConfigurationSerializationTest {
 

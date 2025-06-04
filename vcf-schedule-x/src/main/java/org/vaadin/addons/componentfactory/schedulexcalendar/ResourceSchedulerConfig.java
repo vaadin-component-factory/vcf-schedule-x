@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.schedulexcalendar.model;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import com.vaadin.flow.internal.Pair;
 import elemental.json.Json;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
@@ -36,7 +36,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
  *      documentation</a>
  */
 @SuppressWarnings("serial")
-public class ResourceSchedulerConfig implements Serializable {
+public class ResourceSchedulerConfig extends BaseConfiguration implements Serializable {
 
   /**
    * Width of a column in the hourly view.
@@ -94,6 +94,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setHourWidth(Integer hourWidth) {
     this.hourWidth = hourWidth;
+    this.runRefresh();
   }
 
   public Integer getDayWidth() {
@@ -102,6 +103,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setDayWidth(Integer dayWidth) {
     this.dayWidth = dayWidth;
+    this.runRefresh();
   }
 
   public List<Resource> getResources() {
@@ -110,6 +112,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setResources(List<Resource> resources) {
     this.resources = resources;
+    this.runRefresh();
   }
 
   public Integer getResourceHeight() {
@@ -118,6 +121,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setResourceHeight(Integer resourceHeight) {
     this.resourceHeight = resourceHeight;
+    this.runRefresh();
   }
 
   public Integer getEventHeight() {
@@ -126,6 +130,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setEventHeight(Integer eventHeight) {
     this.eventHeight = eventHeight;
+    this.runRefresh();
   }
 
   public boolean isDragAndDrop() {
@@ -134,6 +139,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setDragAndDrop(boolean dragAndDrop) {
     this.dragAndDrop = dragAndDrop;
+    this.runRefresh();
   }
 
   public boolean isResize() {
@@ -142,6 +148,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setResize(boolean resize) {
     this.resize = resize;
+    this.runRefresh();
   }
 
   public boolean isInfiniteScroll() {
@@ -150,6 +157,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setInfiniteScroll(boolean infiniteScroll) {
     this.infiniteScroll = infiniteScroll;
+    this.runRefresh();
   }
 
   public Pair<LocalDateTime, LocalDateTime> getInitialHours() {
@@ -158,6 +166,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setInitialHours(Pair<LocalDateTime, LocalDateTime> initialHours) {
     this.initialHours = initialHours;
+    this.runRefresh();
   }
 
   public Pair<LocalDate, LocalDate> getInitialDays() {
@@ -166,6 +175,7 @@ public class ResourceSchedulerConfig implements Serializable {
 
   public void setInitialDays(Pair<LocalDate, LocalDate> initialDays) {
     this.initialDays = initialDays;
+    this.runRefresh();
   }
 
   public String getJson() {

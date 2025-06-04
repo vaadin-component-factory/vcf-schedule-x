@@ -21,10 +21,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler.SchedulingAssistantUpdateEvent;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 class ScheduleXResourceSchedulerEventTest {

@@ -26,17 +26,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.ResourceSchedulerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
+import org.vaadin.addons.componentfactory.schedulexcalendar.SchedulingAssistantConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.ResourceSchedulerConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.SchedulingAssistantConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 /**
@@ -57,7 +56,7 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
   private ScheduleXResourceScheduler resourceScheduler;
   private Card resourceSchedulerCard;
   private FieldSet schedulingAssistantLayout;
-  private Button scheduleEventDummyButton;
+  private Button scheduleEventButton;
   
   // saving values for possible event creation based on assistant updates
   private String proposedStart;
@@ -136,20 +135,9 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
     // create resource view
     resourceScheduler = getScheduleXResourceScheduler();
 
-    // add listener on event resizing or dnd
-    resourceScheduler.addEventUpdateEventListener(e -> {
-      String updatedEventId = e.getEventId();
-      Optional<Event> optionalEvent =
-          events.stream().filter(ev -> ev.getId().equals(updatedEventId)).findFirst();
-      optionalEvent.ifPresent(event -> {
-        event.setStart(e.getStartDate());
-        event.setEnd(e.getEndDate());
-      });
-    });
-
     // add scheduling assistant updates listener
-    scheduleEventDummyButton = new Button();
-    scheduleEventDummyButton.addClickListener(e -> {
+    scheduleEventButton = new Button();
+    scheduleEventButton.addClickListener(e -> {
       Event scheduledEvent = new Event(UUID.randomUUID().toString(), proposedStart, proposedEnd);
       scheduledEvent.setTitle("Scheduled Event");
       scheduledEvent.setResourceId("conveyor-belt-a-1");
@@ -165,8 +153,8 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
       proposedEnd = currentEnd;
       
       String buttonLabel = "Available range between " + currentStart + " and " + currentEnd;
-      scheduleEventDummyButton.setText(buttonLabel);
-      scheduleEventDummyButton.setEnabled(!hasCollision);
+      scheduleEventButton.setText(buttonLabel);
+      scheduleEventButton.setEnabled(!hasCollision);
     });
 
     // create demo card containing resource view
@@ -204,7 +192,7 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
   private FieldSet getSchedulingEventHandlingLayout() {
     HorizontalLayout layout = new HorizontalLayout();
     layout.setWidthFull();    
-    layout.add(scheduleEventDummyButton);
+    layout.add(scheduleEventButton);
     return createFieldSetLayout("Scheduling Event Handling testing", layout);
   }
   // end-source-example

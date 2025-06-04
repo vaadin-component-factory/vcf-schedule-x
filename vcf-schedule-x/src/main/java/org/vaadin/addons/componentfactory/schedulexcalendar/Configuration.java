@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addons.componentfactory.schedulexcalendar.model;
+package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import elemental.json.Json;
 import elemental.json.JsonObject;
@@ -31,7 +31,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
  * is used to customize the behavior and appearance of the calendar views.
  */
 @SuppressWarnings("serial")
-public class Configuration implements Serializable {
+public class Configuration extends BaseConfiguration implements Serializable {
 
   /**
    * The preferred view to display when the calendar is first rendered. all views that you import
@@ -119,13 +119,14 @@ public class Configuration implements Serializable {
   private CurrentTimeIndicatorConfig currentTimeIndicatorConfig;
 
   private ScrollControllerConfig scrollControllerConfig;
-  
+
   public ViewType getDefaultView() {
     return defaultView;
   }
 
   public void setDefaultView(ViewType defaultView) {
     this.defaultView = defaultView;
+    this.runRefresh();
   }
 
   public LocalDate getSelectedDate() {
@@ -133,6 +134,9 @@ public class Configuration implements Serializable {
   }
 
   public void setSelectedDate(LocalDate selectedDate) {
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateDate(selectedDate);
+    }
     this.selectedDate = selectedDate;
   }
 
@@ -141,6 +145,10 @@ public class Configuration implements Serializable {
   }
 
   public void setLocale(Locale locale) {
+    LocaleUtils.validateLocale(locale);
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateLocale(locale);
+    }
     this.locale = locale;
   }
 
@@ -149,6 +157,9 @@ public class Configuration implements Serializable {
   }
 
   public void setFirstDayOfWeek(Integer firstDayOfWeek) {
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateFirstDayOfWeek(firstDayOfWeek);
+    }
     this.firstDayOfWeek = firstDayOfWeek;
   }
 
@@ -158,6 +169,7 @@ public class Configuration implements Serializable {
 
   public void setDark(boolean isDark) {
     this.isDark = isDark;
+    this.runRefresh();
   }
 
   public DayBoundaries getDayBoundaries() {
@@ -165,14 +177,23 @@ public class Configuration implements Serializable {
   }
 
   public void setDayBoundaries(DayBoundaries dayBoundaries) {
+    if (dayBoundaries != null) {
+      dayBoundaries.setConfiguration(this);
+    }
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateDayBoundaries(dayBoundaries);
+    }
     this.dayBoundaries = dayBoundaries;
   }
-
+  
   public LocalDate getMinDate() {
     return minDate;
   }
 
   public void setMinDate(LocalDate minDate) {
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateMinDate(minDate);
+    }
     this.minDate = minDate;
   }
 
@@ -181,6 +202,9 @@ public class Configuration implements Serializable {
   }
 
   public void setMaxDate(LocalDate maxDate) {
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateMaxDate(maxDate);
+    }
     this.maxDate = maxDate;
   }
 
@@ -189,6 +213,12 @@ public class Configuration implements Serializable {
   }
 
   public void setWeekOptions(WeekOptions weekOptions) {
+    if (weekOptions != null) {
+      weekOptions.setConfiguration(this);
+    }
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateWeekOptions(weekOptions);
+    }
     this.weekOptions = weekOptions;
   }
 
@@ -197,6 +227,12 @@ public class Configuration implements Serializable {
   }
 
   public void setMonthGridOptions(MonthGridOptions monthGridOptions) {
+    if (monthGridOptions != null) {
+      monthGridOptions.setConfiguration(this);
+    }
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateMonthGridOptions(monthGridOptions);
+    }
     this.monthGridOptions = monthGridOptions;
   }
 
@@ -206,6 +242,10 @@ public class Configuration implements Serializable {
 
   public void setDrawOptions(DrawOptions drawOptions) {
     this.drawOptions = drawOptions;
+    if (this.drawOptions != null) {
+      this.drawOptions.setConfiguration(this);
+    }
+    this.runRefresh();
   }
 
   public ICal getiCal() {
@@ -214,6 +254,7 @@ public class Configuration implements Serializable {
 
   public void setiCal(ICal iCal) {
     this.iCal = iCal;
+    this.runRefresh();
   }
 
   public boolean isShowWeekNumbers() {
@@ -222,6 +263,7 @@ public class Configuration implements Serializable {
 
   public void setShowWeekNumbers(boolean showWeekNumbers) {
     this.showWeekNumbers = showWeekNumbers;
+    this.runRefresh();
   }
 
   public boolean isResponsive() {
@@ -230,6 +272,7 @@ public class Configuration implements Serializable {
 
   public void setResponsive(boolean isResponsive) {
     this.isResponsive = isResponsive;
+    this.runRefresh();
   }
 
   public boolean isSkipValidation() {
@@ -238,6 +281,7 @@ public class Configuration implements Serializable {
 
   public void setSkipValidation(boolean skipValidation) {
     this.skipValidation = skipValidation;
+    this.runRefresh();
   }
 
   public TimeInterval getResizeInterval() {
@@ -246,6 +290,7 @@ public class Configuration implements Serializable {
 
   public void setResizeInterval(TimeInterval resizeInterval) {
     this.resizeInterval = resizeInterval;
+    this.runRefresh();
   }
 
   public TimeInterval getDragAndDropInterval() {
@@ -254,6 +299,7 @@ public class Configuration implements Serializable {
 
   public void setDragAndDropInterval(TimeInterval dragAndDropInterval) {
     this.dragAndDropInterval = dragAndDropInterval;
+    this.runRefresh();
   }
 
   public CurrentTimeIndicatorConfig getCurrentTimeIndicatorConfig() {
@@ -262,6 +308,10 @@ public class Configuration implements Serializable {
 
   public void setCurrentTimeIndicatorConfig(CurrentTimeIndicatorConfig currentTimeIndicatorConfig) {
     this.currentTimeIndicatorConfig = currentTimeIndicatorConfig;
+    if (this.currentTimeIndicatorConfig != null) {
+      this.currentTimeIndicatorConfig.setConfiguration(this);
+    }
+    this.runRefresh();
   }
 
   public ScrollControllerConfig getScrollControllerConfig() {
@@ -270,6 +320,10 @@ public class Configuration implements Serializable {
 
   public void setScrollControllerConfig(ScrollControllerConfig scrollControllerConfig) {
     this.scrollControllerConfig = scrollControllerConfig;
+    if (this.scrollControllerConfig != null) {
+      this.scrollControllerConfig.setConfiguration(this);
+    }
+    this.runRefresh();
   }
 
   public String getJson() {
@@ -277,7 +331,8 @@ public class Configuration implements Serializable {
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));
     Optional.ofNullable(selectedDate).ifPresent(
         value -> js.put("selectedDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
-    Optional.ofNullable(locale).ifPresent(value -> js.put("locale", LocaleUtils.toScheduleXLocale(value)));
+    Optional.ofNullable(locale)
+        .ifPresent(value -> js.put("locale", LocaleUtils.toScheduleXLocale(value)));
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);
     Optional.ofNullable(dayBoundaries).ifPresent(value -> js.put("dayBoundaries", value.toJson()));
@@ -314,17 +369,18 @@ public class Configuration implements Serializable {
    * Can also be set to a "hybrid" day, such as { start: '06:00', end: '03:00' }, meaning each day
    * starts at 6am but extends into the next day until 3am.
    */
-  public static class DayBoundaries implements Serializable {
-    
+  public static class DayBoundaries extends BaseConfigurationSection implements Serializable {
+
     private LocalTime start;
     private LocalTime end;
-    
+
     public LocalTime getStart() {
       return start;
     }
 
     public void setStart(LocalTime start) {
       this.start = start;
+      this.updateDayBoundaries();
     }
 
     public LocalTime getEnd() {
@@ -333,6 +389,13 @@ public class Configuration implements Serializable {
 
     public void setEnd(LocalTime end) {
       this.end = end;
+      this.updateDayBoundaries();
+    }
+    
+    private void updateDayBoundaries() {
+      if (this.getConfiguration() != null) {
+        ((Configuration) this.getConfiguration()).setDayBoundaries(this);
+      }
     }
 
     public JsonObject toJson() {
@@ -345,7 +408,7 @@ public class Configuration implements Serializable {
     }
   }
 
-  public static class WeekOptions implements Serializable {
+  public static class WeekOptions extends BaseConfigurationSection implements Serializable {
     /**
      * The total height in px of the week grid (week and day views).
      */
@@ -372,13 +435,14 @@ public class Configuration implements Serializable {
      * overlapping.
      */
     private boolean eventOverlap = true;
-    
+
     public Integer getGridHeight() {
       return gridHeight;
     }
 
     public void setGridHeight(Integer gridHeight) {
       this.gridHeight = gridHeight;
+      this.updateWeekOptions();
     }
 
     public Integer getnDays() {
@@ -387,6 +451,7 @@ public class Configuration implements Serializable {
 
     public void setnDays(Integer nDays) {
       this.nDays = nDays;
+      this.updateWeekOptions();
     }
 
     public Integer getEventWidth() {
@@ -395,6 +460,7 @@ public class Configuration implements Serializable {
 
     public void setEventWidth(Integer eventWidth) {
       this.eventWidth = eventWidth;
+      this.updateWeekOptions();
     }
 
     public Map<String, String> getTimeAxisFormatOptions() {
@@ -403,6 +469,7 @@ public class Configuration implements Serializable {
 
     public void setTimeAxisFormatOptions(Map<String, String> timeAxisFormatOptions) {
       this.timeAxisFormatOptions = timeAxisFormatOptions;
+      this.updateWeekOptions();
     }
 
     public boolean isEventOverlap() {
@@ -411,6 +478,13 @@ public class Configuration implements Serializable {
 
     public void setEventOverlap(boolean eventOverlap) {
       this.eventOverlap = eventOverlap;
+      this.updateWeekOptions();
+    }
+    
+    private void updateWeekOptions() {
+      if (this.getConfiguration() != null) {
+        ((Configuration) this.getConfiguration()).setWeekOptions(this);
+      }
     }
 
     public JsonObject toJson() {
@@ -428,7 +502,7 @@ public class Configuration implements Serializable {
     }
   }
 
-  public static class MonthGridOptions implements Serializable {
+  public static class MonthGridOptions extends BaseConfigurationSection implements Serializable {
     /**
      * Number of events to display in a day cell before the "+ N events" button is shown.
      */
@@ -440,8 +514,15 @@ public class Configuration implements Serializable {
 
     public void setnEventsPerDay(Integer nEventsPerDay) {
       this.nEventsPerDay = nEventsPerDay;
+      this.updateMonthGridOptions();
     }
 
+    private void updateMonthGridOptions() {
+      if (this.getConfiguration() != null) {
+        ((Configuration) this.getConfiguration()).setMonthGridOptions(this);
+      }
+    }
+    
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
       Optional.ofNullable(nEventsPerDay).ifPresent(value -> js.put("nEventsPerDay", value));
@@ -452,25 +533,26 @@ public class Configuration implements Serializable {
   /**
    * Optional options for drawing events.
    */
-  public static class DrawOptions implements Serializable {
+  public static class DrawOptions extends BaseConfigurationSection implements Serializable {
 
     /**
      * Time interval that can be configured, in minutes, at which a time grid-event can be drawn.
      * Valid values: 15, 30, 60
      */
     private TimeInterval snapDrawDuration;
-    
+
     /**
      * Default title to use when drawing an event.
      */
     private String defaultTitle;
-    
+
     public TimeInterval getSnapDrawDuration() {
       return snapDrawDuration;
     }
 
     public void setSnapDrawDuration(TimeInterval snapDrawDuration) {
       this.snapDrawDuration = snapDrawDuration;
+      this.runRefresh();
     }
 
     public String getDefaultTitle() {
@@ -479,8 +561,9 @@ public class Configuration implements Serializable {
 
     public void setDefaultTitle(String defaultTitle) {
       this.defaultTitle = defaultTitle;
+      this.runRefresh();
     }
-    
+
     public JsonObject toJson() {
       JsonObject js = Json.createObject();
       Optional.ofNullable(snapDrawDuration)
@@ -499,7 +582,7 @@ public class Configuration implements Serializable {
      * iCalendar source.
      */
     private String iCal;
-    
+
     public String getiCal() {
       return iCal;
     }
@@ -519,7 +602,7 @@ public class Configuration implements Serializable {
    * Configuration to add a current time indicator to the calendar. It will automatically update
    * every minute.
    */
-  public static class CurrentTimeIndicatorConfig implements Serializable {
+  public static class CurrentTimeIndicatorConfig extends BaseConfigurationSection implements Serializable {
 
     /**
      * Whether the indicator should be displayed in the full width of the week. Defaults to false
@@ -530,13 +613,14 @@ public class Configuration implements Serializable {
      * Time zone offset in minutes. Can be any offset valid according to UTC (-720 to 840).
      */
     private Integer timeZoneOffset;
-    
+
     public Boolean getFullWeekWidth() {
       return fullWeekWidth;
     }
 
     public void setFullWeekWidth(Boolean fullWeekWidth) {
       this.fullWeekWidth = fullWeekWidth;
+      this.runRefresh();
     }
 
     public Integer getTimeZoneOffset() {
@@ -545,6 +629,7 @@ public class Configuration implements Serializable {
 
     public void setTimeZoneOffset(Integer timeZoneOffset) {
       this.timeZoneOffset = timeZoneOffset;
+      this.runRefresh();
     }
 
     public JsonObject toJson() {
@@ -558,7 +643,7 @@ public class Configuration implements Serializable {
   /**
    * Configuration to control the scrolling in the week and day view grids.
    */
-  public static class ScrollControllerConfig implements Serializable {
+  public static class ScrollControllerConfig extends BaseConfigurationSection implements Serializable {
 
     /**
      * Initial scroll value.
@@ -571,6 +656,7 @@ public class Configuration implements Serializable {
 
     public void setInitialScroll(LocalTime initialScroll) {
       this.initialScroll = initialScroll;
+      this.runRefresh();
     }
 
     public JsonObject toJson() {

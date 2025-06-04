@@ -240,8 +240,7 @@ export function setViews(container, viewsJson, viewFactories) {
  * 
  */
 export function setDayBoundaries(container, dayBoundariesJson) {
-	const dayBoundaries = JSON.parse(dayBoundariesJson);
-	updateDayBoundaries(container.calendar, dayBoundaries);
+	updateDayBoundaries(container.calendar, dayBoundariesJson);
 }
 
 /**
@@ -252,8 +251,7 @@ export function setDayBoundaries(container, dayBoundariesJson) {
  * 
  */
 export function setWeekOptions(container, weekOptionsJson) {
-	const weekOptions = JSON.parse(weekOptionsJson);
-	updateWeekOptions(container.calendar, weekOptions);
+	updateWeekOptions(container.calendar, weekOptionsJson);
 }
 
 /** 
@@ -298,8 +296,7 @@ export function setMaxDate(container, maxDate) {
  * 
  */
 export function setMonthGridOptions(container, monthGridOptionsJson) {
-	const monthGridOptions = JSON.parse(monthGridOptionsJson);
-	updateMonthGridOptions(container.calendar, monthGridOptions);
+	updateMonthGridOptions(container.calendar, monthGridOptionsJson);
 }
 
 /**

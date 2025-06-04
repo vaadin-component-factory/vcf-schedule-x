@@ -14,9 +14,11 @@
 package org.vaadin.addons.componentfactory.demo;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.router.Route;
@@ -28,23 +30,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.CurrentTimeIndicatorConfig;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.DrawOptions;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.ICal;
+import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.ScrollControllerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event.EventOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.CurrentTimeIndicatorConfig;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.DrawOptions;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.ICal;
-import org.vaadin.addons.componentfactory.schedulexcalendar.model.Configuration.ScrollControllerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule.Day;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule.Frequency;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.RecurrenceRule.Until;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.CalendarViewType;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceEvaluator;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 
 /**
  * View for {@link ScheduleXCalendar} demo.
@@ -56,13 +58,13 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.RecurrenceEvalu
 public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
   private List<Event> events;
-  private ScheduleXCalendar calendar;  
+  private ScheduleXCalendar calendar;
   private CalendarHeaderComponent header;
 
   @Override
   protected void createDemo() {
     // begin-source-example
-    // source-example-heading: Basic Use Demo
+    // source-example-heading: Calendar Demo
 
     // add calendar configuration
     LocalDate today = LocalDate.now();
@@ -70,11 +72,11 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     configuration.setSelectedDate(today.plusDays(1));
     configuration.setDefaultView(CalendarViewType.WEEK);
     configuration.setDragAndDropInterval(TimeInterval.MIN_30);
-    
+
     // create categories for events
     Map<String, Calendar> calendars = getCalendars();
 
-    // create events   
+    // create events
     Event event1 = new Event("1", LocalDateTime.of(today.minusDays(2), LocalTime.of(10, 05)),
         LocalDateTime.of(today.minusDays(2), LocalTime.of(10, 35)));
     event1.setTitle("Coffee with John");
@@ -138,42 +140,39 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     drawOptions.setSnapDrawDuration(TimeInterval.MIN_15);
     configuration.setDrawOptions(drawOptions);
 
-    CallbackDataProvider<Event, EventQueryFilter> dataProvider = new CallbackDataProvider<>(
-        query -> {
+    CallbackDataProvider<Event, EventQueryFilter> dataProvider =
+        new CallbackDataProvider<>(query -> {
           EventQueryFilter filter = query.getFilter().orElse(null);
           if (filter != null) {
-            return events.stream()
-                .filter(event -> {
-                  boolean isWithinRange = !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate());
-                  boolean isRecurringInRange = event.getRecurrenceRule() != null && RecurrenceEvaluator.occursInRange(
-                      event.getRecurrenceRule(), event.getStart().toLocalDate(),
+            return events.stream().filter(event -> {
+              boolean isWithinRange = !event.getStart().isAfter(filter.getEndDate())
+                  && !event.getEnd().isBefore(filter.getStartDate());
+              boolean isRecurringInRange = event.getRecurrenceRule() != null && RecurrenceEvaluator
+                  .occursInRange(event.getRecurrenceRule(), event.getStart().toLocalDate(),
                       filter.getStartDate().toLocalDate(), filter.getEndDate().toLocalDate());
-                  return isWithinRange || isRecurringInRange;
-                });
+              return isWithinRange || isRecurringInRange;
+            });
           }
           return events.stream();
-        },
-        query -> {
+        }, query -> {
           EventQueryFilter filter = query.getFilter().orElse(null);
           if (filter != null) {
-            return (int) events.stream()
-                .filter(event -> {
-                  boolean isWithinRange = !event.getStart().isAfter(filter.getEndDate()) && !event.getEnd().isBefore(filter.getStartDate());
-                  boolean isRecurringInRange = event.getRecurrenceRule() != null && RecurrenceEvaluator.occursInRange(
-                      event.getRecurrenceRule(), event.getStart().toLocalDate(),
+            return (int) events.stream().filter(event -> {
+              boolean isWithinRange = !event.getStart().isAfter(filter.getEndDate())
+                  && !event.getEnd().isBefore(filter.getStartDate());
+              boolean isRecurringInRange = event.getRecurrenceRule() != null && RecurrenceEvaluator
+                  .occursInRange(event.getRecurrenceRule(), event.getStart().toLocalDate(),
                       filter.getStartDate().toLocalDate(), filter.getEndDate().toLocalDate());
-                  return isWithinRange || isRecurringInRange;
-                })
-                .count();
+              return isWithinRange || isRecurringInRange;
+            }).count();
           }
           return events.size();
-        }
-    );
+        });
 
     // create calendar
     calendar = new ScheduleXCalendar(Arrays.asList(CalendarViewType.DAY, CalendarViewType.WEEK,
-        CalendarViewType.MONTH_GRID, CalendarViewType.MONTH_AGENDA), dataProvider,
-        configuration, calendars);
+        CalendarViewType.MONTH_GRID, CalendarViewType.MONTH_AGENDA), dataProvider, configuration,
+        calendars);
 
     // add event click listener
     calendar.addCalendarEventClickEventListener(
@@ -190,7 +189,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
         Notification.show("Event with id " + updatedEventId + " updated");
       });
     });
-    
+
     // add listener to capture when view and selected date are updated on client side
     // (for example, on screen resize)
     calendar.addCalendarViewUpdateEventListener(e -> {
@@ -204,18 +203,22 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     calendar.setHeight("500px");
     // end-source-example
 
-    calendar.setId("basic-use-demo");
+    calendar.setId("calendar-demo");
 
     HorizontalLayout horizontal1 =
-        new HorizontalLayout(getSingleEventHandlingLayout(), getScrollingLayout());
+        new HorizontalLayout(getSingleEventHandlingLayout(), getRecurringEventHandlingLayout());
     horizontal1.setWidthFull();
-    addCard("Basic Use Demo", header, calendar, horizontal1, getRecurringEventHandlingLayout());
+
+    HorizontalLayout horizontal2 =
+        new HorizontalLayout(getScrollingLayout(), getCurrentTimeIndicatorLayout());
+    horizontal2.setWidthFull();
+    addCard("Calendar Demo", header, calendar, horizontal1, horizontal2);
   }
 
   // begin-source-example
   // source-example-heading: Additional code used in the demo
   private FieldSet getSingleEventHandlingLayout() {
-    HorizontalLayout layout = new HorizontalLayout();
+    VerticalLayout layout = new VerticalLayout();
     layout.setWidthFull();
 
     LocalDate testEventDate = LocalDate.now().plusDays(1);
@@ -272,7 +275,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
   }
 
   private FieldSet getRecurringEventHandlingLayout() {
-    HorizontalLayout layout = new HorizontalLayout();
+    VerticalLayout layout = new VerticalLayout();
     layout.setWidthFull();
 
     LocalDate testEventDate = LocalDate.of(2025, 05, 05);
@@ -292,13 +295,14 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     Until until = new Until(untilDate, untilTime);
     recurrenceRule.setUntil(until);
     testEvent.setRecurrenceRule(recurrenceRule);
-    testEvent.setExcludedDates(Arrays.asList(LocalDateTime.of(LocalDate.of(2025, 06, 04), LocalTime.of(10,00)), 
-        LocalDateTime.of(LocalDate.of(2025, 06, 18), LocalTime.of(10,00))));
+    testEvent.setExcludedDates(
+        Arrays.asList(LocalDateTime.of(LocalDate.of(2025, 06, 04), LocalTime.of(10, 00)),
+            LocalDateTime.of(LocalDate.of(2025, 06, 18), LocalTime.of(10, 00))));
     EventOptions eventOptions = new EventOptions();
     eventOptions.setDisableDND(true);
     eventOptions.setDisableResize(true);
     testEvent.setOptions(eventOptions);
-    
+
     Button addTestEventButton = new Button("Click to add recurring test event");
     Button updateTestEventButton = new Button("Click to update recurring test event");
     Button removeTestEventButton = new Button("Click to remove recurring test event");
@@ -343,8 +347,30 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
     layout.add(timePicker);
 
-    return createFieldSetLayout("Scrolling testing (only available for week and day views)",
-        layout);
+    VerticalLayout helperLayout =
+        createLayoutWithHelperText("Only available for week and day views", layout);
+
+    return createFieldSetLayout("Scrolling testing", helperLayout);
+  }
+
+  private FieldSet getCurrentTimeIndicatorLayout() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidthFull();
+
+    Checkbox fullWeekWidth = new Checkbox(
+        calendar.getConfiguration().getCurrentTimeIndicatorConfig().getFullWeekWidth());
+    fullWeekWidth.setLabel("Check to display the indicator in full width of the week");
+    fullWeekWidth.addValueChangeListener(e -> {
+      boolean enabled = e.getValue();
+      calendar.getConfiguration().getCurrentTimeIndicatorConfig().setFullWeekWidth(enabled);
+    });
+
+    layout.add(fullWeekWidth);
+
+    VerticalLayout helperLayout =
+        createLayoutWithHelperText("Only available for week view", layout);
+
+    return createFieldSetLayout("Current Time Indicator testing", helperLayout);
   }
   // end-source-example
 }

@@ -35,6 +35,10 @@ export function updateEvents(div, range){
 	div.parentElement.$server.updateRange(range.start, range.end);
 }
 
+export function updateResourceSchedulerRange(container, range){
+	container.parentElement.$server.updateResourceSchedulerRange(range.start, range.end);
+}
+
 export function setSelectedView(calendar, viewName) {
 	calendar.$app.config.plugins.calendarControls.setView(viewName);
 }

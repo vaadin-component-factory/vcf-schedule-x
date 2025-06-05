@@ -127,9 +127,18 @@ export function createCommonCalendar(container, viewFactories, viewNameMap, conf
 			onEventClick(calendarEvent) {
 				handleOnEventClick(div, calendarEvent);
 			},
+			/**
+		     * Is called when the selected date is updated
+		     * */
 			onSelectedDateUpdate(date) {
 				handleOnSelectedDateUpdate(div, date);
 			},
+			/**
+		     * Runs after the calendar is rendered
+		     * */
+		    onRender($app) {
+		      handleOnSelectedDateUpdate(div, $app.datePickerState.selectedDate.value);
+		    },			
 			/**
 			 * Is called when an event is updated through drag and drop or resize.
 			 * */

@@ -110,7 +110,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourceSchedulerConfig.setResources(resources);
     resourceSchedulerConfig.setResize(true);
     resourceSchedulerConfig.setDragAndDrop(true);
-
+    
     // create categories for events
     calendars = getCalendars();
 
@@ -121,7 +121,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     event1.setTitle("Tom");
     event1.setCalendarId("leisure");
     event1.setResourceId("conveyor-belt-b");
-    Event event2 = new Event("2", LocalDateTime.of(eventsDate, LocalTime.of(8, 00)),
+    Event event2 = new Event("2", LocalDateTime.of(eventsDate, LocalTime.of(7, 00)),
         LocalDateTime.of(eventsDate, LocalTime.of(14, 00)));
     event2.setTitle("Marsha");
     event2.setCalendarId("work");
@@ -131,14 +131,31 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     event3.setTitle("Jane");
     event3.setCalendarId("work");
     event3.setResourceId("conveyor-belt-a-2");
-    Event event4 = new Event("3", LocalDateTime.of(eventsDate.plusDays(10), LocalTime.of(10, 00)),
+    Event event4 = new Event("4", LocalDateTime.of(eventsDate.plusDays(2), LocalTime.of(11, 00)),
+        LocalDateTime.of(eventsDate.plusDays(2), LocalTime.of(12, 00)));
+    event4.setTitle("Carrie");
+    event4.setCalendarId("leisure");
+    event4.setResourceId("conveyor-belt-b");
+    Event event5 = new Event("5", LocalDateTime.of(eventsDate.plusDays(10), LocalTime.of(10, 00)),
         LocalDateTime.of(eventsDate.plusDays(10), LocalTime.of(14, 00)));
-    event4.setTitle("Adam");
-    event4.setCalendarId("work");
-    event4.setResourceId("conveyor-belt-a-2");
+    event5.setTitle("Adam");
+    event5.setCalendarId("work");
+    event5.setResourceId("conveyor-belt-a-2");
+    
+    LocalDate juneEventsDate = LocalDate.of(2024, 06, 01);
+    Event event6 = new Event("6", LocalDateTime.of(juneEventsDate, LocalTime.of(8, 00)),
+        LocalDateTime.of(juneEventsDate, LocalTime.of(11, 00)));
+    event6.setTitle("Jane");
+    event6.setCalendarId("work");
+    event6.setResourceId("conveyor-belt-a-1");    
+    Event event7 = new Event("7", LocalDateTime.of(juneEventsDate.plusDays(5), LocalTime.of(9, 00)),
+        LocalDateTime.of(juneEventsDate.plusDays(5), LocalTime.of(13, 00)));
+    event7.setTitle("Sam");
+    event7.setCalendarId("work");
+    event7.setResourceId("conveyor-belt-a-2");
 
     events = new ArrayList<Event>();
-    events.addAll(Arrays.asList(event1, event2, event3, event4));
+    events.addAll(Arrays.asList(event1, event2, event3, event4, event5, event6, event7));
 
     // create resource view
     resourceScheduler = getScheduleXResourceScheduler();
@@ -189,7 +206,24 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
 
   private ScheduleXResourceScheduler getScheduleXResourceScheduler() {
     CallbackDataProvider<Event, EventQueryFilter> dataProvider =
-        new CallbackDataProvider<>(query -> events.stream(), query -> events.size());
+        new CallbackDataProvider<>(query -> {
+          EventQueryFilter filter = query.getFilter().orElse(null);
+          if (filter != null) {
+            return events.stream().filter(event -> !event.getStart().isAfter(filter.getEndDate())
+                && !event.getEnd().isBefore(filter.getStartDate()));
+          }
+          return events.stream();
+        }, query -> {
+          EventQueryFilter filter = query.getFilter().orElse(null);
+          if (filter != null) {
+            return (int) events.stream()
+                .filter(event -> !event.getStart().isAfter(filter.getEndDate())
+                    && !event.getEnd().isBefore(filter.getStartDate()))
+                .count();
+          }
+          return events.size();
+        });
+
     return new ScheduleXResourceScheduler(
         Arrays.asList(ResourceViewType.HOURLY, ResourceViewType.DAILY), dataProvider, configuration,
         calendars, resourceSchedulerConfig);
@@ -282,7 +316,8 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     Span notification = new Span("Infinite Scroll DISABLED");
     notification.getElement().getStyle().set("font-weight", "bold");
 
-    Checkbox enableInfiniteScrolling = new Checkbox(false);
+    Checkbox enableInfiniteScrolling =
+        new Checkbox(resourceScheduler.getResourceSchedulerConfig().isInfiniteScroll());
     enableInfiniteScrolling.setLabel("Check to enable/disable infinite scroll");
     enableInfiniteScrolling.addValueChangeListener(e -> {
       boolean enabled = e.getValue();

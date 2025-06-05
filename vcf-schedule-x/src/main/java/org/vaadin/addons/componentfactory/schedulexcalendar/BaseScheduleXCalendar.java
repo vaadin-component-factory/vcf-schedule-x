@@ -15,6 +15,7 @@ package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -223,9 +224,13 @@ public abstract class BaseScheduleXCalendar extends Div {
 
   @ClientCallable
   void updateRange(String start, String end) {
-    String events =
-        eventsToJson(LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
-            LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER));
+    LocalDateTime startDate = LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER);
+    LocalDateTime endDate = LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER);
+    String events = eventsToJson(startDate, endDate);
+    updateRange(events, start, end);
+  }
+  
+  void updateRange(String events, String start, String end){
     this.container.getElement().executeJs("""
         if (this.calendar.$app.config.plugins.ICalendarPlugin)
         {
@@ -247,6 +252,14 @@ public abstract class BaseScheduleXCalendar extends Div {
          this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})
         }
                   """, events, start, end);
+  }
+  
+  @ClientCallable
+  void updateResourceSchedulerRange(String start, String end){
+    LocalDateTime startDate = LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime endDate = LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME);
+    String events = eventsToJson(startDate, endDate);
+    updateRange(events, start, end);
   }
 
   protected abstract String getJsConnector();

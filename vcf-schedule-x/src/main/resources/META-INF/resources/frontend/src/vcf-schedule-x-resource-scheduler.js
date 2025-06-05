@@ -38,6 +38,10 @@ import {
 	updateEvent
 } from './vcf-schedule-x-base.js';
 
+import {
+	updateResourceSchedulerRange
+} from './vcf-schedule-x-utils.js';
+
 import { signal } from "@preact/signals";
 
 import '@sx-premium/resource-scheduler/index.css';
@@ -58,6 +62,48 @@ window.vcfschedulexresourcescheduler = {
 		setTimeout(() => {
 			const resourceConfig = createConfig();
 			this._processResourceSchedulerConfig(resourceConfig, resourceConfigJson);
+			
+			// attach lazy loading callbacks
+			// callback that runs when the user scrolls the daily view
+		    resourceConfig.onLazyLoadMonth = (dates) => {
+				if (!Array.isArray(dates) || dates.length === 0) return;
+
+				const start = new Date(dates[0]);
+				let end;
+				
+				if (dates.length === 1) {
+				  // only one date, extend to the end of that month
+				  end = new Date(start);
+			      end.setUTCMonth(start.getUTCMonth() + 1, 0); // last day of month
+			      end.setUTCHours(23, 59, 59, 999);
+				} else {
+				  // the last visible date
+				  end = new Date(dates[dates.length - 1]);
+				}	
+				
+				updateResourceSchedulerRange(container, { start, end });
+			};
+		
+			// callback that runs when the user scrolls the hourly view
+		    resourceConfig.onLazyLoadDate = (dates) => {
+				if (!Array.isArray(dates) || dates.length === 0) return;
+
+				const start = new Date(dates[0]);
+				let end;
+				
+				if (dates.length === 1) {
+				  // only one date, extend to end of that day
+				  end = new Date(dates[0]);
+				  end.setUTCHours(23, 59, 59, 999);
+				} else {
+				  // the last visible date
+				  end = new Date(dates[dates.length - 1]);
+				}	
+				
+				updateResourceSchedulerRange(container, { start, end });
+		    };
+			
+			// get scheduling assistant configuration if available
 			const schedulingAssistantConfig = schedulingAssistantJson === "{}" ? null : JSON.parse(schedulingAssistantJson);
 
 			createCommonCalendar(container, resourceViewFactoryMap, resourceViewNameMap, configJson, calendarsJson, {

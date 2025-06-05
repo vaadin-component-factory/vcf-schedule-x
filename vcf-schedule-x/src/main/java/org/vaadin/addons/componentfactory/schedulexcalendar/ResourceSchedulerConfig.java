@@ -66,17 +66,17 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
   /**
    * Whether drag and drop should be enabled.
    */
-  private boolean dragAndDrop = false;
+  private boolean dragAndDrop;
 
   /**
    * Whether resizing should be enabled.
    */
-  private boolean resize = false;
+  private boolean resize;
 
   /**
    * Whether infinite scroll should be enabled.
    */
-  private boolean infiniteScroll = false;
+  private boolean infiniteScroll;
 
   /**
    * Optionally sets the initially displayed hours in the hourly view.

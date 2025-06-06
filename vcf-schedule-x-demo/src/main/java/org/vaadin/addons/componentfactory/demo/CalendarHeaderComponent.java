@@ -106,6 +106,13 @@ public class CalendarHeaderComponent extends HorizontalLayout {
         viewChangeListener.onViewChange(e.getValue());
       }
     });
+    
+    // add listener to capture when view and selected date are updated on client side
+    // (for example, on screen resize)
+    calendar.addCalendarViewAndDateChangeEvent(e -> {
+      viewsComboBox.setValue(e.getViewType());
+      datePicker.setValue(e.getSelectedDate());
+    });
 
     Button todayButton = new Button("Today");
     todayButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);

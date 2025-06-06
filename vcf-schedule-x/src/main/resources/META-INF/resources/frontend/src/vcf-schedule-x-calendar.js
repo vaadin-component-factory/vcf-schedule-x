@@ -52,7 +52,7 @@ const viewNameMap = {
 };
 
 window.vcfschedulexcalendar = {
-	create(container, viewsJson, configJson, calendarsJson) {
+	create(container, viewsJson, configJson, calendarsJson, currentViewJson) {
         const parsedConfig = JSON.parse(configJson);        
         if(parsedConfig.drawOptions){
 	 		let drawSnapDuration = parsedConfig.drawOptions.snapDrawDuration;
@@ -81,6 +81,10 @@ window.vcfschedulexcalendar = {
 	                viewsJson
 	            })
 	        );
+		}
+		
+		if(currentViewJson){
+			this.setView(container,currentViewJson);
 		}       
 	},
 

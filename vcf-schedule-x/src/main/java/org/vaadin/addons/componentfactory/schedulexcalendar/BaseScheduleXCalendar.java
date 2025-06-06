@@ -127,7 +127,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   @Override
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
-    this.initCalendar();
+    this.initCalendar(false);
     addCalendarRenderedListener(() -> {
       // This listener ensures that `calendarRendered` is true after initial render
       // and subsequent calls to executeOnCalendarRendered will run immediately.
@@ -137,7 +137,7 @@ public abstract class BaseScheduleXCalendar extends Div {
   /**
    * Initializes calendar with the initial configuration.
    */
-  protected abstract void initCalendar();
+  protected abstract void initCalendar(boolean refreshView);  
 
   /**
    * Schedule a calendar re-initialization to be called before the client response.
@@ -148,9 +148,11 @@ public abstract class BaseScheduleXCalendar extends Div {
         refreshRegistration.remove();
       }
       if (this.isAttached()) {
-        refreshRegistration = ui.beforeClientResponse(this, context -> initCalendar());
+        refreshRegistration = ui.beforeClientResponse(this, context -> {
+          initCalendar(this.view != null && this.view != this.configuration.getDefaultView());
+        });
       }
-    });
+    });    
   }
 
   /**
@@ -283,7 +285,9 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @return the current view
    */
   public ViewType getView() {
-    return this.view == null ? this.getViews().get(0) : this.view;
+    return this.view != null ? this.view
+        : this.configuration.getDefaultView() != null ? this.configuration.getDefaultView()
+            : this.getViews().get(0);
   }
 
   /**

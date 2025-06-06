@@ -67,6 +67,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private FieldSet localeTestingLayout;
   private FieldSet infiniteScrollTestingLayout;
   private FieldSet scheduleAssistantTestingLayout;
+  private Checkbox addAssistant;
 
   @Override
   protected void createDemo() {
@@ -161,7 +162,10 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourceScheduler = getScheduleXResourceScheduler();
 
     // create header component
-    header = new CalendarHeaderComponent(resourceScheduler);
+    header = new CalendarHeaderComponent(resourceScheduler, view -> {
+      scheduleAssistantTestingLayout.setVisible(view.equals(ResourceViewType.HOURLY));
+      addAssistant.setValue(false);
+    });
 
     // add event click listener
     resourceScheduler.addCalendarEventClickEventListener(
@@ -351,7 +355,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
       events.add(scheduledEvent);
     });
 
-    Checkbox addAssistant = new Checkbox("Show Scheduler Assistant", e -> {
+    addAssistant = new Checkbox("Show Scheduler Assistant", e -> {
       scheduleEventButton.setVisible(e.getValue());
       if (e.getValue()) {
         LocalDate configDate = resourceScheduler.getDate(); // current selected date
@@ -378,11 +382,13 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
         resourceScheduler.setSchedulingAssistantConfig(null);
       }
 
-    });
+    });    
 
     layout.add(addAssistant, scheduleEventButton, notification);
     layout.setAlignItems(Alignment.BASELINE);
-    return createFieldSetLayout("Schedule Assistant testing", layout);
+    VerticalLayout helperLayout =
+        createLayoutWithHelperText("Scheduler Assistant is only available for Hourly view", layout);
+    return createFieldSetLayout("Scheduler Assistant testing", helperLayout);
   }
 
   // end-source-example

@@ -190,13 +190,6 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
       });
     });
 
-    // add listener to capture when view and selected date are updated on client side
-    // (for example, on screen resize)
-    calendar.addCalendarViewAndDateChangeEvent(e -> {
-      header.getViewsComboBox().setValue(e.getViewType());
-      header.getDatePicker().setValue(e.getSelectedDate());
-    });
-
     // create header component
     header = new CalendarHeaderComponent(calendar);
 
@@ -356,7 +349,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
   private FieldSet getCurrentTimeIndicatorLayout() {
     HorizontalLayout layout = new HorizontalLayout();
     layout.setWidthFull();
-
+    
     Checkbox fullWeekWidth = new Checkbox(
         calendar.getConfiguration().getCurrentTimeIndicatorConfig().getFullWeekWidth());
     fullWeekWidth.setLabel("Check to display the indicator in full width of the week");

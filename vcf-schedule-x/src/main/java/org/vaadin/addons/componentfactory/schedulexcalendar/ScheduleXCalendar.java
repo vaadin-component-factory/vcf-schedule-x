@@ -58,9 +58,14 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   }
 
   @Override
-  protected void initCalendar() {
-    this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3)", this.container,
-        viewsToJson(), configurationToJson(), calendarsToJson());
+  protected void initCalendar(boolean refreshView) {
+    if (!refreshView) {
+      this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3)", this.container,
+          viewsToJson(), configurationToJson(), calendarsToJson());
+    } else {
+      this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3, $4)", this.container,
+          viewsToJson(), configurationToJson(), calendarsToJson(), this.getView().getName());
+    }
   }
 
   @ClientCallable

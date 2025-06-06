@@ -77,10 +77,17 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
   }
 
   @Override
-  protected void initCalendar() {
-    this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3, $4, $5)",
-        this.container, viewsToJson(), configurationToJson(), calendarsToJson(),
-        resourceSchedulerConfigToJson(), schedulingAssistantConfigToJson());
+  protected void initCalendar(boolean refreshView) {
+    if (!refreshView) {
+      this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3, $4, $5)",
+          this.container, viewsToJson(), configurationToJson(), calendarsToJson(),
+          resourceSchedulerConfigToJson(), schedulingAssistantConfigToJson());
+    } else {
+      this.getElement().executeJs(getJsConnector() + ".create($0, $1, $2, $3, $4, $5, $6)",
+          this.container, viewsToJson(), configurationToJson(), calendarsToJson(),
+          resourceSchedulerConfigToJson(), schedulingAssistantConfigToJson(),
+          this.getView().getName());
+    }
   }
 
   protected String resourceSchedulerConfigToJson() {

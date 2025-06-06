@@ -58,7 +58,7 @@ const resourceViewNameMap = {
 };
 
 window.vcfschedulexresourcescheduler = {
-	create(container, viewsJson, configJson, calendarsJson, resourceConfigJson, schedulingAssistantJson) {
+	create(container, viewsJson, configJson, calendarsJson, resourceConfigJson, schedulingAssistantJson, currentViewJson) {
 		setTimeout(() => {
 			const resourceConfig = createConfig();
 			this._processResourceSchedulerConfig(resourceConfig, resourceConfigJson);
@@ -111,6 +111,10 @@ window.vcfschedulexresourcescheduler = {
 				resourceConfig,
 				schedulingAssistantConfig
 			});
+			
+			if(currentViewJson){
+				this.setView(container,currentViewJson);
+			}
 		});
 	},
 

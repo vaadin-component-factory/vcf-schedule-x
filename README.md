@@ -11,7 +11,6 @@ To use this component, you must:
 1. [Subscribe to Schedule-X Premium](https://schedule-x.dev/premium)
 2. Configure an `.npmrc` file as explained in the [Schedule-X Premium installation guide](https://schedule-x.dev/docs/calendar/installing-premium#1-npmrc)
 
-
 This component is part of the Vaadin Component Factory.
 
 ## Features
@@ -72,6 +71,29 @@ This component is part of the Vaadin Component Factory.
   - View and date update (CalendarViewAndDateChangeEvent)
   
 (*) These features are part of the [Premium Schedule-X package](https://schedule-x.dev/premium).
+
+## Examples
+
+### Calendar with Month View
+![01-vcf-schedule-x-month-view](https://github.com/user-attachments/assets/61ec0b82-5267-4449-b80c-c9f2be26bbc3)
+
+### Calendar with Week View
+![02-vcf-schedule-x-week-view](https://github.com/user-attachments/assets/c2159807-f8db-44c0-be1c-fc7fd0d8ed41)
+
+### Calendar with Day View
+![03-vcf-schedule-x-day-view](https://github.com/user-attachments/assets/f2397f4f-79ad-4b79-9e6c-8deec0031e91)
+
+### Calendar with Agenda View
+![04-vcf-schedule-x-agenda-view](https://github.com/user-attachments/assets/56d23718-210d-4fc8-9441-4a4288ee40dc)
+
+### Resource Scheduler with Hourly View
+![05-vcf-schedule-x-resource-scheduler-hourly](https://github.com/user-attachments/assets/9bcae1fc-a191-4f5d-be9a-27ed9bc1d24f)
+
+### Resource Scheduler with Daily View
+![06-vcf-schedule-x-resource-scheduler-daily](https://github.com/user-attachments/assets/70a9649f-f8e9-468f-b6eb-b87eaf71ed6e)
+
+### Resource Scheduler with Scheduling Assistant (Hourly view only)
+![07-vcf-schedule-x-scheduling-assistant](https://github.com/user-attachments/assets/77fe966b-3bf7-42de-9f40-81e590db8f3d)
 
 ## Installing the component
 Run from the command line:

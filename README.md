@@ -39,6 +39,7 @@ This component is part of the Vaadin Component Factory.
   - Programmatically set view, date, first day of week, day boundaries, calendars, etc.
   - Implementation to allow navigate forwards or backwards in the views
   - Scroll to time
+  - Configuration updates
   
 - Event Support:
   - Create, update, and remove events from server side
@@ -50,12 +51,11 @@ This component is part of the Vaadin Component Factory.
   - Resize events
   - Draw events (*)
   
-- Event Provider API:
-  - Supports lazy loading via EventProvider callback
-  - Handles recurrence during filtering
+- Lazy loading:
+  - Supports lazy loading using CallbackDataProvider
 
 - Resource Scheduler Support(*):
-  - Display resources in a time grid (hourly and daily views available).
+  - Display resources in a time grid (hourly and daily views available)
   - Resource row and event height control
   - Control initial visible hours/days
   - Enable/disable drag and resize
@@ -69,6 +69,7 @@ This component is part of the Vaadin Component Factory.
   - Event add/update/remove notifications
   - Drag/resize updates (EventUpdateEvent)
   - Selected date change (SelectedDateUpdateEvent)
+  - View and date update (CalendarViewAndDateChangeEvent)
   
 (*) These features are part of the [Premium Schedule-X package](https://schedule-x.dev/premium).
 

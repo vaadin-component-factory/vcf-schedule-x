@@ -28,6 +28,7 @@ public enum ResourceViewType implements ViewType {
 
   private ResourceViewType(String name, String viewName) {
     this.name = name;
+    this.viewName = viewName;
   }
 
   @Override

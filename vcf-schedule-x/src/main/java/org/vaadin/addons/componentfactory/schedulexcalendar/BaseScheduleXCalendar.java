@@ -161,11 +161,13 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   public void refreshCalendar() {
     this.getElement().executeJs("return").then(e -> {
-      this.calendarRendered = false;
-      this.remove(container);
-      this.initCalendarContainer();
-      this.add(container);
-      this.requireRefresh();
+      if(calendarRendered) {
+        this.calendarRendered = false;
+        this.remove(container);
+        this.initCalendarContainer();
+        this.add(container);
+        this.requireRefresh();
+      }
     });
   }
 

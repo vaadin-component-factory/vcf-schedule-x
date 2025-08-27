@@ -234,6 +234,9 @@ public abstract class BaseScheduleXCalendar extends Div {
   
   void updateRange(String events, String start, String end){
     this.container.getElement().executeJs("""
+        if (!this.calendar) {
+            return;
+        } 
         if (this.calendar.$app.config.plugins.ICalendarPlugin)
         {
          this.calendar.$app.config.plugins.ICalendarPlugin.between($1, $2);
@@ -252,8 +255,8 @@ public abstract class BaseScheduleXCalendar extends Div {
         }
          if(this.calendar.$app.config.plugins.eventRecurrence){
          this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})
-        }
-                  """, events, start, end);
+        }        
+        """, events, start, end);
   }
   
   @ClientCallable

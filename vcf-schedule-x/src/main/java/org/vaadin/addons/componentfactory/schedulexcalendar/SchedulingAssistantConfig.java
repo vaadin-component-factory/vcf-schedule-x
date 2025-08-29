@@ -22,6 +22,10 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
 
 /**
  * Java model representing the SchedulingAssistant plugin config.
+ * 
+ * <p>
+ * <b>Note:</b> The {@link SchedulingAssistantConfig} can only be used with
+ * {@link ResourceView.HOURLY}.
  */
 @SuppressWarnings("serial")
 public class SchedulingAssistantConfig extends BaseConfiguration implements Serializable {

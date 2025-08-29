@@ -67,6 +67,14 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
       Map<String, Calendar> calendars, ResourceSchedulerConfig resourceSchedulerConfig,
       SchedulingAssistantConfig schedulingAssistantConfig) {
     this(views, dataProvider, configuration, calendars, resourceSchedulerConfig);
+    
+    if (ResourceViewType.DAILY.equals(this.getView())
+        && schedulingAssistantConfig != null) {
+      throw new IllegalArgumentException(
+          "Scheduling Assistant is not supported with ResourceViewType.DAILY. "
+              + "Use an ResourceViewType.HOURLY view instead.");
+    }
+   
     this.schedulingAssistantConfig = schedulingAssistantConfig;
     this.schedulingAssistantConfig.setCalendar(this);
   }

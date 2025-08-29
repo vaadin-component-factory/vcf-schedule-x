@@ -62,6 +62,7 @@ This component is part of the Vaadin Component Factory.
   
 - Scheduling Assistant Plugin (*):
   - Conflict detection and available time slot visualization
+  - The Scheduling Assistant can only be used with Hourly View. 
 
 - Full Event Listener Support:
   - Event click handling (CalendarEventClickEvent)

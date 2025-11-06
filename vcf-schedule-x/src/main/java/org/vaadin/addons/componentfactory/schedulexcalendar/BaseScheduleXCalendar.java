@@ -674,8 +674,10 @@ public abstract class BaseScheduleXCalendar extends Div {
    * @param event calendar event to be added
    */
   public void addEvent(Event event) {
-    this.getElement().executeJs(getJsConnector() + ".addEvent($0, $1);", this.container,
-        event.getJson());
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".addEvent($0, $1);", this.container,
+          event.getJson());
+    });
   }
 
   /**

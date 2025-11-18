@@ -19,6 +19,7 @@ import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -306,8 +307,8 @@ public class Event implements Serializable {
   public String getJson() {
     JsonObject js = Json.createObject();
     js.put("id", id);
-    js.put("start", start.format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
-    js.put("end", end.format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
+    js.put("start", start.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+    js.put("end", end.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
     Optional.ofNullable(title).ifPresent(value -> js.put("title", value));
     Optional.ofNullable(description).ifPresent(value -> js.put("description", value));

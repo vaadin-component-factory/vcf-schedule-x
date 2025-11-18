@@ -18,6 +18,7 @@ import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -37,8 +38,8 @@ import com.vaadin.flow.shared.Registration;
 @SuppressWarnings("serial")
 @NpmPackage(value = "preact", version = "10.26.4")
 @NpmPackage(value = "@preact/signals", version = "2.0.2")
-@NpmPackage(value = "@sx-premium/resource-scheduler", version = "3.17.0")
-@NpmPackage(value = "@sx-premium/scheduling-assistant", version = "3.17.0")
+@NpmPackage(value = "@sx-premium/resource-scheduler", version = "13.2.1")
+@NpmPackage(value = "@sx-premium/scheduling-assistant", version = "13.2.1")
 @JsModule("./src/vcf-schedule-x-resource-scheduler.js")
 public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
 
@@ -144,11 +145,11 @@ public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
     }
 
     public String getCurrentStart() {
-      return currentStart;
+      return DateTimeFormatUtils.formatZonedDateTime(currentStart);
     }
 
     public String getCurrentEnd() {
-      return currentEnd;
+      return DateTimeFormatUtils.formatZonedDateTime(currentEnd);
     }
 
     public boolean isHasCollision() {

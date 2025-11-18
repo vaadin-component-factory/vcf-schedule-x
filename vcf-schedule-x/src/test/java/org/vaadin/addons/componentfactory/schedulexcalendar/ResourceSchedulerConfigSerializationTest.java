@@ -58,7 +58,7 @@ class ResourceSchedulerConfigSerializationTest {
         new Pair<>(LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 7)));
 
     JsonObject json = Json.parse(config.getJson());
-    assertEquals("2025-06-01 08:00,2025-06-01 17:00", json.getString("initialHours"));
+    assertEquals("2025-06-01T08:00:00,2025-06-01T17:00:00", json.getString("initialHours"));
     assertEquals("2025-06-01,2025-06-07", json.getString("initialDays"));
   }
 

@@ -18,9 +18,11 @@ import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
@@ -57,6 +59,12 @@ public class Configuration extends BaseConfiguration implements Serializable {
    * (...other days) 6 = Saturday Defaults to 1 (Monday)
    */
   private Integer firstDayOfWeek;
+  
+  /**
+   * Set the timezone.
+   * Defaults to 'UTC'
+   * */
+  private ZoneId timeZone;
 
   /**
    * Render the calendar in dark mode. Defaults to false.
@@ -150,6 +158,17 @@ public class Configuration extends BaseConfiguration implements Serializable {
       this.getCalendar().updateLocale(locale);
     }
     this.locale = locale;
+  }
+  
+  public ZoneId getTimeZone() {
+    return timeZone;
+  }
+
+  public void setTimeZone(ZoneId timeZone) {
+    if (this.getCalendar() != null) {
+      this.getCalendar().updateTimeZone(timeZone);
+    }
+    this.timeZone = timeZone;
   }
 
   public Integer getFirstDayOfWeek() {
@@ -333,6 +352,7 @@ public class Configuration extends BaseConfiguration implements Serializable {
         value -> js.put("selectedDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
     Optional.ofNullable(locale)
         .ifPresent(value -> js.put("locale", LocaleUtils.toScheduleXLocale(value)));
+    Optional.ofNullable(timeZone).ifPresent(value -> js.put("timezone", timeZone.getId()));
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);
     Optional.ofNullable(dayBoundaries).ifPresent(value -> js.put("dayBoundaries", value.toJson()));

@@ -50,11 +50,11 @@ class ScheduleXResourceSchedulerEventTest {
       receivedEnd.set(event.getCurrentEnd());
       receivedCollision.set(event.isHasCollision());
     });
-
+    
     // Simulate client-side event firing
-    ComponentUtil.fireEvent(resourceScheduler,
-        new SchedulingAssistantUpdateEvent(resourceScheduler, true, "2025-06-01 09:00", "2025-06-01 10:00", true // hasCollision
-        ));
+    ComponentUtil.fireEvent(resourceScheduler, new SchedulingAssistantUpdateEvent(resourceScheduler,
+        true, "2025-06-01T09:00:00+00:00[UTC]", "2025-06-01T10:00:00+00:00[UTC]", true // hasCollision
+    ));
 
     // Assertions
     assertEquals("2025-06-01 09:00", receivedStart.get());

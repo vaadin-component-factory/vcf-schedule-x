@@ -17,8 +17,8 @@ import elemental.json.Json;
 import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 
 /**
  * Java model representing the SchedulingAssistant plugin config.
@@ -60,9 +60,9 @@ public class SchedulingAssistantConfig extends BaseConfiguration implements Seri
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(initialStart).ifPresent(
-        value -> js.put("initialStart", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
+        value -> js.put("initialStart", value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
     Optional.ofNullable(initialEnd).ifPresent(
-        value -> js.put("initialEnd", value.format(DateTimeFormatUtils.DATE_TIME_FORMATTER)));
+        value -> js.put("initialEnd", value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
     return js.toJson();
   }
 

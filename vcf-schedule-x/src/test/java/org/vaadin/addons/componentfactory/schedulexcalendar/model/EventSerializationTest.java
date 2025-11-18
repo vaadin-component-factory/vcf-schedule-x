@@ -36,8 +36,8 @@ class EventSerializationTest {
     JsonObject json = Json.parse(event.getJson());
 
     assertEquals("e1", json.getString("id"));
-    assertEquals("2025-06-01 09:00", json.getString("start"));
-    assertEquals("2025-06-01 10:00", json.getString("end"));
+    assertEquals("2025-06-01T09:00:00", json.getString("start"));
+    assertEquals("2025-06-01T10:00:00", json.getString("end"));
     assertEquals("Meeting", json.getString("title"));
     assertEquals("Discuss roadmap", json.getString("description"));
     assertEquals("Zoom", json.getString("location"));

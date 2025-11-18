@@ -28,6 +28,7 @@ import {
 	setDate, 
 	setFirstDayOfWeek,
 	setLocale,
+	setTimeZone,
 	setViews,
 	setDayBoundaries,
 	setWeekOptions,
@@ -35,11 +36,13 @@ import {
 	setMinDate,
 	setMaxDate,
 	setMonthGridOptions,
-	updateEvent
+	updateEvent,
+	onUpdateRange
 } from './vcf-schedule-x-base.js';
 
 import {
-	updateResourceSchedulerRange
+	updateResourceSchedulerRange, 
+	processConfiguration
 } from './vcf-schedule-x-utils.js';
 
 import { signal } from "@preact/signals";
@@ -60,6 +63,7 @@ const resourceViewNameMap = {
 window.vcfschedulexresourcescheduler = {
 	create(container, viewsJson, configJson, calendarsJson, resourceConfigJson, schedulingAssistantJson, currentViewJson) {
 		setTimeout(() => {
+			const config = processConfiguration(configJson, resourceViewNameMap);
 			const resourceConfig = createConfig();
 			this._processResourceSchedulerConfig(resourceConfig, resourceConfigJson);
 			
@@ -68,17 +72,18 @@ window.vcfschedulexresourcescheduler = {
 		    resourceConfig.onLazyLoadMonth = (dates) => {
 				if (!Array.isArray(dates) || dates.length === 0) return;
 
-				const start = new Date(dates[0]);
+				const startPlainDate = dates[0];
+				const start = startPlainDate.toPlainDateTime();
 				let end;
 				
 				if (dates.length === 1) {
 				  // only one date, extend to the end of that month
-				  end = new Date(start);
-			      end.setUTCMonth(start.getUTCMonth() + 1, 0); // last day of month
-			      end.setUTCHours(23, 59, 59, 999);
+				  end = startPlainDate.with({ day: startPlainDate.daysInMonth });
+				  end = end.toPlainDateTime(Temporal.PlainTime.from({ hour: 23, minute: 59, second: 59 }));	
 				} else {
 				  // the last visible date
-				  end = new Date(dates[dates.length - 1]);
+				  const lastPlainDate = dates[dates.length - 1]
+				  end = lastPlainDate.toPlainDateTime();
 				}	
 				
 				updateResourceSchedulerRange(container, { start, end });
@@ -88,25 +93,27 @@ window.vcfschedulexresourcescheduler = {
 		    resourceConfig.onLazyLoadDate = (dates) => {
 				if (!Array.isArray(dates) || dates.length === 0) return;
 
-				const start = new Date(dates[0]);
+				const startPlainDate = dates[0];
+				const start = startPlainDate.toPlainDateTime();
 				let end;
 				
 				if (dates.length === 1) {
 				  // only one date, extend to end of that day
-				  end = new Date(dates[0]);
-				  end.setUTCHours(23, 59, 59, 999);
+				  end = startPlainDate.with({ day: startPlainDate.daysInMonth });
+				  end = end.toPlainDateTime(Temporal.PlainTime.from({ hour: 23, minute: 59, second: 59 }));
 				} else {
 				  // the last visible date
-				  end = new Date(dates[dates.length - 1]);
+				  const lastPlainDate = dates[dates.length - 1]
+				  end = lastPlainDate.toPlainDateTime();
 				}	
 				
 				updateResourceSchedulerRange(container, { start, end });
 		    };
 			
 			// get scheduling assistant configuration if available
-			const schedulingAssistantConfig = schedulingAssistantJson === "{}" ? null : JSON.parse(schedulingAssistantJson);
-
-			createCommonCalendar(container, resourceViewFactoryMap, resourceViewNameMap, configJson, calendarsJson, {
+			const schedulingAssistantConfig = this._processSchedulingAssistantConfig(schedulingAssistantJson, config);
+			
+			createCommonCalendar(container, resourceViewFactoryMap, config, calendarsJson, {
 				viewsJson,
 				resourceConfig,
 				schedulingAssistantConfig
@@ -137,10 +144,14 @@ window.vcfschedulexresourcescheduler = {
 		this._assignIfExists(resourceConfig, parsed, 'infiniteScroll');
 		this._assignIfExists(resourceConfig, parsed, 'initialHours', raw => {
 			const [start, end] = this._parseInitialRange(raw);
+			start = Temporal.PlainDateTime.from(start);
+			end = Temporal.PlainDateTime.from(end);
 			return timeUnits.getDayHoursBetween(start, end);
 		});
 		this._assignIfExists(resourceConfig, parsed, 'initialDays', raw => {
 			const [start, end] = this._parseInitialRange(raw);
+			start = Temporal.PlainDate.from(start);
+			end = Temporal.PlainDate.from(end);
 			return timeUnits.getDaysBetween(start, end);
 		});
 	},
@@ -159,6 +170,22 @@ window.vcfschedulexresourcescheduler = {
 			target[key].value = transform(raw);
 		}
 	},
+	
+	_processSchedulingAssistantConfig(schedulingAssistantJson, config) {
+		const schedulingAssistantConfig = schedulingAssistantJson === "{}" ? null : JSON.parse(schedulingAssistantJson);
+		const timeZone = config.timezone || 'UTC';
+		if(schedulingAssistantConfig && schedulingAssistantConfig.initialStart) {
+			const plainDateTime = Temporal.PlainDateTime.from(schedulingAssistantConfig.initialStart);
+			const zoneDateTime = plainDateTime.toZonedDateTime(timeZone); 
+			schedulingAssistantConfig.initialStart = zoneDateTime;
+		}
+		if(schedulingAssistantConfig && schedulingAssistantConfig.initialEnd) {
+			const plainDateTime = Temporal.PlainDateTime.from(schedulingAssistantConfig.initialEnd);
+		    const zoneDateTime = plainDateTime.toZonedDateTime(timeZone); 
+			schedulingAssistantConfig.initialEnd = zoneDateTime;
+		}
+		return schedulingAssistantConfig
+	},
 
 	setView(container, view) {
 		setView(container, view, resourceViewNameMap);
@@ -174,6 +201,10 @@ window.vcfschedulexresourcescheduler = {
 	
 	setLocale(container, locale) {
 		setLocale(container, locale);
+	},
+	
+	setTimeZone(container, timeZone) {
+		setTimeZone(container, timeZone);
 	},
 	
 	setViews(container, viewsJson) {
@@ -214,6 +245,10 @@ window.vcfschedulexresourcescheduler = {
 	
 	updateEvent(container, calendarEvent) {
 		updateEvent(container, calendarEvent);
+	},
+
+	onUpdateRange(container, events, start, end) {
+		onUpdateRange(container, events, start, end);
 	},
 	
 	navigateForwards(container) {

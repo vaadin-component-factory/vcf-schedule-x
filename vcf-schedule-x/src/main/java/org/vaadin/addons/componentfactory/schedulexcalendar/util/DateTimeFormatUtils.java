@@ -15,6 +15,7 @@ package org.vaadin.addons.componentfactory.schedulexcalendar.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -77,5 +78,10 @@ public final class DateTimeFormatUtils {
       }
     }
     return result;
+  }
+  
+  public static String formatZonedDateTime(String date) {
+    ZonedDateTime zdt = ZonedDateTime.parse(date, DateTimeFormatter.ISO_ZONED_DATE_TIME);
+    return zdt.format(DATE_TIME_FORMATTER);
   }
 }

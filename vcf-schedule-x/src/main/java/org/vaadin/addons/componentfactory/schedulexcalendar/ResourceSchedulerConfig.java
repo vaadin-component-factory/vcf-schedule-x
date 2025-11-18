@@ -20,6 +20,7 @@ import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -197,8 +198,8 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
     }
 
     if (initialHours != null) {
-      js.put("initialHours", initialHours.getFirst().format(DateTimeFormatUtils.DATE_TIME_FORMATTER)
-          + "," + initialHours.getSecond().format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
+      js.put("initialHours", initialHours.getFirst().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+          + "," + initialHours.getSecond().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
     if (initialDays != null) {

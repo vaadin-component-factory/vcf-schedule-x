@@ -12,6 +12,7 @@
  * the License.
  */
 
+import 'temporal-polyfill/global';
 import { createCalendar } from '@schedule-x/calendar';
 import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls';
 import { createCurrentTimePlugin } from '@schedule-x/current-time'
@@ -23,16 +24,17 @@ import { createSchedulingAssistant } from '@sx-premium/scheduling-assistant';
 import { createIcalendarPlugin } from '@schedule-x/ical';
 import { addDays } from '@schedule-x/shared';
 import {
+	getZonedDateTime,
 	handleOnEventClick,
 	handleOnSelectedDateUpdate,
 	handleEventUpdate,
-	processConfiguration,
 	processViews,	
 	setSelectedDate,
 	setSelectedView,
 	subscribeToSchedulingAssistantUpdates,
 	updateFirstDayOfWeek,
 	updateLocale,
+	updateTimeZone,
 	updateViews,
 	updateDayBoundaries,
 	updateWeekOptions,
@@ -48,14 +50,13 @@ import {
  *
  * @param {HTMLElement} container - The container element holding the calendar.
  * @param {Object} viewFactories - A map of view function names to their factory functions.
- * @param {Object} viewNameMap - A map of view function names to view names (strings).
- * @param {string} configJson - The calendar configuration as JSON.
+ * @param {string} config - The calendar configuration.
  * @param {string} calendarsJson - The calendars as JSON.
  * @param {Object} calendarOptions - Additional options.
  */
-export function createCommonCalendar(container, viewFactories, viewNameMap, configJson, calendarsJson, calendarOptions = {}) {
+export function createCommonCalendar(container, viewFactories, config, calendarsJson, calendarOptions = {}) {
+		
 	const viewFnNames = JSON.parse(calendarOptions.viewsJson || "[]");
-	const config = processConfiguration(configJson, viewNameMap);
 	const parsedCalendars = JSON.parse(calendarsJson || "[]");
 
 	const views = processViews(viewFnNames, viewFactories, calendarOptions.resourceConfig);
@@ -227,6 +228,10 @@ export function setLocale(container, locale) {
 	updateLocale(container.calendar, locale);
 }
 
+export function setTimeZone(container, timeZone) {
+	updateTimeZone(container.calendar, timeZone);
+}
+
 /**
  * Sets the available views for the calendar. The views to be set must include the currently active view name. 
  * At least one view must be passed into this function.
@@ -313,6 +318,12 @@ export function setMonthGridOptions(container, monthGridOptionsJson) {
  */
 export function addEvent(container, calendarEvent) {
 	const eventJson = JSON.parse(calendarEvent);
+	if(eventJson.start) {
+		eventJson.start = getZonedDateTime(container, eventJson.start);
+	}
+	if(eventJson.end) {
+		eventJson.end = getZonedDateTime(container, eventJson.end);
+	}
 	const eventId = eventJson.id;
 	container.calendar.eventsService.add(eventJson);
 	container.parentElement.dispatchEvent(new CustomEvent('calendar-event-added', { detail: { eventId: eventId } }));
@@ -331,9 +342,62 @@ export function removeEvent(container, calendarEventId) {
  */
 export function updateEvent(container, calendarEvent) {
 	const eventJson = JSON.parse(calendarEvent);
+	if(eventJson.start) {
+		eventJson.start = getZonedDateTime(container, eventJson.start);
+	}
+	if(eventJson.end) {
+		eventJson.end = getZonedDateTime(container, eventJson.end);
+	}
 	const eventId = eventJson.id;
 	container.calendar.eventsService.update(eventJson);
 	container.parentElement.dispatchEvent(new CustomEvent('calendar-event-updated', { detail: { eventId: eventId } }));
+}
+
+export function onUpdateRange(container, events, start, end){
+	if (!container || !container.calendar) {
+        return;
+    } 
+		
+    if (container.calendar.$app.config.plugins.ICalendarPlugin){
+		const parsedStart = getZonedDateTime(container, start);
+		const parsedEnd = getZonedDateTime(container, end);
+		container.calendar.$app.config.plugins.ICalendarPlugin.between(parsedStart, parsedEnd);
+		    
+		let allEvents = container.calendar.eventsService.getAll();
+	    allEvents.forEach(event => {
+	      event._options = {};
+	      event._options.disableDND = true;
+	      event._options.disableResize = true;
+	      container.calendar.eventsService.update(event);
+	    });
+		
+		JSON.parse(events).forEach(event => {
+			if(event.start) {
+	          event.start = getZonedDateTime(container, event.start);
+	        }
+		    if(event.end) {
+		      event.end = getZonedDateTime(container, event.end);
+		    }    
+			container.calendar.eventsService.add(event);
+		});
+    } else {
+		const eventsJson = JSON.parse(events);
+	    eventsJson.forEach(event => {
+	      if(event.start) {
+	         event.start = getZonedDateTime(container, event.start);
+	      }
+	      if(event.end) {
+	         event.end = getZonedDateTime(container, event.end);
+	      }    
+	    });    
+	    container.calendar.eventsService.set(eventsJson);
+    } 
+	
+    if(container.calendar.$app.config.plugins.eventRecurrence){
+		 const parsedStart = getZonedDateTime(container, start);
+		 const parsedEnd = getZonedDateTime(container, end);
+	     container.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({parsedStart, parsedEnd})
+    }        
 }
 
 /**
@@ -367,8 +431,8 @@ export function navigateCalendar(calendar, direction) {
 	);
 
 	// minDate / maxDate bounds check
-	if ((direction === 'forwards' && $app.config.maxDate.value && nextDate > $app.config.maxDate.value) ||
-		(direction === 'backwards' && $app.config.minDate.value && nextDate < $app.config.minDate.value)) {
+	if ((direction === 'forwards' && $app.config.maxDate.value && Temporal.PlainDate.compare(nextDate, $app.config.maxDate.value) > 0) ||
+		(direction === 'backwards' && $app.config.minDate.value && Temporal.PlainDate.compare($app.config.minDate.value, nextDate) > 0)) {
 		return;
 	}
 

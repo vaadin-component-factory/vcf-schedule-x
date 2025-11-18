@@ -13,8 +13,27 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.DomEvent;
+import com.vaadin.flow.component.EventData;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
+import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.function.SerializableRunnable;
+import com.vaadin.flow.shared.Registration;
+import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,35 +53,18 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.ClientCallable;
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.DomEvent;
-import com.vaadin.flow.component.EventData;
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.data.provider.CallbackDataProvider;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.function.SerializableRunnable;
-import com.vaadin.flow.shared.Registration;
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 
 @SuppressWarnings("serial")
-@NpmPackage(value = "@schedule-x/calendar", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/theme-default", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/resize", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/drag-and-drop", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/current-time", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/scroll-controller", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/calendar-controls", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/event-recurrence", version = "2.31.0")
-@NpmPackage(value = "@schedule-x/ical", version = "2.31.0")
+@NpmPackage(value = "temporal-polyfill", version = "0.3.0")
+@NpmPackage(value = "@schedule-x/calendar", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/theme-default", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/resize", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/drag-and-drop", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/current-time", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/scroll-controller", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/calendar-controls", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/event-recurrence", version = "3.4.0")
+@NpmPackage(value = "@schedule-x/ical", version = "3.4.0")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 public abstract class BaseScheduleXCalendar extends Div {
@@ -228,37 +230,15 @@ public abstract class BaseScheduleXCalendar extends Div {
 
   @ClientCallable
   void updateRange(String start, String end) {
-    LocalDateTime startDate = LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER);
-    LocalDateTime endDate = LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER);
+    LocalDateTime startDate = LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime endDate = LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME);
     String events = eventsToJson(startDate, endDate);
     updateRange(events, start, end);
   }
   
-  void updateRange(String events, String start, String end){
-    this.container.getElement().executeJs("""
-        if (!this.calendar) {
-            return;
-        } 
-        if (this.calendar.$app.config.plugins.ICalendarPlugin)
-        {
-         this.calendar.$app.config.plugins.ICalendarPlugin.between($1, $2);
-         let events = this.calendar.eventsService.getAll();
-         events.forEach(event => {
-           event._options = {};
-           event._options.disableDND = true;
-           event._options.disableResize = true;
-           this.calendar.eventsService.update(event);
-         });
-         JSON.parse($0).forEach(event => this.calendar.eventsService.add(event));
-        }
-         else
-        {
-         this.calendar.eventsService.set(JSON.parse($0))
-        }
-         if(this.calendar.$app.config.plugins.eventRecurrence){
-         this.calendar.$app.config.plugins.eventRecurrence.onRangeUpdate({$1, $2})
-        }        
-        """, events, start, end);
+  void updateRange(String events, String start, String end) {
+    this.container.getElement().executeJs(getJsConnector() + ".onUpdateRange($0, $1, $2, $3);",
+        this.container, events, start, end);
   }
   
   @ClientCallable
@@ -371,7 +351,32 @@ public abstract class BaseScheduleXCalendar extends Div {
   public Locale getLocale() {
     return configuration.getLocale();
   }
+  
+  /**
+   * Sets the time zone of the calendar.
+   * 
+   * @param timeZone the time zone of the calendar
+   */
+  public void setTimeZone(ZoneId timeZone) {
+    configuration.setTimeZone(timeZone);
+  }
 
+  protected void updateTimeZone(ZoneId timeZone) {
+    this.executeOnCalendarRendered(() -> {
+      this.getElement().executeJs(getJsConnector() + ".setTimeZone($0, $1);", this.container,
+          timeZone);
+    });
+  }
+
+  /**
+   * Returns the current time zone of the calendar.
+   * 
+   * @return the time zone use by the calendar
+   */
+  public ZoneId getTimeZone() {
+    return configuration.getTimeZone();
+  }
+  
   /**
    * Sets the available views for the calendar. The views to be set must include the currently
    * active view name. At least one view must be passed into this function.
@@ -582,9 +587,11 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   @ClientCallable
   private void onCalendarEventClick(String eventId, String start, String end) {
+    String startFormatted = DateTimeFormatUtils.formatZonedDateTime(start);
+    String endFormatted = DateTimeFormatUtils.formatZonedDateTime(end);
     ComponentUtil.fireEvent(this,
-        new CalendarEventClickEvent(this, eventId, DateTimeFormatUtils.parseDate(start, false),
-            DateTimeFormatUtils.parseDate(end, true), false));
+        new CalendarEventClickEvent(this, eventId, DateTimeFormatUtils.parseDate(startFormatted, false),
+            DateTimeFormatUtils.parseDate(endFormatted, true), false));
   }
 
   /**
@@ -799,10 +806,12 @@ public abstract class BaseScheduleXCalendar extends Div {
    */
   @ClientCallable
   private void onEventUpdate(String eventId, String start, String end) {
+    String startFormatted = DateTimeFormatUtils.formatZonedDateTime(start);
+    String endFormatted = DateTimeFormatUtils.formatZonedDateTime(end);
     ComponentUtil.fireEvent(this,
         new EventUpdateEvent(this, eventId,
-            LocalDateTime.parse(start, DateTimeFormatUtils.DATE_TIME_FORMATTER),
-            LocalDateTime.parse(end, DateTimeFormatUtils.DATE_TIME_FORMATTER), false));
+            LocalDateTime.parse(startFormatted, DateTimeFormatUtils.DATE_TIME_FORMATTER),
+            LocalDateTime.parse(endFormatted, DateTimeFormatUtils.DATE_TIME_FORMATTER), false));
   }
 
   /**

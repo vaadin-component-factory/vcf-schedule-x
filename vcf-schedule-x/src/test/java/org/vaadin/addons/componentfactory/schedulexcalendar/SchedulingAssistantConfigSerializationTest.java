@@ -17,8 +17,8 @@ class SchedulingAssistantConfigSerializationTest {
 
     JsonObject json = Json.parse(config.getJson());
 
-    assertEquals("2025-06-01 09:00", json.getString("initialStart"));
-    assertEquals("2025-06-01 10:00", json.getString("initialEnd"));
+    assertEquals("2025-06-01T09:00:00", json.getString("initialStart"));
+    assertEquals("2025-06-01T10:00:00", json.getString("initialEnd"));
   }
 }
 

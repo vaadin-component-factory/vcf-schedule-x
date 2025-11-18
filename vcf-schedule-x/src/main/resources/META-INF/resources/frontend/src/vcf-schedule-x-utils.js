@@ -16,6 +16,30 @@ export function processConfiguration(configJson, viewNameMap) {
 	if (!configJson) return {};
 
 	const parsedConfig = JSON.parse(configJson);
+	
+	if (parsedConfig.selectedDate && typeof parsedConfig.selectedDate === 'string') {
+	  try {
+	    parsedConfig.selectedDate = Temporal.PlainDate.from(parsedConfig.selectedDate);
+	  } catch (e) {
+	    console.error("Failed to parse selectedDate:", e);
+	  }
+	}
+	
+	if (parsedConfig.minDate && typeof parsedConfig.minDate === 'string') {
+	  try {
+	    parsedConfig.minDate = Temporal.PlainDate.from(parsedConfig.minDate);
+	  } catch (e) {
+	    console.error("Failed to parse minDate:", e);
+	  }
+	}
+	
+	if (parsedConfig.maxDate && typeof parsedConfig.maxDate === 'string') {
+	  try {
+	    parsedConfig.maxDate = Temporal.PlainDate.from(parsedConfig.maxDate);
+	  } catch (e) {
+	    console.error("Failed to parse maxDate:", e);
+	  }
+	}
 
 	if (parsedConfig.defaultView) {
 		parsedConfig.defaultView = viewNameMap[parsedConfig.defaultView];
@@ -44,7 +68,7 @@ export function setSelectedView(calendar, viewName) {
 }
 
 export function setSelectedDate(calendar, selectedDate) {
-	calendar.$app.config.plugins.calendarControls.setDate(selectedDate);
+	calendar.$app.config.plugins.calendarControls.setDate(Temporal.PlainDate.from(selectedDate));
 }
 
 export function handleOnEventClick(div, calendarEvent) {
@@ -70,6 +94,10 @@ export function updateLocale(calendar, locale) {
 	calendar.$app.config.plugins.calendarControls.setLocale(locale);
 }
 
+export function updateTimeZone(calendar, timeZone) {
+	calendar.$app.config.plugins.calendarControls.setTimeZone(timeZone);
+}
+
 export function updateViews(calendar, viewFnNames, viewFactories) {
 	const $app = calendar.$app;
 	const views = processViews(viewFnNames, viewFactories, $app.resourceViewConfig)
@@ -89,11 +117,11 @@ export function updateCalendars(calendar, calendars) {
 }
 
 export function updateMinDate(calendar, minDate) {
-	calendar.$app.config.plugins.calendarControls.setMinDate(minDate);
+	calendar.$app.config.plugins.calendarControls.setMinDate(Temporal.PlainDate.from(minDate));
 }
 
 export function updateMaxDate(calendar, maxDate) {
-	calendar.$app.config.plugins.calendarControls.setMaxDate(maxDate);
+	calendar.$app.config.plugins.calendarControls.setMaxDate(Temporal.PlainDate.from(maxDate));
 }
 
 export function updateMonthGridOptions(calendar, monthGridOptions) {
@@ -120,5 +148,10 @@ export function subscribeToSchedulingAssistantUpdates(container) {
 	plugin.currentStart.subscribe(emitCombinedUpdate);
 	plugin.currentEnd.subscribe(emitCombinedUpdate);
 	plugin.hasCollision.subscribe(emitCombinedUpdate);
+}
+
+export function getZonedDateTime(container, dateTime) {
+	const plainDateTime = Temporal.PlainDateTime.from(dateTime);
+	return plainDateTime.toZonedDateTime(container.calendar.$app.config.timezone.value); 
 }
 

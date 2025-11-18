@@ -26,6 +26,7 @@ import {
 	setDate,
 	setFirstDayOfWeek,
 	setLocale,
+	setTimeZone,
 	setViews,
 	setDayBoundaries,
 	setWeekOptions,
@@ -33,9 +34,11 @@ import {
 	setMinDate,
 	setMaxDate,
 	setMonthGridOptions,
-	updateEvent
+	updateEvent,
+	onUpdateRange
 } from './vcf-schedule-x-base.js';
 import { createDrawPlugin } from "@sx-premium/draw";
+import { processConfiguration } from './vcf-schedule-x-utils.js';
 
 const viewFactoryMap = {
 	createViewDay,
@@ -53,7 +56,7 @@ const viewNameMap = {
 
 window.vcfschedulexcalendar = {
 	create(container, viewsJson, configJson, calendarsJson, currentViewJson) {
-        const parsedConfig = JSON.parse(configJson);        
+        const parsedConfig = processConfiguration(configJson, viewNameMap);        
         if(parsedConfig.drawOptions){
 	 		let drawSnapDuration = parsedConfig.drawOptions.snapDrawDuration;
 	        const drawPlugin = createDrawPlugin({
@@ -70,14 +73,14 @@ window.vcfschedulexcalendar = {
 	          snapDuration: drawSnapDuration
 	        });	
 	        setTimeout(() =>
-	            createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
+	            createCommonCalendar(container, viewFactoryMap, parsedConfig, calendarsJson, {
 	                viewsJson,
 	                drawPlugin
 	            })
         	);		
 		} else {
 			 setTimeout(() =>
-	            createCommonCalendar(container, viewFactoryMap, viewNameMap, configJson, calendarsJson, {
+	            createCommonCalendar(container, viewFactoryMap, parsedConfig, calendarsJson, {
 	                viewsJson
 	            })
 	        );
@@ -102,6 +105,10 @@ window.vcfschedulexcalendar = {
 	
 	setLocale(container, locale) {
 		setLocale(container, locale);
+	},
+	
+	setTimeZone(container, timeZone) {
+		setTimeZone(container, timeZone);
 	},
 	
 	setViews(container, viewsJson) {
@@ -142,6 +149,10 @@ window.vcfschedulexcalendar = {
 
 	updateEvent(container, calendarEvent) {
 		updateEvent(container, calendarEvent);
+	},
+	
+	onUpdateRange(container, events, start, end) {
+		onUpdateRange(container, events, start, end);
 	},
 
 	navigateForwards(container) {

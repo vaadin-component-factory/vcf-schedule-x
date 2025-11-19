@@ -41,6 +41,8 @@ public class CalendarHeaderComponent extends HorizontalLayout {
   
   private DatePicker datePicker;
   private ComboBox<ViewType> viewsComboBox;
+  private Button previousButton;
+  private Button nextButton;
   
   public CalendarHeaderComponent(BaseScheduleXCalendar calendar) {
     this(calendar, null);
@@ -84,6 +86,8 @@ public class CalendarHeaderComponent extends HorizontalLayout {
             return "Month";
           case MONTH_AGENDA:
             return "Agenda";
+          case LIST:
+            return "List";
           default:
             break;
         }
@@ -102,6 +106,9 @@ public class CalendarHeaderComponent extends HorizontalLayout {
     viewsComboBox.setValue(defaultView);    
     viewsComboBox.addValueChangeListener(e -> {
       calendar.setView(e.getValue());
+      boolean showNavigation = e.getValue() instanceof CalendarViewType && !CalendarViewType.LIST.equals(e.getValue());
+      nextButton.setVisible(showNavigation);
+      previousButton.setVisible(showNavigation);
       if (viewChangeListener != null) {
         viewChangeListener.onViewChange(e.getValue());
       }
@@ -122,14 +129,17 @@ public class CalendarHeaderComponent extends HorizontalLayout {
       datePicker.setValue(today);
     });
 
-    Button previousButton = new Button(VaadinIcon.CHEVRON_LEFT.create());
+    previousButton = new Button(VaadinIcon.CHEVRON_LEFT.create());
     previousButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY,
         ButtonVariant.LUMO_CONTRAST);
     previousButton.addClickListener(e -> calendar.navigateBackwards());
-    Button nextButton = new Button(VaadinIcon.CHEVRON_RIGHT.create());
+    nextButton = new Button(VaadinIcon.CHEVRON_RIGHT.create());
     nextButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY,
         ButtonVariant.LUMO_CONTRAST);
     nextButton.addClickListener(e -> calendar.navigateForwards());
+    boolean showNavigation = defaultView instanceof CalendarViewType && !CalendarViewType.LIST.equals(defaultView);
+    nextButton.setVisible(showNavigation);
+    previousButton.setVisible(showNavigation);
 
     this.addToStart(todayButton, previousButton, nextButton);
     this.addToEnd(viewsComboBox, datePicker, headerComponentDisclaimer());

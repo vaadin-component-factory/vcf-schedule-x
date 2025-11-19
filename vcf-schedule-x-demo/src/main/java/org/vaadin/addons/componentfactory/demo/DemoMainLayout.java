@@ -35,7 +35,6 @@ public class DemoMainLayout extends AppLayout {
     SideNav nav = getSideNav();
 
     Scroller scroller = new Scroller(nav);
-    scroller.setClassName(LumoUtility.Padding.SMALL);
 
     addToDrawer(scroller);
     addToNavbar(toggle, title);

@@ -72,7 +72,6 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     configuration.setSelectedDate(today.plusDays(1));
     configuration.setDefaultView(CalendarViewType.WEEK);
     configuration.setDragAndDropInterval(TimeInterval.MIN_30);
-
     // create categories for events
     Map<String, Calendar> calendars = getCalendars();
 
@@ -85,14 +84,33 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
         LocalDateTime.of(today.minusDays(1), LocalTime.of(16, 45)));
     event2.setTitle("Meeting with Jackie O.");
     event2.setCalendarId("work");
-
-    Event event3 = new Event("3", LocalDateTime.of(today.plusDays(5), LocalTime.of(15, 00)),
-        LocalDateTime.of(today.plusDays(5), LocalTime.of(15, 25)));
+    Event event3 = new Event("3", LocalDateTime.of(today, LocalTime.of(15, 00)),
+        LocalDateTime.of(today, LocalTime.of(15, 25)));
     event3.setTitle("Onboarding team meeting");
     event3.setCalendarId("work");
+    Event event4 = new Event("4", LocalDateTime.of(today.plusDays(1), LocalTime.of(19, 00)),
+        LocalDateTime.of(today.plusDays(1), LocalTime.of(19, 45)));
+    event4.setTitle("Doctor's appointment");
+    event4.setCalendarId("leisure");
+    Event event5 = new Event("5", LocalDateTime.of(today.plusDays(2), LocalTime.of(11, 00)),
+        LocalDateTime.of(today.plusDays(2), LocalTime.of(12, 30)));
+    event5.setTitle("Team meeting");
+    event5.setCalendarId("work");
+    Event event6 = new Event("6", LocalDateTime.of(today.plusDays(3), LocalTime.of(10, 00)),
+        LocalDateTime.of(today.plusDays(3), LocalTime.of(10, 45)));
+    event6.setTitle("Team meeting");
+    event6.setCalendarId("work");
+    Event event7 = new Event("7", LocalDateTime.of(today.plusDays(4), LocalTime.of(12, 00)),
+        LocalDateTime.of(today.plusDays(4), LocalTime.of(13, 00)));
+    event7.setTitle("Lunch with John");
+    event7.setCalendarId("leisure");
+    Event event8 = new Event("8", LocalDateTime.of(today.plusDays(15), LocalTime.of(10, 00)),
+        LocalDateTime.of(today.plusDays(15), LocalTime.of(11, 00)));
+    event8.setTitle("Meeting with Anne");
+    event8.setCalendarId("work");
 
     events = new ArrayList<Event>();
-    events.addAll(Arrays.asList(event1, event2, event3));
+    events.addAll(Arrays.asList(event1, event2, event3, event4, event5, event6, event7, event8));
 
     // current time indicator
     CurrentTimeIndicatorConfig currentTimeIndicator = new CurrentTimeIndicatorConfig();
@@ -170,9 +188,10 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
         });
 
     // create calendar
-    calendar = new ScheduleXCalendar(Arrays.asList(CalendarViewType.DAY, CalendarViewType.WEEK,
-        CalendarViewType.MONTH_GRID, CalendarViewType.MONTH_AGENDA), dataProvider, configuration,
-        calendars);
+    calendar = new ScheduleXCalendar(
+        Arrays.asList(CalendarViewType.DAY, CalendarViewType.WEEK, CalendarViewType.MONTH_GRID,
+            CalendarViewType.MONTH_AGENDA, CalendarViewType.LIST),
+        dataProvider, configuration, calendars);
 
     // add event click listener
     calendar.addCalendarEventClickEventListener(
@@ -193,7 +212,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     // create header component
     header = new CalendarHeaderComponent(calendar);
 
-    calendar.setHeight("500px");
+    calendar.setHeight("600px");
     // end-source-example
 
     calendar.setId("calendar-demo");

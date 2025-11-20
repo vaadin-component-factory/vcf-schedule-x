@@ -20,6 +20,7 @@ This component is part of the Vaadin Component Factory.
   - Week
   - Month Grid
   - Month Agenda
+  - List View (since version 2.0.0)
   - Resource View (*)
   
 - Java Configuration API:
@@ -86,6 +87,9 @@ This component is part of the Vaadin Component Factory.
 
 ### Calendar with Agenda View
 ![04-vcf-schedule-x-agenda-view](https://github.com/user-attachments/assets/56d23718-210d-4fc8-9441-4a4288ee40dc)
+
+### Calendar with List View (since version 2.0.0)
+<img width="1491" height="614" alt="schedule-x-list-view-img" src="https://github.com/user-attachments/assets/63ca74bf-8666-48f0-914c-fbbc27795801" />
 
 ### Resource Scheduler with Hourly View
 ![05-vcf-schedule-x-resource-scheduler-hourly](https://github.com/user-attachments/assets/9bcae1fc-a191-4f5d-be9a-27ed9bc1d24f)

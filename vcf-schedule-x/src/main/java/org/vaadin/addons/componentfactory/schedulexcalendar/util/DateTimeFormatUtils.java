@@ -80,6 +80,16 @@ public final class DateTimeFormatUtils {
     return result;
   }
   
+  /**
+   * Parses an input date string that is expected to be in
+   * {@link DateTimeFormatter#ISO_ZONED_DATE_TIME} format (which represents a
+   * Temporal.ZonedDateTime) into a {@link ZonedDateTime} object, and then formats it into a target
+   * String defined by {@code DATE_TIME_FORMATTER}. Used in methods handling events data received
+   * from the underlying component.
+   * 
+   * @param date The date string to parse, expected in ISO-8601 zoned date-time format.
+   * @return The formatted date-time string.
+   */
   public static String formatZonedDateTime(String date) {
     ZonedDateTime zdt = ZonedDateTime.parse(date, DateTimeFormatter.ISO_ZONED_DATE_TIME);
     return zdt.format(DATE_TIME_FORMATTER);

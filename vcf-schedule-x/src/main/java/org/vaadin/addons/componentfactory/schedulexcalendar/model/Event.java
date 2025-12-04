@@ -124,7 +124,8 @@ public class Event implements Serializable {
    * @param end the end date-time string in one of the supported formats
    */
   public Event(String id, String start, String end) {
-    this(id, DateTimeFormatUtils.parseDate(start, false), DateTimeFormatUtils.parseDate(end, true));
+    this(id, DateTimeFormatUtils.parseDate(DateTimeFormatUtils.formatZonedDateTime(start), false),
+        DateTimeFormatUtils.parseDate(DateTimeFormatUtils.formatZonedDateTime(end), true));
   }
 
   /**
@@ -143,8 +144,10 @@ public class Event implements Serializable {
   public Event(JsonValue json) {
     JsonObject js = (JsonObject) json;
     this.id = js.getString("id");
-    this.start = DateTimeFormatUtils.parseDate(js.getString("start"), false);
-    this.end = DateTimeFormatUtils.parseDate(js.getString("end"), true);
+    String startFormatted = DateTimeFormatUtils.formatZonedDateTime(js.getString("start"));
+    String endFormatted = DateTimeFormatUtils.formatZonedDateTime(js.getString("end"));
+    this.start = DateTimeFormatUtils.parseDate(startFormatted, false);
+    this.end = DateTimeFormatUtils.parseDate(endFormatted, true);
     this.title = js.hasKey("title") ? js.getString("title") : null;
     this.description = js.hasKey("description") ? js.getString("description") : null;
     this.location = js.hasKey("location") ? js.getString("location") : null;

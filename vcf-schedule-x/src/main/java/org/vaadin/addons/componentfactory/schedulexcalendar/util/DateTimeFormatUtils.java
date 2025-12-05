@@ -91,7 +91,13 @@ public final class DateTimeFormatUtils {
    * @return The formatted date-time string.
    */
   public static String formatZonedDateTime(String date) {
-    ZonedDateTime zdt = ZonedDateTime.parse(date, DateTimeFormatter.ISO_ZONED_DATE_TIME);
-    return zdt.format(DATE_TIME_FORMATTER);
+    try {
+      ZonedDateTime zdt = ZonedDateTime.parse(date, DateTimeFormatter.ISO_ZONED_DATE_TIME);
+      return zdt.format(DATE_TIME_FORMATTER);
+    } catch (Exception e) {
+      // dates have no time when coming from monthly views
+      LocalDate ld = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+      return ld.format(DATE_FORMATTER);
+    }
   }
 }

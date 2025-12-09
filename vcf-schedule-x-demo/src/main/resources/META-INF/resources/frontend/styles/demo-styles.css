@@ -21,3 +21,8 @@ html {
 	padding: 10px 5px;
 	font-size: var(--lumo-font-size-l);
 }
+
+.my_additional_class {
+	font-style: italic;
+	font-weight: 900;
+}

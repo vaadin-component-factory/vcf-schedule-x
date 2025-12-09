@@ -108,7 +108,12 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
         LocalDateTime.of(today.plusDays(15), LocalTime.of(11, 00)));
     event8.setTitle("Meeting with Anne");
     event8.setCalendarId("work");
-
+    
+    // define options for event 1 to add additional classes for styling
+    EventOptions event1Options = new EventOptions();
+    event1Options.setAdditionalClasses(Arrays.asList("my_additional_class"));
+    event1.setOptions(event1Options);
+    
     events = new ArrayList<Event>();
     events.addAll(Arrays.asList(event1, event2, event3, event4, event5, event6, event7, event8));
 

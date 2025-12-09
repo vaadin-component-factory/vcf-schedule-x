@@ -36,7 +36,7 @@ import elemental.json.JsonValue;
  *
  */
 @SuppressWarnings("serial")
-@NpmPackage(value = "@sx-premium/draw", version = "13.2.1")
+@NpmPackage(value = "@sx-premium/draw", version = "14.0.0")
 @JsModule("./src/vcf-schedule-x-calendar.js")
 public class ScheduleXCalendar extends BaseScheduleXCalendar {
 

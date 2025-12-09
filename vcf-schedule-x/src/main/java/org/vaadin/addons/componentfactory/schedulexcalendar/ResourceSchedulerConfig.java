@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DayNameFormat;
 
 /**
  * Java representation of the configuration options for the {@link ScheduleXResourceScheduler
@@ -88,6 +89,19 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
    * Optionally sets the initially displayed days in the daily view.
    */
   private Pair<LocalDate, LocalDate> initialDays;
+
+  /**
+   * Whether the current day should be highlighted in both daily and hourly view.
+   * Defaults to true.
+   */
+  private Boolean highlightToday;
+
+  /**
+   * Configures the format of the day names in daily view.
+   * If null or not set, day names are disabled (equivalent to false).
+   * Allowed values: SHORT ('short'), LONG ('long'), NARROW ('narrow')
+   */
+  private DayNameFormat dayNameFormat;
 
   public Integer getHourWidth() {
     return hourWidth;
@@ -179,6 +193,24 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
     this.runRefresh();
   }
 
+  public Boolean getHighlightToday() {
+    return highlightToday;
+  }
+
+  public void setHighlightToday(Boolean highlightToday) {
+    this.highlightToday = highlightToday;
+    this.runRefresh();
+  }
+
+  public String getDayNameFormat() {
+    return dayNameFormat != null ? dayNameFormat.getValue() : null;
+  }
+
+  public void setDayNameFormat(DayNameFormat dayNameFormat) {
+    this.dayNameFormat = dayNameFormat;
+    this.runRefresh();
+  }
+
   public String getJson() {
     JsonObject js = Json.createObject();
     Optional.ofNullable(hourWidth).ifPresent(value -> js.put("hourWidth", value));
@@ -205,6 +237,14 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
     if (initialDays != null) {
       js.put("initialDays", initialDays.getFirst().format(DateTimeFormatUtils.DATE_FORMATTER) + ","
           + initialDays.getSecond().format(DateTimeFormatUtils.DATE_FORMATTER));
+    }
+
+    Optional.ofNullable(highlightToday).ifPresent(value -> js.put("highlightToday", value));
+    
+    if (dayNameFormat != null) {
+      js.put("dayNameFormat", dayNameFormat.getValue());
+    } else {
+      js.put("dayNameFormat", false);
     }
 
     return js.toJson();

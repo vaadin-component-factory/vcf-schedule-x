@@ -142,6 +142,8 @@ window.vcfschedulexresourcescheduler = {
 		this._assignIfExists(resourceConfig, parsed, 'dragAndDrop');
 		this._assignIfExists(resourceConfig, parsed, 'resize');
 		this._assignIfExists(resourceConfig, parsed, 'infiniteScroll');
+		this._assignIfExists(resourceConfig, parsed, 'highlightToday');
+		this._assignIfExists(resourceConfig, parsed, 'dayNameFormat');
 		this._assignIfExists(resourceConfig, parsed, 'initialHours', raw => {
 			const [start, end] = this._parseInitialRange(raw);
 			start = Temporal.PlainDateTime.from(start);

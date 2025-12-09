@@ -43,6 +43,7 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.Color
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Event;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.EventQueryFilter;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
+import org.vaadin.addons.componentfactory.schedulexcalendar.util.DayNameFormat;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 
 
@@ -83,6 +84,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     // create resources
     Resource resource1 = new Resource("conveyor-belt-a");
     resource1.setLabel("Conveyor Belt A");
+    
     Resource resource1_1 = new Resource("conveyor-belt-a-1");
     resource1_1.setLabel("Conveyor Belt A 1");
     resource1_1.setColorName("belt-a-1");
@@ -111,7 +113,9 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     resourceSchedulerConfig.setResources(resources);
     resourceSchedulerConfig.setResize(true);
     resourceSchedulerConfig.setDragAndDrop(true);
-    
+    resourceSchedulerConfig.setHighlightToday(false);
+    resourceSchedulerConfig.setDayNameFormat(DayNameFormat.SHORT);
+        
     // create categories for events
     calendars = getCalendars();
 

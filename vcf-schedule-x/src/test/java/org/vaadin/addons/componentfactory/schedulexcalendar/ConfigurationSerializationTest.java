@@ -23,7 +23,6 @@ import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration;
 import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.CurrentTimeIndicatorConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.DayBoundaries;
 import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.DrawOptions;

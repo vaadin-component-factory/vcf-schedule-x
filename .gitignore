@@ -23,6 +23,7 @@ target/
 hs_err_pid*
 
 # vaadin related files
+.factorypath
 vcf-schedule-x-demo/package.json
 vcf-schedule-x-demo/webpack.config.js
 vcf-schedule-x-demo/webpack.generated.js
@@ -34,14 +35,14 @@ vcf-schedule-x-demo/package-lock.json
 vcf-schedule-x-demo/frontend/generated
 vcf-schedule-x-demo/frontend/index.html
 vcf-schedule-x-demo/src/main/bundles
-vcf-schedule-x-demo/src/main/bundles
 vcf-schedule-x-demo/src/main/frontend/generated
 vcf-schedule-x-demo/vite.config.ts
 vcf-schedule-x-demo/vite.generated.ts
 vcf-schedule-x-demo/.npmrc
+vcf-schedule-x-demo/.vaadin-node-tasks.lock
 
 # ide configurations
-.vscode/settings.json
+.vscode
 .settings
 .classpath
 .project

@@ -84,12 +84,12 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
         LocalDateTime.of(today.minusDays(1), LocalTime.of(16, 45)));
     event2.setTitle("Meeting with Jackie O.");
     event2.setCalendarId("work");
-    Event event3 = new Event("3", LocalDateTime.of(today, LocalTime.of(15, 00)),
-        LocalDateTime.of(today, LocalTime.of(15, 25)));
+    Event event3 = new Event("3", LocalDateTime.of(today.plusDays(1), LocalTime.of(00, 00)),
+        LocalDateTime.of(today.plusDays(1), LocalTime.of(23, 59)));
     event3.setTitle("Onboarding team meeting");
     event3.setCalendarId("work");
-    Event event4 = new Event("4", LocalDateTime.of(today.plusDays(1), LocalTime.of(19, 00)),
-        LocalDateTime.of(today.plusDays(1), LocalTime.of(19, 45)));
+    Event event4 = new Event("4", LocalDateTime.of(today.plusDays(1), LocalTime.of(00, 00)),
+        LocalDateTime.of(today.plusDays(2), LocalTime.of(23, 59)));
     event4.setTitle("Doctor's appointment");
     event4.setCalendarId("leisure");
     Event event5 = new Event("5", LocalDateTime.of(today.plusDays(2), LocalTime.of(11, 00)),

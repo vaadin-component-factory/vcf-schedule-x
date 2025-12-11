@@ -42,7 +42,8 @@ import {
 	updateMinDate,
 	updateMaxDate,
 	updateMonthGridOptions,
-	updateEvents
+	updateEvents,
+	processAllDayEventForView
 } from './vcf-schedule-x-utils.js';
 
 /**
@@ -324,6 +325,10 @@ export function addEvent(container, calendarEvent) {
 	if(eventJson.end) {
 		eventJson.end = getZonedDateTime(container, eventJson.end);
 	}
+	
+	// Process all-day events for day/week views
+	processAllDayEventForView(container.calendar, eventJson);
+	
 	const eventId = eventJson.id;
 	container.calendar.eventsService.add(eventJson);
 	container.parentElement.dispatchEvent(new CustomEvent('calendar-event-added', { detail: { eventId: eventId } }));
@@ -348,6 +353,10 @@ export function updateEvent(container, calendarEvent) {
 	if(eventJson.end) {
 		eventJson.end = getZonedDateTime(container, eventJson.end);
 	}
+	
+	// Process all-day events for day/week views
+	processAllDayEventForView(container.calendar, eventJson);
+	
 	const eventId = eventJson.id;
 	container.calendar.eventsService.update(eventJson);
 	container.parentElement.dispatchEvent(new CustomEvent('calendar-event-updated', { detail: { eventId: eventId } }));
@@ -377,7 +386,11 @@ export function onUpdateRange(container, events, start, end){
 	        }
 		    if(event.end) {
 		      event.end = getZonedDateTime(container, event.end);
-		    }    
+		    }
+		    
+		    // Process all-day events for day/week views
+		    processAllDayEventForView(container.calendar, event);
+		    
 			container.calendar.eventsService.add(event);
 		});
     } else {
@@ -388,7 +401,10 @@ export function onUpdateRange(container, events, start, end){
 	      }
 	      if(event.end) {
 	         event.end = getZonedDateTime(container, event.end);
-	      }    
+	      }
+	      
+	      // Process all-day events for day/week views
+	      processAllDayEventForView(container.calendar, event);
 	    });    
 	    container.calendar.eventsService.set(eventsJson);
     } 

@@ -155,3 +155,65 @@ export function getZonedDateTime(container, dateTime) {
 	return plainDateTime.toZonedDateTime(container.calendar.$app.config.timezone.value); 
 }
 
+/**
+ * Checks if an event spans an entire day (0:00 - 23:59) on the same date and converts to PlainDate for day/week views.
+ * This allows schedule-x to display the event in the header rather than in the time grid.
+ * Only processes events that start and end on the same date.
+ * 
+ * @param {Object} calendar - The calendar object
+ * @param {Object} event - The event to process
+ * @returns {Object} The potentially modified event
+ */
+export function processAllDayEventForView(calendar, event) {
+	if (!event || !event.start || !event.end) {
+		return event;
+	}
+	
+	// Get current view name
+	let currentViewName;
+	try {
+		if (calendar && calendar.$app && calendar.$app.calendarState && calendar.$app.calendarState.view) {
+			currentViewName = calendar.$app.calendarState.view.value;
+		}
+	} catch (e) {
+		return event;
+	}
+	
+	// Only process for day and week views
+	if (currentViewName !== 'day' && currentViewName !== 'week') {
+		return event;
+	}
+	
+	// Check if already a PlainDate
+	if (event.start instanceof Temporal.PlainDate) {
+		return event;
+	}
+	
+	// Check if event spans entire day (0:00 to 23:59) on the same date
+	if (event.start instanceof Temporal.ZonedDateTime && event.end instanceof Temporal.ZonedDateTime) {
+		const startDate = event.start.toPlainDate();
+		const endDate = event.end.toPlainDate();
+		
+		// Only process if start and end are on the same date
+		if (Temporal.PlainDate.compare(startDate, endDate) !== 0) {
+			return event;
+		}
+		
+		const startHour = event.start.hour;
+		const startMinute = event.start.minute;
+		const endHour = event.end.hour;
+		const endMinute = event.end.minute;
+		
+		const isStartAtMidnight = startHour === 0 && startMinute === 0;
+		const isEndAt2359 = endHour === 23 && endMinute === 59;
+		
+		if (isStartAtMidnight && isEndAt2359) {
+			// Convert to PlainDate for all-day events
+			event.start = startDate;
+			event.end = startDate;
+		}
+	}
+	
+	return event;
+}
+

@@ -38,8 +38,8 @@ import com.vaadin.flow.shared.Registration;
 @SuppressWarnings("serial")
 @NpmPackage(value = "preact", version = "10.26.4")
 @NpmPackage(value = "@preact/signals", version = "2.0.2")
-@NpmPackage(value = "@sx-premium/resource-scheduler", version = "14.0.1")
-@NpmPackage(value = "@sx-premium/scheduling-assistant", version = "14.0.1")
+@NpmPackage(value = "@sx-premium/resource-scheduler", version = "14.0.3")
+@NpmPackage(value = "@sx-premium/scheduling-assistant", version = "14.0.3")
 @JsModule("./src/vcf-schedule-x-resource-scheduler.js")
 public class ScheduleXResourceScheduler extends BaseScheduleXCalendar {
 

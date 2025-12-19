@@ -15,7 +15,7 @@
 import 'temporal-polyfill/global';
 import { createCalendar } from '@schedule-x/calendar';
 import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls';
-import { createCurrentTimePlugin } from '@schedule-x/current-time'
+import { createCurrentTimePlugin } from '@schedule-x/current-time';
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createEventRecurrencePlugin, createEventsServicePlugin } from "@schedule-x/event-recurrence";
 import { createResizePlugin } from '@schedule-x/resize';

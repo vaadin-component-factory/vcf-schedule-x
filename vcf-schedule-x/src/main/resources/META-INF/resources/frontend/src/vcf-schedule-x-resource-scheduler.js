@@ -145,13 +145,13 @@ window.vcfschedulexresourcescheduler = {
 		this._assignIfExists(resourceConfig, parsed, 'highlightToday');
 		this._assignIfExists(resourceConfig, parsed, 'dayNameFormat');
 		this._assignIfExists(resourceConfig, parsed, 'initialHours', raw => {
-			const [start, end] = this._parseInitialRange(raw);
+			let [start, end] = this._parseInitialRange(raw);
 			start = Temporal.PlainDateTime.from(start);
 			end = Temporal.PlainDateTime.from(end);
 			return timeUnits.getDayHoursBetween(start, end);
 		});
 		this._assignIfExists(resourceConfig, parsed, 'initialDays', raw => {
-			const [start, end] = this._parseInitialRange(raw);
+			let [start, end] = this._parseInitialRange(raw);
 			start = Temporal.PlainDate.from(start);
 			end = Temporal.PlainDate.from(end);
 			return timeUnits.getDaysBetween(start, end);

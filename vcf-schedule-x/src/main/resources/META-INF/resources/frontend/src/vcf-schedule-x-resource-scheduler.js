@@ -148,7 +148,7 @@ window.vcfschedulexresourcescheduler = {
 			let [start, end] = this._parseInitialRange(raw);
 			start = Temporal.PlainDateTime.from(start);
 			end = Temporal.PlainDateTime.from(end);
-			return timeUnits.getDayHoursBetween(start, end);
+			return timeUnits.getDayHoursBetweenPlain(start, end);
 		});
 		this._assignIfExists(resourceConfig, parsed, 'initialDays', raw => {
 			let [start, end] = this._parseInitialRange(raw);

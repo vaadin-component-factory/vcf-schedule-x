@@ -186,8 +186,10 @@ public class Configuration extends BaseConfiguration implements Serializable {
   }
 
   public void setDark(boolean isDark) {
+    if (this.getCalendar() != null) {
+      this.getCalendar().setDarkMode(isDark);
+    }
     this.isDark = isDark;
-    this.runRefresh();
   }
 
   public DayBoundaries getDayBoundaries() {

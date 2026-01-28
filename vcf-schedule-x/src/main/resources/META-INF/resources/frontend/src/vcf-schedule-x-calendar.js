@@ -74,23 +74,31 @@ window.vcfschedulexcalendar = {
 	          // (Optional) configure the intervals, in minutes, at which a time grid-event can be drawn. Valid values: 15, 30, 60
 	          snapDuration: drawSnapDuration
 	        });	
-	        setTimeout(() =>
-	            createCommonCalendar(container, viewFactoryMap, parsedConfig, calendarsJson, {
-	                viewsJson,
-	                drawPlugin
-	            })
+	        setTimeout(() => {
+		            createCommonCalendar(container, viewFactoryMap, parsedConfig, calendarsJson, {
+		                viewsJson,
+		                drawPlugin
+		            });
+					
+					if(currentViewJson){
+						this.setView(container,currentViewJson);
+					};       
+				
+				}
+				
         	);		
 		} else {
-			 setTimeout(() =>
-	            createCommonCalendar(container, viewFactoryMap, parsedConfig, calendarsJson, {
-	                viewsJson
-	            })
+			 setTimeout(() => {
+		            createCommonCalendar(container, viewFactoryMap, parsedConfig, calendarsJson, {
+		                viewsJson
+		            });
+					if(currentViewJson){
+						this.setView(container,currentViewJson);
+					};   			
+				}
 	        );
 		}
 		
-		if(currentViewJson){
-			this.setView(container,currentViewJson);
-		}       
 	},
 
 	setView(container, view) {

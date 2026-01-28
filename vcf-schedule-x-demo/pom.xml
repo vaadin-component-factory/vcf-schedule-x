@@ -9,7 +9,7 @@
     <packaging>war</packaging>
     <name>Schedule-X Addon Demo</name>
 
-    <version>2.1.2-SNAPSHOT</version>
+    <version>2.1.2</version>
     <inceptionYear>2025</inceptionYear>
     <organization>
         <name>Vaadin Ltd</name>

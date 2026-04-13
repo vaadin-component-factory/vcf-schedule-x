@@ -172,6 +172,20 @@ export function createCommonCalendar(container, viewFactories, config, calendars
 		...config
 	}, plugins);
 
+	// Register custom dot renderer for month agenda view.
+	// Applies additionalClasses from each event to its dot, so a single CSS rule
+	// colors both the event block and the dot automatically.
+	// Falls back to the calendar color for events without additionalClasses.
+	calendar._setCustomComponentFn('monthAgendaDateDots', (element, { events }) => {
+		element.innerHTML = events.map(event => {
+			const additionalClasses = event._options?.additionalClasses;
+			if (additionalClasses?.length) {
+				return `<div class="sx__month-agenda-day__event-icon ${additionalClasses.join(' ')}"></div>`;
+			}
+			return `<div class="sx__month-agenda-day__event-icon" style="background-color: var(--sx-color-${event.calendarId})"></div>`;
+		}).join('');
+	});
+
 	calendar.render(div);
 	div.calendar = calendar;
 	container.calendar = calendar;

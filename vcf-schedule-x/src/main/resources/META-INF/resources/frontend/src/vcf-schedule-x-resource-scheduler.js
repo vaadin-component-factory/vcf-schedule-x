@@ -65,6 +65,16 @@ window.vcfschedulexresourcescheduler = {
 		setTimeout(() => {
 			const config = processConfiguration(configJson, resourceViewNameMap);
 			const resourceConfig = createConfig();
+
+			// In v4, resources moved from rConfig to main calendar config
+			const parsedResourceConfig = JSON.parse(resourceConfigJson);
+			if (parsedResourceConfig.resources && parsedResourceConfig.resources.length > 0) {
+				config.resources = parsedResourceConfig.resources.map(resource => ({
+					...resource,
+					isOpen: signal(resource.isOpen)
+				}));
+			}
+
 			this._processResourceSchedulerConfig(resourceConfig, resourceConfigJson);
 			
 			// attach lazy loading callbacks
@@ -131,12 +141,6 @@ window.vcfschedulexresourcescheduler = {
 
 		this._assignIfExists(resourceConfig, parsed, 'hourWidth');
 		this._assignIfExists(resourceConfig, parsed, 'dayWidth');
-		this._assignIfExists(resourceConfig, parsed, 'resources', resources =>
-			resources.map(resource => ({
-				...resource,
-				isOpen: signal(resource.isOpen)
-			}))
-		);
 		this._assignIfExists(resourceConfig, parsed, 'resourceHeight');
 		this._assignIfExists(resourceConfig, parsed, 'eventHeight');
 		this._assignIfExists(resourceConfig, parsed, 'dragAndDrop');

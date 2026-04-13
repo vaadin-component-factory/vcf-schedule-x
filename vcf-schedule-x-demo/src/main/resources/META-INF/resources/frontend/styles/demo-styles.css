@@ -25,4 +25,6 @@ html {
 .my_additional_class {
 	font-style: italic;
 	font-weight: 900;
+	background-color: #7c3aed !important;
+	color: #ffffff !important;
 }

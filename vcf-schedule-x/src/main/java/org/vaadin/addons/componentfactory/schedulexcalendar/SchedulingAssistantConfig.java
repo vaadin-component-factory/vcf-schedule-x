@@ -13,12 +13,12 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Java model representing the SchedulingAssistant plugin config.
@@ -58,12 +58,12 @@ public class SchedulingAssistantConfig extends BaseConfiguration implements Seri
   }
 
   public String getJson() {
-    JsonObject js = Json.createObject();
+    ObjectNode js = JsonNodeFactory.instance.objectNode();
     Optional.ofNullable(initialStart).ifPresent(
         value -> js.put("initialStart", value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
     Optional.ofNullable(initialEnd).ifPresent(
         value -> js.put("initialEnd", value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-    return js.toJson();
+    return js.toString();
   }
 
 }

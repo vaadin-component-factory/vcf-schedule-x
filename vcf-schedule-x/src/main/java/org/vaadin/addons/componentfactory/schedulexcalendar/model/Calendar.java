@@ -13,10 +13,10 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.util.Optional;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Represents a single calendar definition.
@@ -82,15 +82,15 @@ public class Calendar implements Serializable {
   }
 
   /**
-   * Serialize this calendar to a JsonObject (excluding its ID).
+   * Serialize this calendar to a JSON object node (excluding its ID).
    */
-  public JsonObject toJsonObject() {
-    JsonObject js = Json.createObject();
+  public ObjectNode toJsonObject() {
+    ObjectNode js = JsonNodeFactory.instance.objectNode();
     js.put("colorName", colorName);
     Optional.ofNullable(lightColors)
-        .ifPresent(colors -> js.put("lightColors", colors.toJsonObject()));
+        .ifPresent(colors -> js.set("lightColors", colors.toJsonObject()));
     Optional.ofNullable(darkColors)
-        .ifPresent(colors -> js.put("darkColors", colors.toJsonObject()));
+        .ifPresent(colors -> js.set("darkColors", colors.toJsonObject()));
     return js;
   }
 
@@ -133,8 +133,8 @@ public class Calendar implements Serializable {
       this.onContainer = onContainer;
     }
 
-    public JsonObject toJsonObject() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJsonObject() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       js.put("main", main);
       js.put("container", container);
       js.put("onContainer", onContainer);

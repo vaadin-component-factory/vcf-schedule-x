@@ -63,9 +63,6 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
   @Override
   protected void createDemo() {
-    // begin-source-example
-    // source-example-heading: Calendar Demo
-
     // add calendar configuration
     LocalDate today = LocalDate.now();
     Configuration configuration = new Configuration();
@@ -218,7 +215,6 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     header = new CalendarHeaderComponent(calendar);
 
     calendar.setHeight("600px");
-    // end-source-example
 
     calendar.setId("calendar-demo");
 
@@ -232,8 +228,6 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     addCard("Calendar Demo", header, calendar, horizontal1, horizontal2);
   }
 
-  // begin-source-example
-  // source-example-heading: Additional code used in the demo
   private FieldSet getSingleEventHandlingLayout() {
     VerticalLayout layout = new VerticalLayout();
     layout.setWidthFull();
@@ -389,5 +383,5 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
 
     return createFieldSetLayout("Current Time Indicator testing", helperLayout);
   }
-  // end-source-example
+  
 }

@@ -14,9 +14,6 @@
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import com.vaadin.flow.internal.Pair;
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +24,9 @@ import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DayNameFormat;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Java representation of the configuration options for the {@link ScheduleXResourceScheduler
@@ -212,7 +212,7 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
   }
 
   public String getJson() {
-    JsonObject js = Json.createObject();
+    ObjectNode js = JsonNodeFactory.instance.objectNode();
     Optional.ofNullable(hourWidth).ifPresent(value -> js.put("hourWidth", value));
     Optional.ofNullable(dayWidth).ifPresent(value -> js.put("dayWidth", value));
     Optional.ofNullable(resourceHeight).ifPresent(value -> js.put("resourceHeight", value));
@@ -222,11 +222,11 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
     js.put("infiniteScroll", infiniteScroll);
 
     if (resources != null && !resources.isEmpty()) {
-      JsonArray resArray = Json.createArray();
-      for (int i = 0; i < resources.size(); i++) {
-        resArray.set(i, Json.parse(resources.get(i).getJson()));
+      ArrayNode resArray = JsonNodeFactory.instance.arrayNode();
+      for (Resource resource : resources) {
+        resArray.add(resource.toJsonObject());
       }
-      js.put("resources", resArray);
+      js.set("resources", resArray);
     }
 
     if (initialHours != null) {
@@ -240,14 +240,14 @@ public class ResourceSchedulerConfig extends BaseConfiguration implements Serial
     }
 
     Optional.ofNullable(highlightToday).ifPresent(value -> js.put("highlightToday", value));
-    
+
     if (dayNameFormat != null) {
       js.put("dayNameFormat", dayNameFormat.getValue());
     } else {
       js.put("dayNameFormat", false);
     }
 
-    return js.toJson();
+    return js.toString();
   }
 
 }

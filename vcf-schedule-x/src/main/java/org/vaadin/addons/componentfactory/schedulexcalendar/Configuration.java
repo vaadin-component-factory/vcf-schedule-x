@@ -13,8 +13,6 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,6 +24,8 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Java representation of the configuration options for the Schedule-X Calendar. This configuration
@@ -347,7 +347,7 @@ public class Configuration extends BaseConfiguration implements Serializable {
   }
 
   public String getJson() {
-    JsonObject js = Json.createObject();
+    ObjectNode js = JsonNodeFactory.instance.objectNode();
     Optional.ofNullable(defaultView).ifPresent(value -> js.put("defaultView", value.getName()));
     Optional.ofNullable(selectedDate).ifPresent(
         value -> js.put("selectedDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
@@ -356,16 +356,16 @@ public class Configuration extends BaseConfiguration implements Serializable {
     Optional.ofNullable(timeZone).ifPresent(value -> js.put("timezone", timeZone.getId()));
     Optional.ofNullable(firstDayOfWeek).ifPresent(value -> js.put("firstDayOfWeek", value));
     js.put("isDark", isDark);
-    Optional.ofNullable(dayBoundaries).ifPresent(value -> js.put("dayBoundaries", value.toJson()));
+    Optional.ofNullable(dayBoundaries).ifPresent(value -> js.set("dayBoundaries", value.toJson()));
     Optional.ofNullable(minDate)
         .ifPresent(value -> js.put("minDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
     Optional.ofNullable(maxDate)
         .ifPresent(value -> js.put("maxDate", value.format(DateTimeFormatUtils.DATE_FORMATTER)));
-    Optional.ofNullable(weekOptions).ifPresent(value -> js.put("weekOptions", value.toJson()));
-    Optional.ofNullable(drawOptions).ifPresent(value -> js.put("drawOptions", value.toJson()));
-    Optional.ofNullable(iCal).ifPresent(value -> js.put("iCal", value.toJson()));
+    Optional.ofNullable(weekOptions).ifPresent(value -> js.set("weekOptions", value.toJson()));
+    Optional.ofNullable(drawOptions).ifPresent(value -> js.set("drawOptions", value.toJson()));
+    Optional.ofNullable(iCal).ifPresent(value -> js.set("iCal", value.toJson()));
     Optional.ofNullable(monthGridOptions)
-        .ifPresent(value -> js.put("monthGridOptions", value.toJson()));
+        .ifPresent(value -> js.set("monthGridOptions", value.toJson()));
     js.put("showWeekNumbers", showWeekNumbers);
     js.put("isResponsive", isResponsive);
     js.put("skipValidation", skipValidation);
@@ -374,10 +374,10 @@ public class Configuration extends BaseConfiguration implements Serializable {
     Optional.ofNullable(dragAndDropInterval)
         .ifPresent(value -> js.put("dragAndDropInterval", value.getInterval()));
     Optional.ofNullable(currentTimeIndicatorConfig)
-        .ifPresent(value -> js.put("currentTimeIndicatorConfig", value.toJson()));
+        .ifPresent(value -> js.set("currentTimeIndicatorConfig", value.toJson()));
     Optional.ofNullable(scrollControllerConfig)
-        .ifPresent(value -> js.put("scrollControllerConfig", value.toJson()));
-    return js.toJson();
+        .ifPresent(value -> js.set("scrollControllerConfig", value.toJson()));
+    return js.toString();
   }
 
   /**
@@ -419,8 +419,8 @@ public class Configuration extends BaseConfiguration implements Serializable {
       }
     }
 
-    public JsonObject toJson() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(start)
           .ifPresent(value -> js.put("start", value.format(DateTimeFormatUtils.TIME_FORMATTER)));
       Optional.ofNullable(end)
@@ -508,15 +508,15 @@ public class Configuration extends BaseConfiguration implements Serializable {
       }
     }
 
-    public JsonObject toJson() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(gridHeight).ifPresent(value -> js.put("gridHeight", value));
       Optional.ofNullable(nDays).ifPresent(value -> js.put("nDays", value));
       Optional.ofNullable(eventWidth).ifPresent(value -> js.put("eventWidth", value));
       Optional.ofNullable(timeAxisFormatOptions).ifPresent(map -> {
-        JsonObject opts = Json.createObject();
+        ObjectNode opts = JsonNodeFactory.instance.objectNode();
         map.forEach(opts::put);
-        js.put("timeAxisFormatOptions", opts);
+        js.set("timeAxisFormatOptions", opts);
       });
       js.put("eventOverlap", eventOverlap);
       return js;
@@ -544,8 +544,8 @@ public class Configuration extends BaseConfiguration implements Serializable {
       }
     }
     
-    public JsonObject toJson() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(nEventsPerDay).ifPresent(value -> js.put("nEventsPerDay", value));
       return js;
     }
@@ -585,8 +585,8 @@ public class Configuration extends BaseConfiguration implements Serializable {
       this.runRefresh();
     }
 
-    public JsonObject toJson() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(snapDrawDuration)
           .ifPresent(value -> js.put("snapDrawDuration", value.getInterval()));
       Optional.ofNullable(defaultTitle).ifPresent(value -> js.put("defaultTitle", value));
@@ -612,8 +612,8 @@ public class Configuration extends BaseConfiguration implements Serializable {
       this.iCal = iCal;
     }
 
-    public JsonObject toJson() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(iCal).ifPresent(value -> js.put("iCal", value));
       return js;
     }
@@ -653,8 +653,8 @@ public class Configuration extends BaseConfiguration implements Serializable {
       this.runRefresh();
     }
 
-    public JsonObject toJson() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(fullWeekWidth).ifPresent(value -> js.put("fullWeekWidth", value));
       Optional.ofNullable(timeZoneOffset).ifPresent(value -> js.put("timeZoneOffset", value));
       return js;
@@ -680,8 +680,8 @@ public class Configuration extends BaseConfiguration implements Serializable {
       this.runRefresh();
     }
 
-    public JsonObject toJson() {
-      JsonObject js = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode js = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(initialScroll).ifPresent(
           value -> js.put("initialScroll", value.format(DateTimeFormatUtils.TIME_FORMATTER)));
       return js;

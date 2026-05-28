@@ -28,9 +28,6 @@ import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.function.SerializableRunnable;
 import com.vaadin.flow.shared.Registration;
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -53,6 +50,9 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatU
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.LocaleUtils;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ResourceViewType;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.ViewType;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 @SuppressWarnings("serial")
 @NpmPackage(value = "temporal-polyfill", version = "0.3.0")
@@ -172,11 +172,11 @@ public abstract class BaseScheduleXCalendar extends Div {
   }
 
   protected String viewsToJson() {
-    JsonArray jsonArray = Json.createArray();
-    for (int i = 0; i < views.size(); i++) {
-      jsonArray.set(i, views.get(i).getName());
+    ArrayNode jsonArray = JsonNodeFactory.instance.arrayNode();
+    for (ViewType v : views) {
+      jsonArray.add(v.getName());
     }
-    return jsonArray.toJson();
+    return jsonArray.toString();
   }
 
   protected String eventsToJson(LocalDateTime start, LocalDateTime end) {
@@ -198,9 +198,9 @@ public abstract class BaseScheduleXCalendar extends Div {
     if (calendars == null || calendars.isEmpty()) {
       return "{}";
     }
-    JsonObject calendarJson = Json.createObject();
-    calendars.forEach((id, calendar) -> calendarJson.put(id, calendar.toJsonObject()));
-    return calendarJson.toJson();
+    ObjectNode calendarJson = JsonNodeFactory.instance.objectNode();
+    calendars.forEach((id, calendar) -> calendarJson.set(id, calendar.toJsonObject()));
+    return calendarJson.toString();
   }
 
   public CallbackDataProvider<Event, EventQueryFilter> getDataProvider() {

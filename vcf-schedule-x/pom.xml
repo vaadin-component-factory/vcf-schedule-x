@@ -10,7 +10,7 @@
 
     <name>Schedule-X Addon</name>
 
-    <version>2.2.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <inceptionYear>2025</inceptionYear>
     <organization>
         <name>Vaadin Ltd</name>
@@ -18,9 +18,9 @@
     </organization>
 
     <properties>
-        <vaadin.version>24.7.4</vaadin.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <vaadin.version>25.1.6</vaadin.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
@@ -44,13 +44,12 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>flow-test-generic</artifactId>
-            <version>24.4.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
 		    <groupId>org.junit.jupiter</groupId>
 		    <artifactId>junit-jupiter</artifactId>
-		    <version>5.10.0</version>
+		    <version>6.0.3</version>
 		    <scope>test</scope>
 	  	</dependency>
 	  	<dependency>

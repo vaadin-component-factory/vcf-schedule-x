@@ -15,14 +15,13 @@ package org.vaadin.addons.componentfactory.demo;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
-import com.vaadin.flow.demo.Card;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -63,7 +62,7 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
   private ResourceSchedulerConfig resourceSchedulerConfig;
   private ScheduleXResourceScheduler resourceScheduler;
   private CalendarHeaderComponent header;
-  private Card resourceSchedulerCard;
+  private Div resourceSchedulerCard;
   private FieldSet resourcesLayout;
   private FieldSet localeTestingLayout;
   private FieldSet infiniteScrollTestingLayout;
@@ -72,9 +71,6 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
 
   @Override
   protected void createDemo() {
-    // begin-source-example
-    // source-example-heading: Resource Scheduler Demo
-
     // calendar configuration
     configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2024, 05, 06));
@@ -189,21 +185,16 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
     // create demo card containing resource view
     createResourceSchedulerDemoCard();
 
-    // end-source-example
-
     resourceScheduler.setId("resource-scheduler-demo");
 
     addCard("Resource Scheduler Demo", resourceSchedulerCard);
   }
 
-  // begin-source-example
-  // source-example-heading: Additional code used in the demo
   /**
    * Additional code used in the demo
    */
-
   private void createResourceSchedulerDemoCard() {
-    resourceSchedulerCard = new Card();
+    resourceSchedulerCard = new Div();
     resourcesLayout = getResourceHandlingLayout();
     localeTestingLayout = getLocaleTestingLayout();
     infiniteScrollTestingLayout = getInfiniteScrollTestingLayout();
@@ -394,6 +385,5 @@ public class ScheduleXResourceSchedulerDemoView extends ScheduleXBaseDemoView {
         createLayoutWithHelperText("Scheduler Assistant is only available for Hourly view", layout);
     return createFieldSetLayout("Scheduler Assistant testing", helperLayout);
   }
-
-  // end-source-example
+  
 }

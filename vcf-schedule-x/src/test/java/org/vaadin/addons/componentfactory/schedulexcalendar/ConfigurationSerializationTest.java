@@ -16,8 +16,6 @@ package org.vaadin.addons.componentfactory.schedulexcalendar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Locale;
@@ -30,8 +28,12 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.ICal;
 import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.MonthGridOptions;
 import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.ScrollControllerConfig;
 import org.vaadin.addons.componentfactory.schedulexcalendar.Configuration.WeekOptions;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 class ConfigurationSerializationTest {
+
+  private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
   @Test
   void testBasicConfigurationSerialization() {
@@ -40,11 +42,11 @@ class ConfigurationSerializationTest {
     config.setSelectedDate(LocalDate.of(2025, 5, 20));
     config.setFirstDayOfWeek(1);
 
-    JsonObject json = Json.parse(config.getJson());
+    JsonNode json = MAPPER.readTree(config.getJson());
 
-    assertEquals("en-US", json.getString("locale"));
-    assertEquals("2025-05-20", json.getString("selectedDate"));
-    assertEquals(1, json.getNumber("firstDayOfWeek"));
+    assertEquals("en-US", json.get("locale").asString());
+    assertEquals("2025-05-20", json.get("selectedDate").asString());
+    assertEquals(1, json.get("firstDayOfWeek").asInt());
   }
 
   @Test
@@ -55,11 +57,11 @@ class ConfigurationSerializationTest {
     db.setEnd(LocalTime.of(18, 0));
     config.setDayBoundaries(db);
 
-    JsonObject json = Json.parse(config.getJson());
-    JsonObject boundaries = json.getObject("dayBoundaries");
+    JsonNode json = MAPPER.readTree(config.getJson());
+    JsonNode boundaries = json.get("dayBoundaries");
 
-    assertEquals("06:00", boundaries.getString("start"));
-    assertEquals("18:00", boundaries.getString("end"));
+    assertEquals("06:00", boundaries.get("start").asString());
+    assertEquals("18:00", boundaries.get("end").asString());
   }
 
   @Test
@@ -73,14 +75,14 @@ class ConfigurationSerializationTest {
     wo.setEventOverlap(false);
     config.setWeekOptions(wo);
 
-    JsonObject json = Json.parse(config.getJson());
-    JsonObject week = json.getObject("weekOptions");
+    JsonNode json = MAPPER.readTree(config.getJson());
+    JsonNode week = json.get("weekOptions");
 
-    assertEquals(800, week.getNumber("gridHeight"));
-    assertEquals(5, week.getNumber("nDays"));
-    assertEquals(90, week.getNumber("eventWidth"));
-    assertFalse(week.getBoolean("eventOverlap"));
-    assertEquals("2-digit", week.getObject("timeAxisFormatOptions").getString("minute"));
+    assertEquals(800, week.get("gridHeight").asInt());
+    assertEquals(5, week.get("nDays").asInt());
+    assertEquals(90, week.get("eventWidth").asInt());
+    assertFalse(week.get("eventOverlap").asBoolean());
+    assertEquals("2-digit", week.get("timeAxisFormatOptions").get("minute").asString());
   }
 
   @Test
@@ -90,8 +92,8 @@ class ConfigurationSerializationTest {
     mo.setnEventsPerDay(3);
     config.setMonthGridOptions(mo);
 
-    JsonObject json = Json.parse(config.getJson());
-    assertEquals(3, json.getObject("monthGridOptions").getNumber("nEventsPerDay"));
+    JsonNode json = MAPPER.readTree(config.getJson());
+    assertEquals(3, json.get("monthGridOptions").get("nEventsPerDay").asInt());
   }
 
   @Test
@@ -103,11 +105,11 @@ class ConfigurationSerializationTest {
         org.vaadin.addons.componentfactory.schedulexcalendar.util.TimeInterval.MIN_30);
     config.setDrawOptions(draw);
 
-    JsonObject json = Json.parse(config.getJson());
-    JsonObject drawJson = json.getObject("drawOptions");
+    JsonNode json = MAPPER.readTree(config.getJson());
+    JsonNode drawJson = json.get("drawOptions");
 
-    assertEquals("New", drawJson.getString("defaultTitle"));
-    assertEquals(30, drawJson.getNumber("snapDrawDuration"));
+    assertEquals("New", drawJson.get("defaultTitle").asString());
+    assertEquals(30, drawJson.get("snapDrawDuration").asInt());
   }
 
   @Test
@@ -117,8 +119,8 @@ class ConfigurationSerializationTest {
     iCal.setiCal("BEGIN:VCALENDAR...");
     config.setiCal(iCal);
 
-    JsonObject json = Json.parse(config.getJson());
-    assertEquals("BEGIN:VCALENDAR...", json.getObject("iCal").getString("iCal"));
+    JsonNode json = MAPPER.readTree(config.getJson());
+    assertEquals("BEGIN:VCALENDAR...", json.get("iCal").get("iCal").asString());
   }
 
   @Test
@@ -129,11 +131,11 @@ class ConfigurationSerializationTest {
     current.setTimeZoneOffset(-180);
     config.setCurrentTimeIndicatorConfig(current);
 
-    JsonObject json = Json.parse(config.getJson());
-    JsonObject timeJson = json.getObject("currentTimeIndicatorConfig");
+    JsonNode json = MAPPER.readTree(config.getJson());
+    JsonNode timeJson = json.get("currentTimeIndicatorConfig");
 
-    assertTrue(timeJson.getBoolean("fullWeekWidth"));
-    assertEquals(-180, timeJson.getNumber("timeZoneOffset"));
+    assertTrue(timeJson.get("fullWeekWidth").asBoolean());
+    assertEquals(-180, timeJson.get("timeZoneOffset").asInt());
   }
 
   @Test
@@ -143,8 +145,8 @@ class ConfigurationSerializationTest {
     scroll.setInitialScroll(LocalTime.of(8, 30));
     config.setScrollControllerConfig(scroll);
 
-    JsonObject json = Json.parse(config.getJson());
-    assertEquals("08:30", json.getObject("scrollControllerConfig").getString("initialScroll"));
+    JsonNode json = MAPPER.readTree(config.getJson());
+    assertEquals("08:30", json.get("scrollControllerConfig").get("initialScroll").asString());
   }
 
 }

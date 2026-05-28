@@ -29,7 +29,7 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
-import elemental.json.JsonValue;
+import tools.jackson.databind.JsonNode;
 
 /**
  * Vaadin Wrapper Add-on for <a href="https://schedule-x.dev/">Schedule-X Calendar</a>.
@@ -71,7 +71,7 @@ public class ScheduleXCalendar extends BaseScheduleXCalendar {
   }
 
   @ClientCallable
-  void addEvent(JsonValue jsonValue) {
+  void addEvent(JsonNode jsonValue) {
     Event event = new Event(jsonValue);
     this.fireEvent(new CalendarEventDrawnEvent(this, true, event));
   }

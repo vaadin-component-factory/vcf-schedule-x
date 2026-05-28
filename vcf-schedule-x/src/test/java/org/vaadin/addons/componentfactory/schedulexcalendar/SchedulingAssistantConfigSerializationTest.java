@@ -1,12 +1,14 @@
 package org.vaadin.addons.componentfactory.schedulexcalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 class SchedulingAssistantConfigSerializationTest {
+
+  private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
   @Test
   void testBasicSerialization() {
@@ -15,10 +17,10 @@ class SchedulingAssistantConfigSerializationTest {
 
     SchedulingAssistantConfig config = new SchedulingAssistantConfig(start, end);
 
-    JsonObject json = Json.parse(config.getJson());
+    JsonNode json = MAPPER.readTree(config.getJson());
 
-    assertEquals("2025-06-01T09:00:00", json.getString("initialStart"));
-    assertEquals("2025-06-01T10:00:00", json.getString("initialEnd"));
+    assertEquals("2025-06-01T09:00:00", json.get("initialStart").asString());
+    assertEquals("2025-06-01T10:00:00", json.get("initialEnd").asString());
   }
 }
 

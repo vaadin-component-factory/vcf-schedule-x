@@ -1,14 +1,14 @@
 package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 @SuppressWarnings("serial")
 public class Resource implements Serializable {
@@ -119,26 +119,30 @@ public class Resource implements Serializable {
     return Objects.equals(id, other.id);
   }
   
-  public String getJson() {
-    JsonObject js = Json.createObject();
+  public ObjectNode toJsonObject() {
+    ObjectNode js = JsonNodeFactory.instance.objectNode();
     js.put("id", id);
     Optional.ofNullable(label).ifPresent(value -> js.put("label", value));
     Optional.ofNullable(labelHtml).ifPresent(value -> js.put("labelHTML", value));
     Optional.ofNullable(colorName).ifPresent(value -> js.put("colorName", value));
-    Optional.ofNullable(lightColors).ifPresent(colors -> js.put("lightColors", colors.toJsonObject()));
-    Optional.ofNullable(darkColors).ifPresent(colors -> js.put("darkColors", colors.toJsonObject()));
-    
+    Optional.ofNullable(lightColors).ifPresent(colors -> js.set("lightColors", colors.toJsonObject()));
+    Optional.ofNullable(darkColors).ifPresent(colors -> js.set("darkColors", colors.toJsonObject()));
+
     if (resources != null && !resources.isEmpty()) {
-      JsonArray resArray = Json.createArray();
-      for (int i = 0; i < resources.size(); i++) {
-        resArray.set(i, Json.parse(resources.get(i).getJson()));
+      ArrayNode resArray = JsonNodeFactory.instance.arrayNode();
+      for (Resource child : resources) {
+        resArray.add(child.toJsonObject());
       }
-      js.put("resources", resArray);
+      js.set("resources", resArray);
     }
-    
+
     js.put("isOpen", isOpen);
-    
-    return js.toJson();
+
+    return js;
   }
-  
+
+  public String getJson() {
+    return toJsonObject().toString();
+  }
+
 }

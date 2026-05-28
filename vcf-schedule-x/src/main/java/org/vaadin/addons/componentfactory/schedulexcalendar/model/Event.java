@@ -13,10 +13,6 @@
  */
 package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
-import elemental.json.JsonValue;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +21,10 @@ import java.util.Objects;
 import java.util.Optional;
 import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXResourceScheduler;
 import org.vaadin.addons.componentfactory.schedulexcalendar.util.DateTimeFormatUtils;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Calendar event definition.
@@ -139,49 +139,49 @@ public class Event implements Serializable {
    * <li>{@code end} – end date-time string (same formats as {@code start})</li>
    * </ul>
    *
-   * @param json the {@link JsonValue} representing the event data
+   * @param json the {@link JsonNode} representing the event data
    */
-  public Event(JsonValue json) {
-    JsonObject js = (JsonObject) json;
-    this.id = js.getString("id");
-    String startFormatted = DateTimeFormatUtils.formatZonedDateTime(js.getString("start"));
-    String endFormatted = DateTimeFormatUtils.formatZonedDateTime(js.getString("end"));
+  public Event(JsonNode json) {
+    JsonNode js = json;
+    this.id = js.get("id").asString();
+    String startFormatted = DateTimeFormatUtils.formatZonedDateTime(js.get("start").asString());
+    String endFormatted = DateTimeFormatUtils.formatZonedDateTime(js.get("end").asString());
     this.start = DateTimeFormatUtils.parseDate(startFormatted, false);
     this.end = DateTimeFormatUtils.parseDate(endFormatted, true);
-    this.title = js.hasKey("title") ? js.getString("title") : null;
-    this.description = js.hasKey("description") ? js.getString("description") : null;
-    this.location = js.hasKey("location") ? js.getString("location") : null;
-    this.calendarId = js.hasKey("calendarId") ? js.getString("calendarId") : null;
-    this.resourceId = js.hasKey("resourceId") ? js.getString("resourceId") : null;
+    this.title = js.has("title") ? js.get("title").asString() : null;
+    this.description = js.has("description") ? js.get("description").asString() : null;
+    this.location = js.has("location") ? js.get("location").asString() : null;
+    this.calendarId = js.has("calendarId") ? js.get("calendarId").asString() : null;
+    this.resourceId = js.has("resourceId") ? js.get("resourceId").asString() : null;
 
-    if (js.hasKey("people")) {
-      JsonArray jsonPeople = js.getArray("people");
-      for (int i = 0; i < jsonPeople.length(); i++) {
+    if (js.has("people")) {
+      JsonNode jsonPeople = js.get("people");
+      for (int i = 0; i < jsonPeople.size(); i++) {
         people.add(jsonPeople.get(i).asString());
       }
     }
 
-    if (js.hasKey("_options")) {
+    if (js.has("_options")) {
       options = new EventOptions();
-      options.disableDND = js.getObject("_options").getBoolean("disableDND");
-      options.disableResize = js.getObject("_options").getBoolean("disableResize");
-      JsonArray additionalClasses = js.getObject("_options").getArray("additionalClasses");
-      for (int i = 0; i < additionalClasses.length(); i++) {
+      options.disableDND = js.get("_options").get("disableDND").asBoolean();
+      options.disableResize = js.get("_options").get("disableResize").asBoolean();
+      JsonNode additionalClasses = js.get("_options").get("additionalClasses");
+      for (int i = 0; i < additionalClasses.size(); i++) {
         options.additionalClasses.add(additionalClasses.get(i).asString());
       }
     }
 
-    if (js.hasKey("_customContent")) {
+    if (js.has("_customContent")) {
       customContent = new EventCustomContent();
-      JsonObject jsonCustomContent = js.getObject("_customContent");
+      JsonNode jsonCustomContent = js.get("_customContent");
       customContent.timeGrid =
-          jsonCustomContent.hasKey("timeGrid") ? jsonCustomContent.getString("timeGrid") : null;
+          jsonCustomContent.has("timeGrid") ? jsonCustomContent.get("timeGrid").asString() : null;
       customContent.dateGrid =
-          jsonCustomContent.hasKey("dateGrid") ? jsonCustomContent.getString("dateGrid") : null;
+          jsonCustomContent.has("dateGrid") ? jsonCustomContent.get("dateGrid").asString() : null;
       customContent.monthGrid =
-          jsonCustomContent.hasKey("monthGrid") ? jsonCustomContent.getString("monthGrid") : null;
+          jsonCustomContent.has("monthGrid") ? jsonCustomContent.get("monthGrid").asString() : null;
       customContent.monthAgenda =
-          jsonCustomContent.hasKey("monthAgenda") ? jsonCustomContent.getString("monthAgenda")
+          jsonCustomContent.has("monthAgenda") ? jsonCustomContent.get("monthAgenda").asString()
               : null;
     }
   }
@@ -308,7 +308,7 @@ public class Event implements Serializable {
   }
 
   public String getJson() {
-    JsonObject js = Json.createObject();
+    ObjectNode js = JsonNodeFactory.instance.objectNode();
     js.put("id", id);
     js.put("start", start.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     js.put("end", end.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
@@ -319,19 +319,19 @@ public class Event implements Serializable {
     Optional.ofNullable(calendarId).ifPresent(value -> js.put("calendarId", value));
 
     if (people != null && !people.isEmpty()) {
-      JsonArray jsonPeople = Json.createArray();
-      for (int i = 0; i < people.size(); i++) {
-        jsonPeople.set(i, people.get(i));
+      ArrayNode jsonPeople = JsonNodeFactory.instance.arrayNode();
+      for (String person : people) {
+        jsonPeople.add(person);
       }
-      js.put("people", jsonPeople);
+      js.set("people", jsonPeople);
     }
 
     if (options != null) {
-      js.put("_options", options.toJson());
+      js.set("_options", options.toJson());
     }
 
     if (customContent != null) {
-      JsonObject jsonCustomContent = Json.createObject();
+      ObjectNode jsonCustomContent = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(customContent.getTimeGrid())
           .ifPresent(v -> jsonCustomContent.put("timeGrid", v));
       Optional.ofNullable(customContent.getDateGrid())
@@ -340,7 +340,7 @@ public class Event implements Serializable {
           .ifPresent(v -> jsonCustomContent.put("monthGrid", v));
       Optional.ofNullable(customContent.getMonthAgenda())
           .ifPresent(v -> jsonCustomContent.put("monthAgenda", v));
-      js.put("_customContent", jsonCustomContent);
+      js.set("_customContent", jsonCustomContent);
     }
 
     Optional.ofNullable(resourceId).ifPresent(value -> js.put("resourceId", value));
@@ -348,14 +348,14 @@ public class Event implements Serializable {
     Optional.ofNullable(recurrenceRule).ifPresent(value -> js.put("rrule", value.getRule()));
 
     if (excludedDates != null && !excludedDates.isEmpty()) {
-      JsonArray jsonExDates = Json.createArray();
-      for (int i = 0; i < excludedDates.size(); i++) {
-        jsonExDates.set(i, excludedDates.get(i).format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
+      ArrayNode jsonExDates = JsonNodeFactory.instance.arrayNode();
+      for (LocalDateTime exDate : excludedDates) {
+        jsonExDates.add(exDate.format(DateTimeFormatUtils.DATE_TIME_FORMATTER));
       }
-      js.put("exdate", jsonExDates);
+      js.set("exdate", jsonExDates);
     }
 
-    return js.toJson();
+    return js.toString();
   }
 
   /**
@@ -403,16 +403,16 @@ public class Event implements Serializable {
       this.additionalClasses = additionalClasses;
     }
 
-    public JsonObject toJson() {
-      JsonObject json = Json.createObject();
+    public ObjectNode toJson() {
+      ObjectNode json = JsonNodeFactory.instance.objectNode();
       Optional.ofNullable(disableDND).ifPresent(value -> json.put("disableDND", value));
       Optional.ofNullable(disableResize).ifPresent(value -> json.put("disableResize", value));
       if (additionalClasses != null && !additionalClasses.isEmpty()) {
-        JsonArray jsonArray = Json.createArray();
-        for (int i = 0; i < additionalClasses.size(); i++) {
-          jsonArray.set(i, additionalClasses.get(i));
+        ArrayNode jsonArray = JsonNodeFactory.instance.arrayNode();
+        for (String additionalClass : additionalClasses) {
+          jsonArray.add(additionalClass);
         }
-        json.put("additionalClasses", jsonArray);
+        json.set("additionalClasses", jsonArray);
       }
       return json;
     }

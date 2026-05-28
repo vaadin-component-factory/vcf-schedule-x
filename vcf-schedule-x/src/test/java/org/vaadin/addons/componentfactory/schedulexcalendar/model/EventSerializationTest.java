@@ -16,13 +16,15 @@ package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 class EventSerializationTest {
+
+  private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
   @Test
   void testBasicEventSerialization() {
@@ -33,15 +35,15 @@ class EventSerializationTest {
     event.setLocation("Zoom");
     event.setCalendarId("work");
 
-    JsonObject json = Json.parse(event.getJson());
+    JsonNode json = MAPPER.readTree(event.getJson());
 
-    assertEquals("e1", json.getString("id"));
-    assertEquals("2025-06-01T09:00:00", json.getString("start"));
-    assertEquals("2025-06-01T10:00:00", json.getString("end"));
-    assertEquals("Meeting", json.getString("title"));
-    assertEquals("Discuss roadmap", json.getString("description"));
-    assertEquals("Zoom", json.getString("location"));
-    assertEquals("work", json.getString("calendarId"));
+    assertEquals("e1", json.get("id").asString());
+    assertEquals("2025-06-01T09:00:00", json.get("start").asString());
+    assertEquals("2025-06-01T10:00:00", json.get("end").asString());
+    assertEquals("Meeting", json.get("title").asString());
+    assertEquals("Discuss roadmap", json.get("description").asString());
+    assertEquals("Zoom", json.get("location").asString());
+    assertEquals("work", json.get("calendarId").asString());
   }
 
   @Test
@@ -50,10 +52,10 @@ class EventSerializationTest {
         LocalDateTime.of(2025, 06, 01, 10, 00));
     event.setPeople(List.of("Alice", "Bob"));
 
-    JsonObject json = Json.parse(event.getJson());
-    assertTrue(json.hasKey("people"));
-    assertEquals("Alice", json.getArray("people").getString(0));
-    assertEquals("Bob", json.getArray("people").getString(1));
+    JsonNode json = MAPPER.readTree(event.getJson());
+    assertTrue(json.has("people"));
+    assertEquals("Alice", json.get("people").get(0).asString());
+    assertEquals("Bob", json.get("people").get(1).asString());
   }
 
   @Test
@@ -66,13 +68,13 @@ class EventSerializationTest {
     options.setAdditionalClasses(List.of("vip", "highlight"));
     event.setOptions(options);
 
-    JsonObject json = Json.parse(event.getJson());
-    JsonObject opts = json.getObject("_options");
+    JsonNode json = MAPPER.readTree(event.getJson());
+    JsonNode opts = json.get("_options");
 
-    assertTrue(opts.getBoolean("disableDND"));
-    assertFalse(opts.getBoolean("disableResize"));
-    assertEquals("vip", opts.getArray("additionalClasses").getString(0));
-    assertEquals("highlight", opts.getArray("additionalClasses").getString(1));
+    assertTrue(opts.get("disableDND").asBoolean());
+    assertFalse(opts.get("disableResize").asBoolean());
+    assertEquals("vip", opts.get("additionalClasses").get(0).asString());
+    assertEquals("highlight", opts.get("additionalClasses").get(1).asString());
   }
 
   @Test
@@ -83,8 +85,8 @@ class EventSerializationTest {
     content.setTimeGrid("<b>Custom</b>");
     event.setCustomContent(content);
 
-    JsonObject json = Json.parse(event.getJson());
-    assertEquals("<b>Custom</b>", json.getObject("_customContent").getString("timeGrid"));
+    JsonNode json = MAPPER.readTree(event.getJson());
+    assertEquals("<b>Custom</b>", json.get("_customContent").get("timeGrid").asString());
   }
 
   @Test
@@ -96,9 +98,9 @@ class EventSerializationTest {
     rule.setByDay(List.of(RecurrenceRule.Day.MO, RecurrenceRule.Day.WE));
     event.setRecurrenceRule(rule);
 
-    JsonObject json = Json.parse(event.getJson());
+    JsonNode json = MAPPER.readTree(event.getJson());
 
-    assertEquals("FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE", json.getString("rrule"));
+    assertEquals("FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE", json.get("rrule").asString());
   }
-  
+
 }

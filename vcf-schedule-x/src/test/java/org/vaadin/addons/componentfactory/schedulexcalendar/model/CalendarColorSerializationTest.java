@@ -15,11 +15,11 @@ package org.vaadin.addons.componentfactory.schedulexcalendar.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 class CalendarColorSerializationTest {
 
@@ -31,18 +31,18 @@ class CalendarColorSerializationTest {
     work.setDarkColors(new ColorDefinition("var(--dark-color)", "var(--dark-container)",
         "var(--dark-on-container)"));
 
-    JsonObject json = work.toJsonObject();
+    ObjectNode json = work.toJsonObject();
 
-    JsonObject light = json.getObject("lightColors");
-    JsonObject dark = json.getObject("darkColors");
+    ObjectNode light = (ObjectNode) json.get("lightColors");
+    ObjectNode dark = (ObjectNode) json.get("darkColors");
 
-    assertEquals("var(--light-color)", light.getString("main"));
-    assertEquals("var(--light-container)", light.getString("container"));
-    assertEquals("var(--light-on-container)", light.getString("onContainer"));
+    assertEquals("var(--light-color)", light.get("main").asString());
+    assertEquals("var(--light-container)", light.get("container").asString());
+    assertEquals("var(--light-on-container)", light.get("onContainer").asString());
 
-    assertEquals("var(--dark-color)", dark.getString("main"));
-    assertEquals("var(--dark-container)", dark.getString("container"));
-    assertEquals("var(--dark-on-container)", dark.getString("onContainer"));
+    assertEquals("var(--dark-color)", dark.get("main").asString());
+    assertEquals("var(--dark-container)", dark.get("container").asString());
+    assertEquals("var(--dark-on-container)", dark.get("onContainer").asString());
   }
 
   @Test
@@ -55,15 +55,15 @@ class CalendarColorSerializationTest {
 
     Map<String, Calendar> calendars = Map.of("work", work, "leisure", leisure);
 
-    JsonObject all = Json.createObject();
-    calendars.forEach((id, cal) -> all.put(id, cal.toJsonObject()));
+    ObjectNode all = JsonNodeFactory.instance.objectNode();
+    calendars.forEach((id, cal) -> all.set(id, cal.toJsonObject()));
 
-    assertTrue(all.hasKey("work"));
-    assertEquals("work", all.getObject("work").getString("colorName"));
-    assertTrue(all.getObject("work").hasKey("lightColors"));
+    assertTrue(all.has("work"));
+    assertEquals("work", all.get("work").get("colorName").asString());
+    assertTrue(all.get("work").has("lightColors"));
 
-    assertTrue(all.hasKey("leisure"));
-    assertTrue(all.getObject("leisure").hasKey("darkColors"));
-    assertEquals("var(--x)", all.getObject("leisure").getObject("darkColors").getString("main"));
+    assertTrue(all.has("leisure"));
+    assertTrue(all.get("leisure").has("darkColors"));
+    assertEquals("var(--x)", all.get("leisure").get("darkColors").get("main").asString());
   }
 }

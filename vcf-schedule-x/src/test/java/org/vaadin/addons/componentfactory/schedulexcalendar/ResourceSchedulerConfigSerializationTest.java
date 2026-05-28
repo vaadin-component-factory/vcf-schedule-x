@@ -17,15 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.vaadin.flow.internal.Pair;
-import elemental.json.Json;
-import elemental.json.JsonObject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Resource;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 class ResourceSchedulerConfigSerializationTest {
+
+  private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
   @Test
   void testBasicSerialization() {
@@ -38,15 +40,15 @@ class ResourceSchedulerConfigSerializationTest {
     config.setResize(true);
     config.setInfiniteScroll(false);
 
-    JsonObject json = Json.parse(config.getJson());
+    JsonNode json = MAPPER.readTree(config.getJson());
 
-    assertEquals(120, json.getNumber("hourWidth"));
-    assertEquals(300, json.getNumber("dayWidth"));
-    assertEquals(20, json.getNumber("eventHeight"));
-    assertEquals(50, json.getNumber("resourceHeight"));
-    assertTrue(json.getBoolean("dragAndDrop"));
-    assertTrue(json.getBoolean("resize"));
-    assertFalse(json.getBoolean("infiniteScroll"));
+    assertEquals(120, json.get("hourWidth").asInt());
+    assertEquals(300, json.get("dayWidth").asInt());
+    assertEquals(20, json.get("eventHeight").asInt());
+    assertEquals(50, json.get("resourceHeight").asInt());
+    assertTrue(json.get("dragAndDrop").asBoolean());
+    assertTrue(json.get("resize").asBoolean());
+    assertFalse(json.get("infiniteScroll").asBoolean());
   }
 
   @Test
@@ -57,9 +59,9 @@ class ResourceSchedulerConfigSerializationTest {
     config.setInitialDays(
         new Pair<>(LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 7)));
 
-    JsonObject json = Json.parse(config.getJson());
-    assertEquals("2025-06-01T08:00:00,2025-06-01T17:00:00", json.getString("initialHours"));
-    assertEquals("2025-06-01,2025-06-07", json.getString("initialDays"));
+    JsonNode json = MAPPER.readTree(config.getJson());
+    assertEquals("2025-06-01T08:00:00,2025-06-01T17:00:00", json.get("initialHours").asString());
+    assertEquals("2025-06-01,2025-06-07", json.get("initialDays").asString());
   }
 
   @Test
@@ -67,9 +69,9 @@ class ResourceSchedulerConfigSerializationTest {
     ResourceSchedulerConfig config = new ResourceSchedulerConfig();
     config.setResources(List.of(new Resource("r1")));
 
-    JsonObject json = Json.parse(config.getJson());
-    assertTrue(json.getArray("resources").length() > 0);
-    assertEquals("r1", json.getArray("resources").getObject(0).getString("id"));
+    JsonNode json = MAPPER.readTree(config.getJson());
+    assertTrue(json.get("resources").size() > 0);
+    assertEquals("r1", json.get("resources").get(0).get("id").asString());
   }
 }
 

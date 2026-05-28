@@ -13,12 +13,14 @@
  */
 package org.vaadin.addons.componentfactory.demo;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.FieldSet;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.demo.DemoView;
 import java.util.Map;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar;
 import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.ColorDefinition;
@@ -28,19 +30,35 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.model.Calendar.Color
  */
 @SuppressWarnings("serial")
 @CssImport("./styles/demo-styles.css")
-public abstract class ScheduleXBaseDemoView extends DemoView {
+public abstract class ScheduleXBaseDemoView extends VerticalLayout {
+
+  private boolean initialized;
 
   public ScheduleXBaseDemoView() {
-    this.addClassName("vcf-schedule-x-demo");
+    this.addClassNames("vcf-schedule-x-demo", "demo-view");
+    this.setSizeFull();
   }
 
   @Override
-  public void initView() {
-    createDemo();
-    addCard("Additional code used in the demo", new Span("These methods are used in the demo."));
+  protected void onAttach(AttachEvent attachEvent) {
+    super.onAttach(attachEvent);
+    if (!initialized) {
+      initialized = true;
+      createDemo();
+    }
   }
 
   protected abstract void createDemo();
+
+  protected Div addCard(String title, Component... components) {
+    Div card = new Div();
+    card.addClassName("demo-card");
+    card.setWidthFull();
+    card.add(new H3(title));
+    card.add(components);
+    add(card);
+    return card;
+  }
 
   protected Map<String, Calendar> getCalendars() {
     Calendar work = new Calendar("work");

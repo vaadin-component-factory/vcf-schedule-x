@@ -14,10 +14,10 @@
 package org.vaadin.addons.componentfactory.demo;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.FieldSet;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
-import com.vaadin.flow.demo.Card;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,7 +54,7 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
   private ResourceSchedulerConfig resourceSchedulerConfig;
   private SchedulingAssistantConfig schedulingAssistantConfig;
   private ScheduleXResourceScheduler resourceScheduler;
-  private Card resourceSchedulerCard;
+  private Div resourceSchedulerCard;
   private FieldSet schedulingAssistantLayout;
   private Button scheduleEventButton;
   
@@ -63,10 +63,7 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
   private String proposedEnd;
  
   @Override
-  protected void createDemo() {
-    // begin-source-example
-    // source-example-heading: Scheduling Assistant Demo
-    
+  protected void createDemo() {    
     // calendar configuration
     configuration = new Configuration();
     configuration.setSelectedDate(LocalDate.of(2024, 05, 06));
@@ -160,21 +157,17 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
     // create demo card containing resource view
     createResourceSchedulerDemoCard();
 
-    // end-source-example
-
     resourceScheduler.setId("scheduling-assistant-demo");
 
     addCard("Scheduling Assistant Demo", resourceSchedulerCard);
   }
 
-  // begin-source-example
-  // source-example-heading: Additional code used in the demo
   /**
    * Additional code used in the demo
    */
 
   private void createResourceSchedulerDemoCard() {
-    resourceSchedulerCard = new Card();
+    resourceSchedulerCard = new Div();
     schedulingAssistantLayout = getSchedulingEventHandlingLayout();
     resourceSchedulerCard.add(resourceScheduler, schedulingAssistantLayout);
   }
@@ -195,5 +188,5 @@ public class ScheduleXSchedulingAssistantDemoView extends ScheduleXBaseDemoView 
     layout.add(scheduleEventButton);
     return createFieldSetLayout("Scheduling Event Handling testing", layout);
   }
-  // end-source-example
+
 }

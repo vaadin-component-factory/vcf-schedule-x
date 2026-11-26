@@ -88,6 +88,8 @@ public class CalendarHeaderComponent extends HorizontalLayout {
             return "Agenda";
           case LIST:
             return "List";
+          case YEAR_GRID:
+            return "Year";
           default:
             break;
         }

@@ -21,6 +21,7 @@ This component is part of the Vaadin Component Factory.
   - Month Grid
   - Month Agenda
   - List View (since version 2.0.0)
+  - Year Grid
   - Resource View (*)
   
 - Java Configuration API:

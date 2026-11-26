@@ -55,14 +55,14 @@ import tools.jackson.databind.node.JsonNodeFactory;
 import tools.jackson.databind.node.ObjectNode;
 
 @SuppressWarnings("serial")
-@NpmPackage(value = "temporal-polyfill", version = "0.3.0")
-@NpmPackage(value = "@schedule-x/calendar", version = "4.4.0")
-@NpmPackage(value = "@schedule-x/theme-default", version = "4.4.0")
-@NpmPackage(value = "@schedule-x/current-time", version = "4.4.0")
-@NpmPackage(value = "@schedule-x/scroll-controller", version = "4.4.0")
-@NpmPackage(value = "@schedule-x/calendar-controls", version = "4.4.0")
-@NpmPackage(value = "@schedule-x/event-recurrence", version = "4.4.0")
-@NpmPackage(value = "@schedule-x/ical", version = "4.4.0")
+@NpmPackage(value = "temporal-polyfill", version = "0.3.2")
+@NpmPackage(value = "@schedule-x/calendar", version = "4.9.2")
+@NpmPackage(value = "@schedule-x/theme-default", version = "4.9.2")
+@NpmPackage(value = "@schedule-x/current-time", version = "4.9.2")
+@NpmPackage(value = "@schedule-x/scroll-controller", version = "4.9.2")
+@NpmPackage(value = "@schedule-x/calendar-controls", version = "4.9.2")
+@NpmPackage(value = "@schedule-x/event-recurrence", version = "4.9.2")
+@NpmPackage(value = "@schedule-x/ical", version = "4.9.2")
 @CssImport("@schedule-x/theme-default/dist/index.css")
 @CssImport("./styles/vcf-schedule-x-calendar-styles.css")
 public abstract class BaseScheduleXCalendar extends Div {

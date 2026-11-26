@@ -192,7 +192,7 @@ public class ScheduleXCalendarDemoView extends ScheduleXBaseDemoView {
     // create calendar
     calendar = new ScheduleXCalendar(
         Arrays.asList(CalendarViewType.DAY, CalendarViewType.WEEK, CalendarViewType.MONTH_GRID,
-            CalendarViewType.MONTH_AGENDA, CalendarViewType.LIST),
+            CalendarViewType.MONTH_AGENDA, CalendarViewType.LIST, CalendarViewType.YEAR_GRID),
         dataProvider, configuration, calendars);
 
     // add event click listener

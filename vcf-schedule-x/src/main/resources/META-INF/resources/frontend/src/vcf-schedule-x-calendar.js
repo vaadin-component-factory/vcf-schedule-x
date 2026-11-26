@@ -14,7 +14,8 @@
 
 import {
 	createViewDay, createViewMonthAgenda,
-	createViewMonthGrid, createViewWeek, createViewList
+	createViewMonthGrid, createViewWeek, createViewList,
+	createViewYearGrid
 } from '@schedule-x/calendar';
 
 import {
@@ -45,7 +46,8 @@ const viewFactoryMap = {
 	createViewMonthAgenda,
 	createViewMonthGrid,
 	createViewWeek,
-	createViewList
+	createViewList,
+	createViewYearGrid
 };
 
 const viewNameMap = {
@@ -53,7 +55,8 @@ const viewNameMap = {
 	createViewMonthAgenda: createViewMonthAgenda().name,
 	createViewMonthGrid: createViewMonthGrid().name,
 	createViewWeek: createViewWeek().name,
-	createViewList: createViewList().name
+	createViewList: createViewList().name,
+	createViewYearGrid: createViewYearGrid().name
 };
 
 window.vcfschedulexcalendar = {

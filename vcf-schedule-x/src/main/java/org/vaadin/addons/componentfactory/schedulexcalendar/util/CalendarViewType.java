@@ -21,7 +21,8 @@ import org.vaadin.addons.componentfactory.schedulexcalendar.ScheduleXCalendar;
 public enum CalendarViewType implements ViewType {
 
   DAY("createViewDay", "day"), MONTH_GRID("createViewMonthGrid", "month-grid"), MONTH_AGENDA(
-      "createViewMonthAgenda", "month-agenda"), WEEK("createViewWeek", "week"), LIST("createViewList", "list");
+      "createViewMonthAgenda", "month-agenda"), WEEK("createViewWeek", "week"), LIST("createViewList", "list"),
+  YEAR_GRID("createViewYearGrid", "year-grid");
 
   private String name;
 
